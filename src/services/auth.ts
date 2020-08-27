@@ -22,20 +22,19 @@ export default class AuthService {
         await user.save();
     }
 
-    public async SignIn(id: string, password: string): Promise<boolean> {
+    public async SignIn(id: string, password: string): Promise<User | null> {
         return User.findOne({
             where: {
                 id: id
             }
         }).then((user) => {
-            if (user) { // Does user exist?
-                // Does password match?
-                return bcrypt.compareSync(password, user.passwordHash);
+            if (user && bcrypt.compareSync(password, user.passwordHash)) { // Does user exist and does password match?
+                return user;
             }
 
-            return false;
+            return null;
         }).catch((err) => {
-            return false;
+            return null;
         });
     }
 

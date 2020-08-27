@@ -5,7 +5,10 @@ import session from 'express-session';
 
 import apiRoute from '../api';
 
-export default async function(server: Express) {// REST API
+export default async function(server: Express) {
+    var dev: boolean = process.env.NODE_ENV !== 'production';
+
+    // REST API
     /*
     var restRouter = Router();
     restRouter.get('/users/:id', (req, res) => {
@@ -25,7 +28,7 @@ export default async function(server: Express) {// REST API
         resave: false,
         saveUninitialized: true,
         cookie: {
-            secure: true
+            secure: !dev
         }
     }));
 
@@ -38,7 +41,6 @@ export default async function(server: Express) {// REST API
     server.use(apiRoute());
 
     // nextjs
-    var dev: boolean = process.env.NODE_ENV !== 'production';
     var app = next({ dev });
     var handle = app.getRequestHandler();
 

@@ -1,7 +1,26 @@
 import Head from 'next/head';
 import Link from 'next/link';
 
-export default function Home() {
+import { Request } from 'express';
+import { GetServerSideProps } from 'next';
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  var session = (context.req as Request).session;
+
+  return {
+    props: {
+      id: session?.userId,
+      name: session?.userName
+    }
+  }
+}
+
+export default function Home({
+  id, name
+}: {
+  id?: string
+  name?: string
+}) {
   return (
     <>
       <Head>
@@ -22,12 +41,22 @@ export default function Home() {
         </div>
         <div className="topbar-right">
           <div className="topbar-buttons">
-            <span className="topbar-button login">
-              <Link href="/login"><a>로그인</a></Link>
-            </span>
-            <span className="topbar-button register">
-              <Link href="/register"><a>회원가입</a></Link>
-            </span>
+            { !id && <>
+              <span className="topbar-button login">
+                <Link href="/login"><a>로그인</a></Link>
+              </span>
+              <span className="topbar-button register">
+                <Link href="/register"><a>회원가입</a></Link>
+              </span>
+            </> }
+            { id && <>
+              <span>
+                { id + ':' + name }
+              </span>
+              <span className="topbar-button logout">
+                <Link href="/auth/signout"><a>로그아웃</a></Link>
+              </span>
+            </> }
           </div>
         </div>
       </div>
@@ -99,7 +128,7 @@ export default function Home() {
 
         .boards {
           padding: 0 40px;
-          width: 1000px;
+          max-width: 1000px;
           margin: 0 auto;
         }
         .board h1 {

@@ -8,9 +8,9 @@ import { IUserRegisteration } from '../interfaces/IUser'
 export default function Auth(app: Router) {
     var router = Router();
 
-    router.post('/signup', (req: Request, res: Response) => {
+    router.post('/signup', async (req: Request, res: Response) => {
         const serviceInstance = Container.get(AuthService);
-        serviceInstance.SignUp(req.body as IUserRegisteration);
+        await serviceInstance.SignUp(req.body as IUserRegisteration);
 
         console.log(req.body as IUserRegisteration);
         
@@ -22,12 +22,15 @@ export default function Auth(app: Router) {
 
         if (req.session) {
             if (result) {
-                req.session.id = req.body.id;
-                req.session.name = req.body.name;
+                req.session.userId = result.id;
+                req.session.userName = result.name;
+
+                res.send(`Hello, ${result.name}!`);
+                return;
             }
         }
 
-        res.send('Sign result : ' + result);
+        res.send('Failed to login');
     });
     router.post('/signout', async (req: Request, res: Response) => {
         const serviceInstance = Container.get(AuthService);
