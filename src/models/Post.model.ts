@@ -1,7 +1,7 @@
 import {
     Model, Table, Column,
     PrimaryKey, AllowNull, AutoIncrement,
-    BelongsTo, ForeignKey
+    BelongsTo, ForeignKey, DataType
 } from 'sequelize-typescript'
 
 import User from './User.model'
@@ -32,6 +32,6 @@ export default class Post extends Model<Post> {
     @BelongsTo(() => Board)
     board!: Board;
 
-    @Column
+    @Column(DataType.TEXT)
     content!: string;
 }

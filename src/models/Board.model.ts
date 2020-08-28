@@ -1,6 +1,6 @@
 import {
     Model, Table, Column,
-    PrimaryKey, AllowNull, AutoIncrement,
+    PrimaryKey, AllowNull, AutoIncrement, Unique,
     HasMany
 } from 'sequelize-typescript'
 
@@ -12,6 +12,10 @@ export default class Board extends Model<Board> {
     @AutoIncrement
     @Column
     id!: number;
+
+    @Unique
+    @Column
+    name!: string;
 
     @AllowNull(false)
     @Column
