@@ -1,24 +1,36 @@
 import {
     Model, Table, Column,
-    PrimaryKey, NotNull, IsUUID,
-    BelongsTo
+    PrimaryKey, AllowNull, AutoIncrement,
+    BelongsTo, ForeignKey
 } from 'sequelize-typescript'
 
 import User from './User.model'
+import Board from './Board.model';
 
 @Table
 export default class Post extends Model<Post> {
-    @IsUUID(4)
     @PrimaryKey
+    @AutoIncrement
     @Column
-    uuid!: string;
+    id!: number;
 
-    @NotNull
+    @AllowNull(false)
     @Column
     title!: string;
 
-    @BelongsTo(() => User, 'uuid')
+    @ForeignKey(() => User)
+    @Column
+    authorId!: number;
+
+    @BelongsTo(() => User)
     author!: User;
+
+    @ForeignKey(() => Board)
+    @Column
+    boardId!: number;
+
+    @BelongsTo(() => Board)
+    board!: Board;
 
     @Column
     content!: string;

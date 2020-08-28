@@ -1,18 +1,19 @@
 import {
-    Model, Table, Column, Unique, PrimaryKey,
-    IsUUID, AllowNull
+    Model, Table, Column,
+    Unique, PrimaryKey,
+    AllowNull, AutoIncrement
 } from 'sequelize-typescript';
 
 @Table
 export default class User extends Model<User> {
-    @IsUUID(4)
     @PrimaryKey
+    @AutoIncrement
     @Column
-    uuid!: string;
+    id!: number;
 
     @Unique
     @Column
-    id!: string;
+    authId!: string;
 
     @Unique
     @AllowNull(false)

@@ -3,6 +3,7 @@ import { Router, Request, Response } from 'express';
 
 import AuthService from '../services/auth';
 
+import User from '../models/User.model'
 import { IUserRegisteration } from '../interfaces/IUser'
 
 export default function Auth(app: Router) {
@@ -19,11 +20,11 @@ export default function Auth(app: Router) {
     });
     router.post('/signin', async (req: Request, res: Response) => {
         const serviceInstance = Container.get(AuthService);
-        var result = await serviceInstance.SignIn(req.body.id, req.body.password);
+        var result: User | null = await serviceInstance.SignIn(req.body.id, req.body.password);
 
         if (req.session) {
             if (result) {
-                req.session.userId = result.id;
+                req.session.userId = result.authId;
                 req.session.userName = result.name;
 
                 res.redirect('/');

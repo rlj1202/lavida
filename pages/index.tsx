@@ -33,7 +33,7 @@ export default function Home({
             <Link href="/"><a>{ '{ Lavida }' }</a></Link>
           </div>
           <div className="topbar-pagelink"><Link href="/"><a>FAQ</a></Link></div>
-          <div className="topbar-pagelink"><Link href="/"><a>Forum</a></Link></div>
+          <div className="topbar-pagelink"><Link href="/board"><a>Forum</a></Link></div>
           <div className="topbar-pagelink"><Link href="/"><a>Problems</a></Link></div>
           <div className="topbar-pagelink"><Link href="/"><a>Status</a></Link></div>
           <div className="topbar-pagelink"><Link href="/"><a>Contest</a></Link></div>
@@ -66,7 +66,7 @@ export default function Home({
 
       <div className="boards">
         <div className="board">
-          <h1>공지사항</h1>
+          <h1><Link href="/board/notice"><a>공지사항</a></Link></h1>
           <article className="notice">
             <h2>제목</h2>
             <div>
