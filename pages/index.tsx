@@ -9,8 +9,8 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 
   return {
     props: {
-      id: session?.userId,
-      name: session?.userName
+      id: session?.userId ? session.userId : null,
+      name: session?.userName ? session.userName : null
     }
   }
 }
@@ -52,6 +52,9 @@ export default function Home({
             { id && <>
               <span>
                 { id + ':' + name }
+              </span>
+              <span className="topbar-button">
+                <Link href="/"><a>내 정보</a></Link>
               </span>
               <span className="topbar-button logout">
                 <Link href="/auth/signout"><a>로그아웃</a></Link>

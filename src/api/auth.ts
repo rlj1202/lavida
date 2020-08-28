@@ -12,9 +12,10 @@ export default function Auth(app: Router) {
         const serviceInstance = Container.get(AuthService);
         await serviceInstance.SignUp(req.body as IUserRegisteration);
 
+        // XXX
         console.log(req.body as IUserRegisteration);
         
-        res.json(req.body);
+        res.redirect('/');
     });
     router.post('/signin', async (req: Request, res: Response) => {
         const serviceInstance = Container.get(AuthService);
@@ -25,19 +26,22 @@ export default function Auth(app: Router) {
                 req.session.userId = result.id;
                 req.session.userName = result.name;
 
-                res.send(`Hello, ${result.name}!`);
+                res.redirect('/');
                 return;
             }
         }
 
-        res.send('Failed to login');
+        res.redirect('/auth/signin');
     });
-    router.post('/signout', async (req: Request, res: Response) => {
-        const serviceInstance = Container.get(AuthService);
+    router.get('/signout', async (req: Request, res: Response) => {
+        // const serviceInstance = Container.get(AuthService);
         req.session?.destroy((err) => {
-            // cannot access session here
+            if (err) {
+                // cannot access session here
+                console.log(err);
+            }
         });
-        res.send('This is signout api');
+        res.redirect('/');
     });
     app.use('/auth', router);
 }
