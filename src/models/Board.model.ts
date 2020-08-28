@@ -5,9 +5,10 @@ import {
 } from 'sequelize-typescript'
 
 import Post from './Post.model'
+import IBoard from '../interfaces/IBoard';
 
 @Table
-export default class Board extends Model<Board> {
+export default class Board extends Model<Board> implements IBoard {
     @PrimaryKey
     @AutoIncrement
     @Column

@@ -7,29 +7,22 @@ import { GetServerSideProps } from 'next';
 import Topbar from '../components/topbar';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
-  var session = (context.req as Request).session;
+  // var session = (context.req as Request).session;
 
   return {
     props: {
-      id: session?.userId ? session.userId : null,
-      name: session?.userName ? session.userName : null
     }
   }
 }
 
-export default function Home({
-  id, name
-}: {
-  id?: string
-  name?: string
-}) {
+export default function Home({}) {
   return (
     <>
       <Head>
         <title>Lavida</title>
       </Head>
       
-      <Topbar id={id} name={name} />
+      <Topbar />
 
       <div className="boards">
         <div className="board">

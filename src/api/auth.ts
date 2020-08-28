@@ -4,7 +4,7 @@ import { Router, Request, Response } from 'express';
 import AuthService from '../services/auth';
 
 import User from '../models/User.model'
-import { IUserRegisteration } from '../interfaces/IUser'
+import { IUserRegisteration, IUser } from '../interfaces/IUser'
 
 export default function Auth(app: Router) {
     var router = Router();
@@ -24,9 +24,8 @@ export default function Auth(app: Router) {
 
         if (req.session) {
             if (result) {
-                req.session.userId = result.authId;
-                req.session.userName = result.name;
-
+                req.session.user = result as IUser;
+                
                 res.redirect('/');
                 return;
             }
@@ -43,6 +42,16 @@ export default function Auth(app: Router) {
             }
         });
         res.redirect('/');
+    });
+    router.get('/info', async (req: Request, res: Response) => {
+        if (req.session?.user) {
+            // TODO passwordHash field is also sended out
+            // because casting cannot help remove
+            // unused fields.
+            res.json(req.session.user as IUser);
+        } else {
+            res.status(404).json(null);
+        }
     });
     app.use('/auth', router);
 }

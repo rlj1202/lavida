@@ -6,9 +6,10 @@ import {
 
 import User from './User.model'
 import Board from './Board.model';
+import IPost from '../interfaces/IPost';
 
 @Table
-export default class Post extends Model<Post> {
+export default class Post extends Model<Post> implements IPost {
     @PrimaryKey
     @AutoIncrement
     @Column

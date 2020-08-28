@@ -3,9 +3,10 @@ import {
     Unique, PrimaryKey,
     AllowNull, AutoIncrement
 } from 'sequelize-typescript';
+import { IUser } from '../interfaces/IUser';
 
 @Table
-export default class User extends Model<User> {
+export default class User extends Model<User> implements IUser {
     @PrimaryKey
     @AutoIncrement
     @Column

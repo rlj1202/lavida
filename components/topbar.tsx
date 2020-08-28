@@ -1,6 +1,14 @@
 import Link from 'next/link';
 
-export default function Topbar({ id, name }: { id?: string, name?: string }) {
+import useSWR from 'swr';
+import fetcher from '../src/libs/fetcher';
+import { IUser } from '../src/interfaces/IUser';
+
+export default function Topbar({}) {
+  const { data, error } = useSWR('/auth/info', fetcher);
+  const info = data as (IUser | undefined | null);
+  const loggedIn = info?.id ? true : false;
+
   return (
     <div className="topbar">
       <div className="topbar-left">
@@ -16,7 +24,7 @@ export default function Topbar({ id, name }: { id?: string, name?: string }) {
       </div>
       <div className="topbar-right">
         <div className="topbar-buttons">
-          {!id && <>
+          {!loggedIn && <>
             <span className="topbar-button login">
               <Link href="/login"><a>로그인</a></Link>
             </span>
@@ -24,9 +32,9 @@ export default function Topbar({ id, name }: { id?: string, name?: string }) {
               <Link href="/register"><a>회원가입</a></Link>
             </span>
           </>}
-          {id && <>
+          {loggedIn && <>
             <span>
-              {id + ':' + name}
+              {info?.authId + ':' + info?.name}
             </span>
             <span className="topbar-button">
               <Link href="/"><a>내 정보</a></Link>
