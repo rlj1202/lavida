@@ -1,8 +1,11 @@
 import {
     Model, Table, Column,
     Unique, PrimaryKey,
-    AllowNull, AutoIncrement
+    AllowNull, AutoIncrement, HasMany
 } from 'sequelize-typescript';
+
+import Comment from './Comment.model';
+
 import { IUser } from '../interfaces/IUser';
 
 @Table
@@ -28,4 +31,7 @@ export default class User extends Model<User> implements IUser {
     @AllowNull(false)
     @Column
     name!: string;
+
+    @HasMany(() => Comment)
+    comments!: Comment[];
 }

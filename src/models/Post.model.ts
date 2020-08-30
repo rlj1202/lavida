@@ -1,11 +1,13 @@
 import {
     Model, Table, Column,
     PrimaryKey, AllowNull, AutoIncrement,
-    BelongsTo, ForeignKey, DataType, CreatedAt, UpdatedAt
+    BelongsTo, ForeignKey, DataType, CreatedAt, UpdatedAt, HasMany
 } from 'sequelize-typescript'
 
 import User from './User.model'
 import Board from './Board.model';
+import Comment from './Comment.model';
+
 import IPost from '../interfaces/IPost';
 
 @Table
@@ -35,6 +37,9 @@ export default class Post extends Model<Post> implements IPost {
 
     @Column(DataType.TEXT)
     content!: string;
+
+    @HasMany(() => Comment)
+    comments!: Comment[];
 
     @CreatedAt
     createdAt!: Date;

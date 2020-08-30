@@ -5,13 +5,13 @@ import { GetServerSideProps } from 'next';
 import useSWR from 'swr';
 import dateFormat from 'dateformat';
 
-import fetcher from '../../src/libs/fetcher';
+import fetcher from '../../../src/libs/fetcher';
 
-import Topbar from '../../components/topbar';
-import Footer from '../../components/footer';
+import Topbar from '../../../components/topbar';
+import Footer from '../../../components/footer';
 
-import IPost from '../../src/interfaces/IPost';
-import IBoard from '../../src/interfaces/IBoard';
+import IPost from '../../../src/interfaces/IPost';
+import IBoard from '../../../src/interfaces/IBoard';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // var { bname } = context.query;
@@ -50,7 +50,7 @@ export default function Board({ }) {
 
         <div className="toolbar">
           <span className="toolbar-button newpost">
-            <Link href="/"><a>새 글 쓰기</a></Link>
+            <Link href={`/board/${bname}/create`}><a>새 글 쓰기</a></Link>
           </span>
           <div className="toolbar-search">
             <input className="toolbar-searchinput" />
@@ -60,28 +60,33 @@ export default function Board({ }) {
           </div>
         </div>
 
-        {posts && posts.map((post: IPost, index) => {
-          return (
-            <div key={index} className="post">
-              <div className="post-main">
-                <div className="post-title">
-                  <Link href={`/post/${post.id}`}><a>{post.title}</a></Link>
+        <div className="posts">
+          {posts && posts.map((post: IPost, index) => {
+            return (
+              <div key={index} className="post">
+                <div className="post-main">
+                  <div className="post-tags">
+                    <span className="tag category">{board.title}</span>
+                    <span className="tag">테스트</span>
+                  </div>
+                  <div className="post-title">
+                    <Link href={`/post/${post.id}`}><a>{post.title}</a></Link>
+                  </div>
                 </div>
-                <div className="post-content">{post.content}</div>
+                <div className="post-likes">
+                  좋아요 수: 0
+                </div>
+                <div className="post-comments">
+                  댓글 수: 0
+                </div>
+                <div className="post-info">
+                  <div className="post-author">{post.author?.authId}</div>
+                  <div className="post-date">{dateFormat(post.createdAt)}</div>
+                </div>
               </div>
-              <div className="post-likes">
-                좋아요 수: 0
-              </div>
-              <div className="post-comments">
-                댓글 수: 0
-              </div>
-              <div className="post-info">
-                <div className="post-author">{post.author?.authId}</div>
-                <div className="post-date">{dateFormat(post.createdAt)}</div>
-              </div>
-            </div>
-          );
-        })}
+            );
+          })}
+        </div>
 
         <div className="paginator-wrapper">
           <div className="paginator">
@@ -154,24 +159,44 @@ export default function Board({ }) {
           border-right: none;
         }
 
-        .post {
-          padding: 15px 20px;
+        .posts {
           border: 1px solid #dddddd;
           border-radius: 5px;
           margin: 20px 0;
+        }
+        .post {
+          padding: 10px;
           display: flex;
           align-items: center;
+          border-bottom: 1px solid #dddddd;
+        }
+        .post-tags {
+          margin-bottom: 5px;
+        }
+        .post-tags .tag {
+          border-radius: 5px;
+          padding: 1px 4px;
+          border: 1px solid #dddddd;
+          margin-right: 5px;
+          font-size: 0.7rem;
+        }
+        .post-tags .tag.category {
+          background-color: var(--ansi-cyan);
+          color: white;
+        }
+        .post:last-child {
+          border-bottom: none;
         }
         .post-main {
           flex: 1;
-        }
-        .post-comments, .post-likes, .post-info {
-          margin: 0 20px;
           font-size: 0.8rem;
         }
+        .post-comments, .post-likes, .post-info {
+          margin-left: 20px;
+          font-size: 0.7rem;
+        }
         .post-title {
-          font-size: 1.2rem;
-          margin-bottom: 10px;
+          font-size: 0.9rem;
           font-weight: bold;
         }
         .post-content {

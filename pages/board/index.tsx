@@ -21,11 +21,18 @@ export default function BoardMain() {
 
       <div className="wrapper">
         <h1>포럼</h1>
-        { boards && boards.map(board => (
-          <>
-            <h2><Link href={`/board/${board.name}`}><a>{ board.title }</a></Link></h2>
-          </>
-        )) }
+        <div className="boards">
+          { boards && boards.map(board => (
+            <div className="board">
+              <div className="board-title">
+                <Link href={`/board/${board.name}`}><a>{ board.title }</a></Link>
+              </div>
+              <div className="board-description">
+                { board.description }
+              </div>
+            </div>
+          )) }
+        </div>
       </div>
 
       <style jsx>{`
@@ -33,6 +40,26 @@ export default function BoardMain() {
           padding: 0 40px;
           max-width: 1000px;
           margin: 50px auto;
+        }
+
+        .boards {
+          border: 1px solid #dddddd;
+          border-radius: 5px;
+        }
+        .board {
+          padding: 10px;
+          border-bottom: 1px solid #dddddd;
+        }
+        .board:last-child {
+          border-bottom: none;
+        }
+        .board-title {
+          font-weight: bold;
+          font-size: 1rem;
+          margin-bottom: 5px;
+        }
+        .board-description {
+          font-size: 0.9rem;
         }
       `}</style>
     </>
