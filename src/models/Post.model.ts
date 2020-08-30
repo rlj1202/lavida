@@ -1,7 +1,7 @@
 import {
     Model, Table, Column,
     PrimaryKey, AllowNull, AutoIncrement,
-    BelongsTo, ForeignKey, DataType
+    BelongsTo, ForeignKey, DataType, CreatedAt, UpdatedAt
 } from 'sequelize-typescript'
 
 import User from './User.model'
@@ -35,4 +35,10 @@ export default class Post extends Model<Post> implements IPost {
 
     @Column(DataType.TEXT)
     content!: string;
+
+    @CreatedAt
+    createdAt!: Date;
+
+    @UpdatedAt
+    updatedAt!: Date;
 }

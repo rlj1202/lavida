@@ -50,6 +50,7 @@ export default function Rest(app: Router) {
         }
 
         var posts = await Post.findAll({
+            include: [ User ],
             where: {
                 boardId: board.id
             },
@@ -72,6 +73,7 @@ export default function Rest(app: Router) {
 
     router.get('/posts/:id', async (req: Request, res: Response) => {
         var post = await Post.findOne({
+            include: [ Board, User ],
             where: {
                 id: req.params.id
             }

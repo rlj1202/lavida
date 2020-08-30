@@ -5,6 +5,7 @@ import { Request } from 'express';
 import { GetServerSideProps } from 'next';
 
 import Topbar from '../components/topbar';
+import Footer from '../components/footer';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // var session = (context.req as Request).session;
@@ -45,10 +46,7 @@ export default function Home({}) {
         </div>
       </div>
 
-      <footer className="footer">
-        Copyright (c) 2020 rlj1202@gmail.com<br />
-        Ajou University
-      </footer>
+      <Footer />
 
       <style jsx>{`
         .boards {
@@ -61,12 +59,6 @@ export default function Home({}) {
         }
         .board {
           margin: 50px 0;
-        }
-
-        .footer {
-          padding: 20px 40px;
-          text-align: center;
-          font-size: 10px;
         }
       `}</style>
     </>
