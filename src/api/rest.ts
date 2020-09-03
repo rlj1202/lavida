@@ -2,13 +2,15 @@ import { Container } from 'typedi';
 import { Router, Request, Response, NextFunction } from 'express';
 
 import User from '../models/User.model';
-import Board from '../models/Board.model';
 import Post from '../models/Post.model';
+import Board from '../models/Board.model';
+import Comment from '../models/Comment.model';
+
+import IUser from '../interfaces/IUser';
 import IPost from '../interfaces/IPost';
 import IBoard from '../interfaces/IBoard';
-import Comment from '../models/Comment.model';
 import IComment from '../interfaces/IComment';
-import { IUser } from '../interfaces/IUser';
+import IPagination from '../interfaces/IPagination';
 
 function isAuthed(req: Request, res: Response, next: NextFunction) {
     var user = req.session?.user as IUser;
@@ -65,21 +67,33 @@ export default function Rest(app: Router) {
             where: {
                 boardId: board.id
             },
-            order: [ [ 'createdAt', 'DESC' ] ]
+            order: [ [ 'createdAt', 'DESC' ] ],
+            // limit: 0,
+            // offset: 0
         }) as IPost[];
 
         // var posts = board.posts as IPost[];
 
+        var offset = 0;
+        var limit = posts.length;
+
         if (req.query.page) {
-            var page = parseInt(req.query.page as string);
+            var page = req.query.page ? parseInt(req.query.page as string) : 0;
             var perPage = req.query.perPage ? parseInt(req.query.perPage as string) : 10;
-    
-            var start = page * perPage;
-    
-            posts = posts.slice(start, start + perPage);
+
+            offset = page * perPage;
+            limit = perPage;
         }
 
-        res.json(posts);
+        //res.json(posts.slice(offset, offset + limit));
+        var result = {
+            offset,
+            limit,
+            count: posts.slice(offset, offset + limit).length,
+            total: posts.length,
+            items: posts.slice(offset, offset + limit)
+        } as IPagination<IPost>;
+        res.json(result);
     });
     router.post('/boards/:name/posts', isAuthed, async (req: Request, res: Response) => {
         var board = await Board.findOne({

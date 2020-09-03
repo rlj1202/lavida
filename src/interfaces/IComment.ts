@@ -1,4 +1,4 @@
-import { IUser } from "./IUser";
+import IUser from "./IUser";
 import IPost from "./IPost";
 
 export default interface IComment {

@@ -1,4 +1,4 @@
-import { IUser } from "./IUser";
+import IUser from "./IUser";
 import IBoard from "./IBoard";
 import IComment from "./IComment";
 

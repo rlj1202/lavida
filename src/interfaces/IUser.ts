@@ -12,3 +12,5 @@ export interface IUserRegisteration {
     password: string;
     passwordCheck: string;
 }
+
+export default IUser;

@@ -1,3 +1,5 @@
+import { useState, useEffect, useCallback } from 'react';
+
 import Head from 'next/head';
 import Link from 'next/link';
 import { useRouter } from 'next/router';
@@ -12,6 +14,7 @@ import Footer from '../../../components/footer';
 
 import IPost from '../../../src/interfaces/IPost';
 import IBoard from '../../../src/interfaces/IBoard';
+import IPagination from '../../../src/interfaces/IPagination';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // var { bname } = context.query;
@@ -28,13 +31,22 @@ export default function Board({ }) {
 
   const board = (() => {
     const { data, error } = useSWR(`/api/boards/${bname}`, fetcher);
-    return data as IBoard;
+    return data as (IBoard | null | undefined);
   })();
 
-  const posts = (() => {
-    const { data, error } = useSWR(`/api/boards/${bname}/posts?page=0`, fetcher);
-    return data as IPost[];
-  })();
+  function getPosts(page: number) {
+    const { data, error } = useSWR(`/api/boards/${bname}/posts?page=${page}`, fetcher);
+    return data as (IPagination<IPost> | null | undefined);
+  }
+
+  var [posts, setPosts] = useState(() => getPosts(0));
+
+  console.log(posts);
+
+  var getPage = useCallback(() => {
+    var test = getPosts(1);
+    setPosts(test);
+  }, [posts]);
 
   return (
     <>
@@ -61,12 +73,12 @@ export default function Board({ }) {
         </div>
 
         <div className="posts">
-          {posts && posts.map((post: IPost, index) => {
+          {posts && posts.items.map((post: IPost, index) => {
             return (
               <div key={index} className="post">
                 <div className="post-main">
                   <div className="post-tags">
-                    <span className="tag category">{board.title}</span>
+                    <span className="tag category">{board?.title}</span>
                     <span className="tag">테스트</span>
                   </div>
                   <div className="post-title">
@@ -91,10 +103,17 @@ export default function Board({ }) {
         <div className="paginator-wrapper">
           <div className="paginator">
             <div className="paginator-cell prev">prev</div>
-            <div className="paginator-cell">1</div>
-            <div className="paginator-cell">2</div>
-            <div className="paginator-cell">3</div>
-            <div className="paginator-cell">4</div>
+            { posts && (() => {
+              var results = [];
+              for (var i = 0; i < Math.ceil(posts.total / posts.limit); i++) {
+                results.push((
+                  <div className="paginator-cell" onClick={() => getPage()}>
+                    {i + 1}
+                  </div>
+                ));
+              }
+              return results;
+            })() }
             <div className="paginator-cell next">next</div>
           </div>
         </div>
