@@ -11,34 +11,41 @@ import fetcher from '../../../src/libs/fetcher';
 
 import Topbar from '../../../components/topbar';
 import Footer from '../../../components/footer';
+import Posts from '../../../components/posts';
 
 import IPost from '../../../src/interfaces/IPost';
 import IBoard from '../../../src/interfaces/IBoard';
 import IPagination from '../../../src/interfaces/IPagination';
 
-function Paginator({ pages, setPage }: { pages: number, setPage: Dispatch<SetStateAction<number>>}) {
+function Paginator({ curPage, pages, setPage }: { curPage: number, pages: number, setPage: Dispatch<SetStateAction<number>> }) {
   return (
     <div className="paginator-wrapper">
       <div className="paginator">
-        <div className="paginator-cell prev">prev</div>
+        <div className="paginator-cell prev" onClick={() => setPage(Math.max(0, curPage - 1))}>
+          prev
+        </div>
         {(() => {
           var results = [];
           for (var i = 0; i < pages; i++) {
             results.push((
               <div className="paginator-cell" onClick={((i) => () => setPage(i))(i)}>
-                {i + 1}
+                {i == curPage && <b>{i + 1}</b>}
+                {i != curPage && i + 1}
               </div>
             ));
           }
           return results;
         })()}
-        <div className="paginator-cell next">next</div>
+        <div className="paginator-cell next" onClick={() => setPage(Math.min(pages - 1, curPage + 1))}>
+          next
+        </div>
       </div>
 
       <style jsx>{`
         .paginator-wrapper {
           display: flex;
           justify-content: center;
+          margin: 20px 0;
         }
         .paginator {
           border-radius: 5px;
@@ -72,7 +79,7 @@ export default function Board({ }) {
 
   const board = (() => {
     const { data, error } = useSWR(`/api/boards/${bname}`, fetcher);
-    return data as (IBoard | null | undefined);
+    return data as (IBoard | undefined);
   })();
 
   var [page, setPage] = useState(0);
@@ -108,37 +115,11 @@ export default function Board({ }) {
           </div>
         </div>
 
-        <Paginator pages={posts ? Math.ceil(posts?.total / posts?.limit) : 0} setPage={setPage} />
+        <Paginator curPage={page} pages={posts ? Math.ceil(posts?.total / posts?.limit) : 0} setPage={setPage} />
 
-        <div className="posts">
-          {posts && posts.items?.map((post: IPost, index) => {
-            return (
-              <div key={index} className="post">
-                <div className="post-main">
-                  <div className="post-tags">
-                    <span className="tag category">{board?.title}</span>
-                    <span className="tag">테스트</span>
-                  </div>
-                  <div className="post-title">
-                    <Link href={`/post/${post.id}`}><a>{post.title}</a></Link>
-                  </div>
-                </div>
-                <div className="post-likes">
-                  좋아요 수: 0
-                </div>
-                <div className="post-comments">
-                  댓글 수: 0
-                </div>
-                <div className="post-info">
-                  <div className="post-author">{post.author?.authId}</div>
-                  <div className="post-date">{dateFormat(post.createdAt)}</div>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+        <Posts board={board} posts={posts?.items} />
 
-        <Paginator pages={posts ? Math.ceil(posts?.total / posts?.limit) : 0} setPage={setPage} />
+        <Paginator curPage={page} pages={posts ? Math.ceil(posts?.total / posts?.limit) : 0} setPage={setPage} />
       </div>
 
       <Footer />
@@ -181,50 +162,6 @@ export default function Board({ }) {
         .toolbar-button.newpost {
           background-color: var(--ansi-green);
           color: white;
-        }
-
-        .posts {
-          border: 1px solid #dddddd;
-          border-radius: 5px;
-          margin: 20px 0;
-        }
-        .post {
-          padding: 10px;
-          display: flex;
-          align-items: center;
-          border-bottom: 1px solid #dddddd;
-        }
-        .post-tags {
-          margin-bottom: 5px;
-        }
-        .post-tags .tag {
-          border-radius: 5px;
-          padding: 1px 4px;
-          border: 1px solid #dddddd;
-          margin-right: 5px;
-          font-size: 0.7rem;
-        }
-        .post-tags .tag.category {
-          background-color: var(--ansi-cyan);
-          color: white;
-        }
-        .post:last-child {
-          border-bottom: none;
-        }
-        .post-main {
-          flex: 1;
-          font-size: 0.8rem;
-        }
-        .post-comments, .post-likes, .post-info {
-          margin-left: 20px;
-          font-size: 0.7rem;
-        }
-        .post-title {
-          font-size: 0.9rem;
-          font-weight: bold;
-        }
-        .post-content {
-          font-size: 0.8rem;
         }
       `}</style>
     </>

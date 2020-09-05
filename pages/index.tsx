@@ -6,6 +6,14 @@ import { GetServerSideProps } from 'next';
 
 import Topbar from '../components/topbar';
 import Footer from '../components/footer';
+import Posts from '../components/posts';
+
+import useSWR from 'swr';
+import fetcher from '../src/libs/fetcher';
+
+import IBoard from '../src/interfaces/IBoard';
+import IPost from '../src/interfaces/IPost';
+import IPagination from '../src/interfaces/IPagination';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // var session = (context.req as Request).session;
@@ -17,6 +25,15 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
 }
 
 export default function Home({}) {
+  var board = (() => {
+    var { data, error } = useSWR(`/api/boards/notice`, fetcher);
+    return data as IBoard;
+  })();
+  var posts = (() => {
+    var { data, error } = useSWR(`/api/boards/notice/posts?page=0&per_page=5`, fetcher);
+    return data as IPagination<IPost>;
+  })();
+
   return (
     <>
       <Head>
@@ -28,12 +45,7 @@ export default function Home({}) {
       <div className="boards">
         <div className="board">
           <h1><Link href="/board/notice"><a>공지사항</a></Link></h1>
-          <article className="notice">
-            <h2>제목</h2>
-            <div>
-              여기에 내용을 적어주세요.
-            </div>
-          </article>
+          <Posts board={board} posts={posts?.items} />
         </div>
         <div className="board">
           <h1>새로운 문제</h1>

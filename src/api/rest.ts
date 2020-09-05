@@ -79,7 +79,7 @@ export default function Rest(app: Router) {
 
         if (req.query.page) {
             var page = req.query.page ? parseInt(req.query.page as string) : 0;
-            var perPage = req.query.perPage ? parseInt(req.query.perPage as string) : 10;
+            var perPage = req.query.per_page ? parseInt(req.query.per_page as string) : 10;
 
             offset = page * perPage;
             limit = perPage;

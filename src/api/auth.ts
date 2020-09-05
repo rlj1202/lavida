@@ -45,10 +45,18 @@ export default function Auth(app: Router) {
     });
     router.get('/info', async (req: Request, res: Response) => {
         if (req.session?.user) {
-            // TODO passwordHash field is also sended out
-            // because casting cannot help remove
-            // unused fields.
-            res.json(req.session.user as IUser);
+            var user = await User.findOne({
+                where: {
+                    id: (req.session.user as IUser).id
+                }
+            });
+
+            if (!user) {
+                res.status(500).send('error');
+                return;
+            }
+
+            res.json(user as IUser);
         } else {
             res.status(404).json(null);
         }
