@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from 'react';
+import { useState, SetStateAction, Dispatch } from 'react';
 
 import Head from 'next/head';
 import Link from 'next/link';
@@ -15,6 +15,47 @@ import Footer from '../../../components/footer';
 import IPost from '../../../src/interfaces/IPost';
 import IBoard from '../../../src/interfaces/IBoard';
 import IPagination from '../../../src/interfaces/IPagination';
+
+function Paginator({ pages, setPage }: { pages: number, setPage: Dispatch<SetStateAction<number>>}) {
+  return (
+    <div className="paginator-wrapper">
+      <div className="paginator">
+        <div className="paginator-cell prev">prev</div>
+        {(() => {
+          var results = [];
+          for (var i = 0; i < pages; i++) {
+            results.push((
+              <div className="paginator-cell" onClick={((i) => () => setPage(i))(i)}>
+                {i + 1}
+              </div>
+            ));
+          }
+          return results;
+        })()}
+        <div className="paginator-cell next">next</div>
+      </div>
+
+      <style jsx>{`
+        .paginator-wrapper {
+          display: flex;
+          justify-content: center;
+        }
+        .paginator {
+          border-radius: 5px;
+          border: 1px solid #dddddd;
+          display: flex;
+        }
+        .paginator-cell {
+          padding: 5px 15px;
+          border-right: 1px solid #dddddd;
+        }
+        .paginator-cell:last-child {
+          border-right: none;
+        }
+      `}</style>
+    </div>
+  );
+}
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   // var { bname } = context.query;
@@ -34,20 +75,14 @@ export default function Board({ }) {
     return data as (IBoard | null | undefined);
   })();
 
-  function getPosts(page: number) {
+  var [page, setPage] = useState(0);
+
+  function usePosts(page: number) {
     const { data, error } = useSWR(`/api/boards/${bname}/posts?page=${page}`, fetcher);
     return data as (IPagination<IPost> | null | undefined);
   }
 
-  var posts = getPosts(0);
-  var [test, setTest] = useState(posts);
-  //setTest(posts);
-  console.log(test);
-
-  // var getPage = useCallback(() => {
-  //   var test = getPosts(1);
-  //   setPosts(test);
-  // }, [posts]);
+  var posts = usePosts(page);
 
   return (
     <>
@@ -73,8 +108,10 @@ export default function Board({ }) {
           </div>
         </div>
 
+        <Paginator pages={posts ? Math.ceil(posts?.total / posts?.limit) : 0} setPage={setPage} />
+
         <div className="posts">
-          {posts && posts.items.map((post: IPost, index) => {
+          {posts && posts.items?.map((post: IPost, index) => {
             return (
               <div key={index} className="post">
                 <div className="post-main">
@@ -101,23 +138,7 @@ export default function Board({ }) {
           })}
         </div>
 
-        <div className="paginator-wrapper">
-          <div className="paginator">
-            <div className="paginator-cell prev">prev</div>
-            { posts && (() => {
-              var results = [];
-              for (var i = 0; i < Math.ceil(posts.total / posts.limit); i++) {
-                results.push((
-                  <div className="paginator-cell" /*onClick={() => getPage()}*/>
-                    {i + 1}
-                  </div>
-                ));
-              }
-              return results;
-            })() }
-            <div className="paginator-cell next">next</div>
-          </div>
-        </div>
+        <Paginator pages={posts ? Math.ceil(posts?.total / posts?.limit) : 0} setPage={setPage} />
       </div>
 
       <Footer />
@@ -160,23 +181,6 @@ export default function Board({ }) {
         .toolbar-button.newpost {
           background-color: var(--ansi-green);
           color: white;
-        }
-
-        .paginator-wrapper {
-          display: flex;
-          justify-content: center;
-        }
-        .paginator {
-          border-radius: 5px;
-          border: 1px solid #dddddd;
-          display: flex;
-        }
-        .paginator-cell {
-          padding: 5px 15px;
-          border-right: 1px solid #dddddd;
-        }
-        .paginator-cell:last-child {
-          border-right: none;
         }
 
         .posts {

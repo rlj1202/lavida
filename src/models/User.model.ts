@@ -1,16 +1,26 @@
 import {
     Model, Table, Column,
     Unique, PrimaryKey,
-    AllowNull, AutoIncrement, HasMany, Scopes
+    AllowNull, AutoIncrement, HasMany, Scopes, DefaultScope
 } from 'sequelize-typescript';
 
 import Comment from './Comment.model';
 
 import { IUser } from '../interfaces/IUser';
 
+@DefaultScope(() => ({
+    attributes: {
+        exclude: [ 'passwordHash' ]
+    }
+}))
 @Scopes(() => ({
     full: {
         include: [ Comment ]
+    },
+    withPasswordHash: {
+        attributes: {
+            include: [ 'passwordHash' ]
+        }
     },
     withoutPasswordHash: {
         attributes: {

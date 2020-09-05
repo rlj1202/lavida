@@ -20,7 +20,7 @@ export default class AuthService {
     }
 
     public async SignIn(id: string, password: string): Promise<User | null> {
-        return User.findOne({
+        return User.scope('withPasswordHash').findOne({
             where: {
                 authId: id
             }
