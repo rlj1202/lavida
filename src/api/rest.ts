@@ -63,7 +63,7 @@ export default function Rest(app: Router) {
         }
 
         var posts = await Post.findAll({
-            include: [ User ],
+            include: [ User.scope('withoutPasswordHash') ],
             where: {
                 boardId: board.id
             },
@@ -121,7 +121,7 @@ export default function Rest(app: Router) {
     // post
     router.get('/posts/:id', async (req: Request, res: Response) => {
         var post = await Post.findOne({
-            include: [ Board, User ],
+            include: [ Board, User.scope('withoutPasswordHash') ],
             where: {
                 id: req.params.id
             }
@@ -136,7 +136,7 @@ export default function Rest(app: Router) {
     });
     router.get('/posts/:id/comments', async (req: Request, res: Response) => {
         var comments = await Comment.findAll({
-            include: [ User ],
+            include: [ User.scope('withoutPasswordHash') ],
             where: {
                 postId: req.params.id
             }

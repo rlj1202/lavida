@@ -39,14 +39,15 @@ export default function Board({ }) {
     return data as (IPagination<IPost> | null | undefined);
   }
 
-  var [posts, setPosts] = useState(() => getPosts(0));
+  var posts = getPosts(0);
+  var [test, setTest] = useState(posts);
+  //setTest(posts);
+  console.log(test);
 
-  console.log(posts);
-
-  var getPage = useCallback(() => {
-    var test = getPosts(1);
-    setPosts(test);
-  }, [posts]);
+  // var getPage = useCallback(() => {
+  //   var test = getPosts(1);
+  //   setPosts(test);
+  // }, [posts]);
 
   return (
     <>
@@ -107,7 +108,7 @@ export default function Board({ }) {
               var results = [];
               for (var i = 0; i < Math.ceil(posts.total / posts.limit); i++) {
                 results.push((
-                  <div className="paginator-cell" onClick={() => getPage()}>
+                  <div className="paginator-cell" /*onClick={() => getPage()}*/>
                     {i + 1}
                   </div>
                 ));

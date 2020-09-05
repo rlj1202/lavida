@@ -1,13 +1,23 @@
 import {
     Model, Table, Column,
     Unique, PrimaryKey,
-    AllowNull, AutoIncrement, HasMany
+    AllowNull, AutoIncrement, HasMany, Scopes
 } from 'sequelize-typescript';
 
 import Comment from './Comment.model';
 
 import { IUser } from '../interfaces/IUser';
 
+@Scopes(() => ({
+    full: {
+        include: [ Comment ]
+    },
+    withoutPasswordHash: {
+        attributes: {
+            exclude: [ 'passwordHash' ]
+        }
+    }
+}))
 @Table
 export default class User extends Model<User> implements IUser {
     @PrimaryKey
