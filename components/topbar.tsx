@@ -15,12 +15,11 @@ export default function Topbar({}) {
         <div className="topbar-logo">
           <Link href="/"><a>{'{ Lavida }'}</a></Link>
         </div>
-        <div className="topbar-pagelink"><Link href="/"><a>FAQ</a></Link></div>
+        <div className="topbar-pagelink"><Link href="/faq"><a>FAQ</a></Link></div>
         <div className="topbar-pagelink"><Link href="/board"><a>Forum</a></Link></div>
-        <div className="topbar-pagelink"><Link href="/"><a>Problems</a></Link></div>
-        <div className="topbar-pagelink"><Link href="/"><a>Status</a></Link></div>
-        <div className="topbar-pagelink"><Link href="/"><a>Contest</a></Link></div>
-        <div className="topbar-pagelink"><Link href="/"><a>Tools</a></Link></div>
+        <div className="topbar-pagelink"><Link href="/problems"><a>Problems</a></Link></div>
+        <div className="topbar-pagelink"><Link href="/status"><a>Status</a></Link></div>
+        <div className="topbar-pagelink"><Link href="/contest"><a>Contest</a></Link></div>
       </div>
       <div className="topbar-right">
         <div className="topbar-buttons">

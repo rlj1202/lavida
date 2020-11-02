@@ -1,5 +1,4 @@
 import { Sequelize } from 'sequelize-typescript';
-import { setUncaughtExceptionCaptureCallback } from 'process';
 
 export default async function() {
     // XXX Where the credential informations can be placed!!!
