@@ -5,12 +5,14 @@ import User from '../models/User.model';
 import Post from '../models/Post.model';
 import Board from '../models/Board.model';
 import Comment from '../models/Comment.model';
+import Problem from '../models/Problem.model';
 
 import IUser from '../interfaces/IUser';
 import IPost from '../interfaces/IPost';
 import IBoard from '../interfaces/IBoard';
 import IComment from '../interfaces/IComment';
 import IPagination from '../interfaces/IPagination';
+import IProblem from '../interfaces/IProblem';
 
 function isAuthed(req: Request, res: Response, next: NextFunction) {
     var user = req.session?.user as IUser;
@@ -185,6 +187,27 @@ export default function Rest(app: Router) {
         }
 
         res.json(comment as IComment);
+    });
+
+    router.get('/problems', async (req: Request, res: Response) => {
+        var problems = await Problem.findAll();
+
+        res.json(problems as IProblem[]);
+    })
+    router.get('/problems/:id', async (req: Request, res: Response) => {
+        var problem = await Problem.findOne({
+            include: [ User ],
+            where: {
+                id: req.params.id
+            }
+        });
+
+        if (!problem) {
+            res.status(404).send('no such problem');
+            return;
+        }
+
+        res.json(problem as IProblem);
     });
 
     app.use('/api', router);

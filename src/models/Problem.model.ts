@@ -1,10 +1,13 @@
 import {
     Column, Table, Model,
-    PrimaryKey, AutoIncrement, AllowNull
+    PrimaryKey, AutoIncrement, AllowNull, ForeignKey, BelongsTo
 } from 'sequelize-typescript'
+import User from './User.model';
+
+import IProblem from '../interfaces/IProblem';
 
 @Table
-export default class Problem extends Model<Problem> {
+export default class Problem extends Model<Problem> implements IProblem {
     @PrimaryKey
     @AutoIncrement
     @Column
@@ -13,6 +16,17 @@ export default class Problem extends Model<Problem> {
     @AllowNull(false)
     @Column
     title!: string;
+
+    @AllowNull(false)
+    @Column
+    description!: string;
+
+    @ForeignKey(() => User)
+    @Column
+    authorId!: number;
+
+    @BelongsTo(() => User)
+    author!: User;
 
     @AllowNull(false)
     @Column
