@@ -12,9 +12,14 @@ export default function Topbar({}) {
   return (
     <div className="topbar">
       <div className="topbar-left">
-        <div className="topbar-logo">
-          <Link href="/"><a>{'{ Lavida }'}</a></Link>
-        </div>
+        <Link href="/">
+          <a>
+            <div className="topbar-logo">
+              {'{ Lavida }'}
+            </div>
+          </a>
+        </Link>
+        
         <div className="topbar-pagelink"><Link href="/faq"><a>FAQ</a></Link></div>
         <div className="topbar-pagelink"><Link href="/board"><a>Forum</a></Link></div>
         <div className="topbar-pagelink"><Link href="/problems"><a>Problems</a></Link></div>
@@ -32,11 +37,8 @@ export default function Topbar({}) {
             </span>
           </>}
           {loggedIn && <>
-            <span>
-              {info?.authId + ':' + info?.name}
-            </span>
             <span className="topbar-button">
-              <Link href="/"><a>내 정보</a></Link>
+              <Link href="/"><a>{info?.authId}</a></Link>
             </span>
             <span className="topbar-button logout">
               <Link href="/auth/signout"><a>로그아웃</a></Link>
@@ -49,24 +51,32 @@ export default function Topbar({}) {
           font-family: 'NanumSquare', sans-serif;
           border-bottom: 1px solid #dddddd;
 
-          padding: 20px 40px;
+          padding: 0 40px;
+          padding-top: 20px;
 
           display: flex;
           flex-direction: row;
           align-items: center;
           justify-content: space-between;
+          flex-wrap: wrap;
         }
         .topbar-left {
           display: flex;
           flex-direction: row;
           align-items: center;
+          margin-bottom: 20px;
+          flex-wrap: wrap;
+        }
+        .topbar-right {
+          margin-bottom: 20px;
         }
         .topbar-pagelink {
-          margin: 0 10px;
+          margin: 10px;
         }
         .topbar-logo {
           font-size: 30px;
           font-weight: bold;
+          white-space: nowrap;
 
           margin-right: 20px;
         }

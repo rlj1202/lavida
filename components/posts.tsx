@@ -42,9 +42,9 @@ export default function Posts({ board, posts }: { board?: IBoard, posts?: IPost[
           }
           .post {
             padding: 10px;
+            border-bottom: 1px solid #dddddd;
             display: flex;
             align-items: center;
-            border-bottom: 1px solid #dddddd;
           }
           .post-tags {
             margin-bottom: 5px;
@@ -55,6 +55,7 @@ export default function Posts({ board, posts }: { board?: IBoard, posts?: IPost[
             border: 1px solid #dddddd;
             margin-right: 5px;
             font-size: 0.7rem;
+            white-space: nowrap;
           }
           .post-tags .tag.category {
             background-color: var(--ansi-cyan);

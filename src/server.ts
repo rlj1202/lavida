@@ -11,8 +11,8 @@ async function startServer() {
     await loaders(server);
     console.log('> All loaders are completed');
 
-    var port = 6000;
-    var host = '127.0.0.1';
+    var port = 3000;
+    var host = '0.0.0.0';
 
     server.listen(port, host, (err) => {
         if (err) throw err;

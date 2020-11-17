@@ -190,7 +190,9 @@ export default function Rest(app: Router) {
     });
 
     router.get('/problems', async (req: Request, res: Response) => {
-        var problems = await Problem.findAll();
+        var problems = await Problem.findAll({
+            include: [ User ]
+        });
 
         res.json(problems as IProblem[]);
     })
