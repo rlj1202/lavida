@@ -7,9 +7,9 @@ A monorepo for Lavida Online Judge
 ```
 /lavida
   /apps
-    /...
-  /packages
     /client
+    /server
+  /packages
     /common
 ```
 
