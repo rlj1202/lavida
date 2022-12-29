@@ -1,0 +1,21 @@
+{
+  "name": "@lavida/common",
+  "version": "1.0.0",
+  "description": "",
+  "scripts": {
+    "clean": "rimraf dist esm tsconfig.tsbuildinfo",
+    "dev": "tsc -w",
+    "prebuild": "npm run clean",
+    "build:esm": "tsc --target es2018 --outDir esm",
+    "build:cjs": "tsc --target es2015 --module commonjs --outDir dist",
+    "build": "npm run build:esm && npm run build:cjs"
+  },
+  "keywords": [
+    "typescript"
+  ],
+  "author": "Jisu Sim <rlj1202@gmail.com>",
+  "license": "GPL-3.0",
+  "devDependencies": {
+    "typescript": "^4.9.4"
+  }
+}

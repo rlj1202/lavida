@@ -1,0 +1,26 @@
+import { Injectable } from '@nestjs/common';
+import { PassportStrategy } from '@nestjs/passport';
+import { IStrategyOptions, Strategy, VerifyFunction } from 'passport-local';
+
+import { User } from 'src/users/entities/user.entity';
+import { AuthService } from '../auth.service';
+
+interface IVerifyCallback {
+  validate(...args: Parameters<VerifyFunction>): ReturnType<VerifyFunction>;
+}
+
+@Injectable()
+export class LocalStrategy
+  extends PassportStrategy(Strategy)
+  implements IVerifyCallback
+{
+  constructor(private authService: AuthService) {
+    super(<IStrategyOptions>{});
+  }
+
+  async validate(username: string, password: string): Promise<User> {
+    const user = await this.authService.validateUser(username, password);
+
+    return user;
+  }
+}

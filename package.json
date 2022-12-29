@@ -1,0 +1,18 @@
+{
+  "name": "lavida",
+  "version": "1.0.0",
+  "description": "A monorepo for lavida online judge",
+  "private": true,
+  "workspaces": [
+    "apps/client",
+    "apps/server",
+    "packages/common"
+  ],
+  "scripts": {},
+  "keywords": [
+    "lavida",
+    "nextjs",
+    "nestjs",
+    "online-judge"
+  ]
+}
