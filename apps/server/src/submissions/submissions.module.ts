@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { CaslModule } from 'src/casl/casl.module';
 
 import { ProblemsModule } from 'src/problems/problems.module';
 import { UsersModule } from 'src/users/users.module';
@@ -13,6 +14,7 @@ import { SubmissionsService } from './submissions.service';
     TypeOrmModule.forFeature([Submission]),
     UsersModule,
     ProblemsModule,
+    CaslModule,
   ],
   controllers: [SubmissionsController],
   providers: [SubmissionsService],
