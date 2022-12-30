@@ -1,5 +1,5 @@
 import { Injectable, Logger } from '@nestjs/common';
-import Docker from 'dockerode';
+import Docker = require('dockerode');
 
 import { SubmissionsService } from 'src/submissions/submissions.service';
 import { ProblemsService } from 'src/problems/problems.service';
@@ -13,6 +13,14 @@ export class JudgeService {
     private readonly problemsService: ProblemsService,
   ) {
     this.docker = new Docker();
+    this.docker
+      .ping()
+      .then(() => {
+        Logger.log('Docker has been connected.');
+      })
+      .catch(() => {
+        Logger.error('Docker is not connected.');
+      });
   }
 
   async judge(submissionId: number) {

@@ -3,7 +3,7 @@ import { NestFactory } from '@nestjs/core';
 import { ConfigService } from '@nestjs/config';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-import cookieParser from 'cookie-parser';
+import cookieParser = require('cookie-parser');
 
 import { AppModule } from './app.module';
 
