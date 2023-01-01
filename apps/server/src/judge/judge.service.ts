@@ -17,9 +17,9 @@ export type JudgeStatus =
 export interface JudgeResult {
   status: JudgeStatus;
   /** In milli seconds */
-  time: number;
+  time?: number;
   /** In bytes */
-  memory: number;
+  memory?: number;
   msg?: string;
 }
 
@@ -47,6 +47,34 @@ async function executeWithTimeout<T>(
     new Promise<T>((_res, rej) => (timer = setTimeout(rej, ms, err))),
   ]).finally(() => clearTimeout(timer));
 }
+
+interface LanguageProfile {
+  /** Docker image name */
+  image: string;
+  /** Extension of source code file */
+  extension: string;
+  /** Command line for compilation */
+  compile?: string;
+  /** Command line for execution */
+  execution: string;
+}
+
+const languageProfiles: Record<string, LanguageProfile> = {
+  'C++11': {
+    image: 'lavida-gcc',
+    extension: '.cpp',
+    compile:
+      // -lm: linker option for m library for math.h
+      // -O2: Optimization option
+      'g++ --std=c++11 -O2 -Wall -lm -static -DONLINE_JUDGE -DLAVIDA -o main main.cpp',
+    execution: './main',
+  },
+  Python3: {
+    image: 'lavida-python',
+    extension: '.py',
+    execution: 'python3 main.py',
+  },
+};
 
 @Injectable()
 export class JudgeService {
@@ -97,9 +125,11 @@ export class JudgeService {
     };
   }
 
-  private async copyFile(container: Docker.Container, code: string) {
-    const extension = '.cpp';
-
+  private async copyFile(
+    container: Docker.Container,
+    code: string,
+    extension: string,
+  ) {
     return container
       .exec({
         Cmd: ['/bin/bash', '-c', `cat - > main${extension}`],
@@ -116,35 +146,50 @@ export class JudgeService {
       });
   }
 
-  private async compile(container: Docker.Container) {
+  private async compile(container: Docker.Container, cmdline: string) {
+    let curExec: Docker.Exec;
     return container
       .exec({
-        Cmd: ['/bin/bash', '-c', 'g++ -o main main.cpp'],
+        Cmd: ['/bin/bash', '-c', cmdline],
         AttachStdin: false,
         AttachStdout: true,
         AttachStderr: true,
         Tty: false,
       })
-      .then((exec) => exec.start({}))
+      .then((exec) => {
+        curExec = exec;
+        return exec.start({});
+      })
       .then(this.demux.bind(this))
       .then(async ({ stderrStream }) => {
         const stderrOutput = (await readAll(stderrStream)).toString('utf-8');
-        if (stderrOutput) {
+
+        const execInfo = await curExec.inspect();
+
+        if (execInfo.ExitCode && execInfo.ExitCode !== 0) {
           throw new Error(stderrOutput);
         }
       });
   }
 
-  private async execute(container: Docker.Container, input: string) {
+  private async execute(
+    container: Docker.Container,
+    input: string,
+    cmdline: string,
+  ) {
+    let curExec: Docker.Exec;
     return container
       .exec({
-        Cmd: ['/bin/bash', '-c', './main'],
+        Cmd: ['/bin/bash', '-c', cmdline],
         AttachStdin: true,
         AttachStdout: true,
         AttachStderr: true,
         Tty: false,
       })
-      .then((exec) => exec.start({ hijack: true }))
+      .then((exec) => {
+        curExec = exec;
+        return exec.start({ hijack: true });
+      })
       .then(this.demux.bind(this))
       .then(async ({ stdinStream, stdoutStream, stderrStream }) => {
         stdinStream.write(input);
@@ -153,7 +198,9 @@ export class JudgeService {
         const stdoutOutput = (await readAll(stdoutStream)).toString('utf-8');
         const stderrOutput = (await readAll(stderrStream)).toString('utf-8');
 
-        if (stderrOutput) {
+        const execInfo = await curExec.inspect();
+
+        if (execInfo.ExitCode && execInfo.ExitCode !== 0) {
           throw new Error(stderrOutput);
         }
 
@@ -164,6 +211,7 @@ export class JudgeService {
   private async test(
     container: Docker.Container,
     problemId: number,
+    cmdline: string,
   ): Promise<JudgeResult> {
     const dir = path.join(TESTCASE_DIR, `${problemId}`);
     const files = await readdir(dir);
@@ -178,7 +226,7 @@ export class JudgeService {
       const input = await readFile(path.join(dir, inputFile), 'utf-8');
       const answer = await readFile(path.join(dir, outputFile), 'utf-8');
 
-      const output = await this.execute(container, input);
+      const output = await this.execute(container, input, cmdline);
 
       if (answer.trim() !== output.trim()) {
         status = 'WRONG_ANSWER';
@@ -196,6 +244,16 @@ export class JudgeService {
   async judge(submissionId: number): Promise<JudgeResult> {
     const submission = await this.submissionsService.findById(submissionId);
     const problem = await this.problemsService.findById(submission.problemId);
+
+    const curLangProfile: LanguageProfile | undefined =
+      languageProfiles[submission.language];
+
+    if (!curLangProfile) {
+      return {
+        status: 'SERVER_ERROR',
+        msg: `Language ${submission.language} is not supported`,
+      };
+    }
 
     let curContainer: Docker.Container;
     const judgeResult: JudgeResult = await this.docker
@@ -237,21 +295,27 @@ export class JudgeService {
       })
       .then(() =>
         executeWithTimeout(
-          this.copyFile(curContainer, submission.code),
+          this.copyFile(
+            curContainer,
+            submission.code,
+            curLangProfile.extension,
+          ),
           2 * 1000,
           new Error('Copying file tooks so long'),
         ),
       )
       .then(() =>
-        executeWithTimeout(
-          this.compile(curContainer),
-          2 * 1000,
-          new Error('Compilation tooks so long'),
-        ),
+        curLangProfile.compile
+          ? executeWithTimeout(
+              this.compile(curContainer, curLangProfile.compile),
+              2 * 1000,
+              new Error('Compilation tooks so long'),
+            )
+          : undefined,
       )
       .then(() =>
         executeWithTimeout(
-          this.test(curContainer, problem.id),
+          this.test(curContainer, problem.id, curLangProfile.execution),
           2 * 1000,
           new Error('Testing testcases tooks so long'),
         ),
@@ -259,8 +323,6 @@ export class JudgeService {
       .catch<JudgeResult>((err) => {
         return {
           status: 'SERVER_ERROR',
-          time: 0,
-          memory: 0,
           msg: `${err}`,
         };
       })
