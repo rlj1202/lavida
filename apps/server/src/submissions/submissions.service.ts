@@ -57,13 +57,10 @@ export class SubmissionsService {
     return submission;
   }
 
-  async update(id: number): Promise<Submission> {
-    const submission = await this.findById(id);
-
-    // TODO:
-
-    await this.submissionsRepository.save(submission);
-
-    return submission;
+  async update(
+    id: number,
+    submissionParams: Partial<Submission>,
+  ): Promise<void> {
+    await this.submissionsRepository.update(id, submissionParams);
   }
 }

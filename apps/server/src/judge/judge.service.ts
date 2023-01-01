@@ -6,6 +6,7 @@ import Docker = require('dockerode');
 
 import { SubmissionsService } from 'src/submissions/submissions.service';
 import { ProblemsService } from 'src/problems/problems.service';
+import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
 
 export type JudgeStatus =
   | 'ACCEPTED'
@@ -333,8 +334,29 @@ export class JudgeService {
           .then(() => curContainer.remove());
       });
 
-    // TODO:
-    await this.submissionsService.update(submissionId);
+    let submissionStatus = SubmissionStatus.SUBMITTED;
+
+    switch (judgeResult.status) {
+      case 'ACCEPTED':
+        submissionStatus = SubmissionStatus.ACCEPTED;
+        break;
+      case 'WRONG_ANSWER':
+        submissionStatus = SubmissionStatus.WRONG_ANSWER;
+        break;
+      case 'COMPILE_ERROR':
+        submissionStatus = SubmissionStatus.COMPILE_ERROR;
+        break;
+      case 'RUNTIME_ERROR':
+        submissionStatus = SubmissionStatus.RUNTIME_ERROR;
+        break;
+      case 'SERVER_ERROR':
+        submissionStatus = SubmissionStatus.SERVER_ERROR;
+        break;
+    }
+
+    await this.submissionsService.update(submissionId, {
+      status: submissionStatus,
+    });
 
     return judgeResult;
   }

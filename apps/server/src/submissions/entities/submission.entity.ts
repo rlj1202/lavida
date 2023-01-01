@@ -9,6 +9,15 @@ import {
 import { Problem } from 'src/problems/entities/problem.entity';
 import { User } from 'src/users/entities/user.entity';
 
+export enum SubmissionStatus {
+  SUBMITTED = 'SUBMITTED',
+  ACCEPTED = 'ACCEPTED',
+  WRONG_ANSWER = 'WRONG_ANSWER',
+  COMPILE_ERROR = 'COMPILE_ERROR',
+  RUNTIME_ERROR = 'RUNTIME_ERROR',
+  SERVER_ERROR = 'SERVER_ERROR',
+}
+
 @Entity('submission')
 export class Submission {
   @PrimaryGeneratedColumn()
@@ -34,6 +43,13 @@ export class Submission {
 
   @Column()
   code: string;
+
+  @Column({
+    type: 'enum',
+    enum: SubmissionStatus,
+    default: SubmissionStatus.SUBMITTED,
+  })
+  status: SubmissionStatus;
 
   @CreateDateColumn()
   createdAt: Date;
