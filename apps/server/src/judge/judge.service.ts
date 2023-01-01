@@ -13,6 +13,8 @@ export type JudgeStatus =
   | 'WRONG_ANSWER'
   | 'COMPILE_ERROR'
   | 'RUNTIME_ERROR'
+  | 'TIME_LIMIT_EXCEEDED'
+  | 'MEMORY_LIMIT_EXCEEDED'
   | 'SERVER_ERROR';
 
 export interface JudgeResult {
@@ -26,6 +28,34 @@ export interface JudgeResult {
 
 // TODO: Move to configuration module... or something else
 const TESTCASE_DIR = path.join(process.cwd(), 'data/testcases');
+
+class CompileError extends Error {
+  constructor(public exitCode: number, msg?: string) {
+    super(msg);
+    this.name = 'CompileError';
+  }
+}
+
+class RuntimeError extends Error {
+  constructor(public exitCode: number, msg?: string) {
+    super(msg);
+    this.name = 'RuntimeError';
+  }
+}
+
+class TimeLimitExceededError extends Error {
+  constructor(msg?: string) {
+    super(msg);
+    this.name = 'TimeLimitExceededError';
+  }
+}
+
+class MemoryLimitExceededError extends Error {
+  constructor(msg?: string) {
+    super(msg);
+    this.name = 'MemoryLimitExceededError';
+  }
+}
 
 async function readAll(stream: Stream): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
@@ -168,7 +198,7 @@ export class JudgeService {
         const execInfo = await curExec.inspect();
 
         if (execInfo.ExitCode && execInfo.ExitCode !== 0) {
-          throw new Error(stderrOutput);
+          throw new CompileError(execInfo.ExitCode, stderrOutput);
         }
       });
   }
@@ -209,19 +239,19 @@ export class JudgeService {
 
         if (exitCode && exitCode !== 0) {
           if (exitCode == 124) {
-            throw new Error('Time limit exceeded');
+            throw new TimeLimitExceededError('Time limit exceeded');
           } else if (exitCode == 125) {
-            throw new Error('time out command itself fails');
+            throw new Error('timeout: timeout command itself fails');
           } else if (exitCode == 126) {
-            throw new Error('command is found but cannot be invoked');
+            throw new Error('timeout: COMMAND is found but cannot be invoked');
           } else if (exitCode == 127) {
-            throw new Error('command cannot be found');
+            throw new Error('timeout: COMMAND cannot be found');
           } else if (exitCode == 137) {
             throw new Error(
-              'command or timeout itself is sent the KILL signal',
+              'COMMAND or timeout itself is sent the KILL signal',
             );
           } else {
-            throw new Error(stderrOutput);
+            throw new RuntimeError(exitCode, stderrOutput);
           }
         }
 
@@ -343,13 +373,25 @@ export class JudgeService {
             problem.timeLimit,
             curLangProfile.execution,
           ),
-          2 * 1000,
+          problem.timeLimit + 2 * 1000,
           new Error('Testing testcases tooks so long'),
         ),
       )
       .catch<JudgeResult>((err) => {
+        let judgeStatus: JudgeStatus = 'SERVER_ERROR';
+
+        if (err instanceof CompileError) {
+          judgeStatus = 'COMPILE_ERROR';
+        } else if (err instanceof RuntimeError) {
+          judgeStatus = 'RUNTIME_ERROR';
+        } else if (err instanceof TimeLimitExceededError) {
+          judgeStatus = 'TIME_LIMIT_EXCEEDED';
+        } else if (err instanceof MemoryLimitExceededError) {
+          judgeStatus = 'MEMORY_LIMIT_EXCEEDED';
+        }
+
         return {
-          status: 'SERVER_ERROR',
+          status: judgeStatus,
           msg: `${err}`,
         };
       })
@@ -374,6 +416,12 @@ export class JudgeService {
         break;
       case 'RUNTIME_ERROR':
         submissionStatus = SubmissionStatus.RUNTIME_ERROR;
+        break;
+      case 'TIME_LIMIT_EXCEEDED':
+        submissionStatus = SubmissionStatus.TIME_LIMIT_EXCEEDED;
+        break;
+      case 'MEMORY_LIMIT_EXCEEDED':
+        submissionStatus = SubmissionStatus.MEMORY_LIMIT_EXCEEDED;
         break;
       case 'SERVER_ERROR':
         submissionStatus = SubmissionStatus.SERVER_ERROR;
