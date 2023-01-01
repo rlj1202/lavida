@@ -176,12 +176,17 @@ export class JudgeService {
   private async execute(
     container: Docker.Container,
     input: string,
+    timeLimit: number,
     cmdline: string,
   ) {
     let curExec: Docker.Exec;
     return container
       .exec({
-        Cmd: ['/bin/bash', '-c', cmdline],
+        Cmd: [
+          '/bin/bash',
+          '-c',
+          `timeout ${timeLimit / 1000} /bin/bash -c '${cmdline}'`,
+        ],
         AttachStdin: true,
         AttachStdout: true,
         AttachStderr: true,
@@ -200,9 +205,24 @@ export class JudgeService {
         const stderrOutput = (await readAll(stderrStream)).toString('utf-8');
 
         const execInfo = await curExec.inspect();
+        const exitCode = execInfo.ExitCode;
 
-        if (execInfo.ExitCode && execInfo.ExitCode !== 0) {
-          throw new Error(stderrOutput);
+        if (exitCode && exitCode !== 0) {
+          if (exitCode == 124) {
+            throw new Error('Time limit exceeded');
+          } else if (exitCode == 125) {
+            throw new Error('time out command itself fails');
+          } else if (exitCode == 126) {
+            throw new Error('command is found but cannot be invoked');
+          } else if (exitCode == 127) {
+            throw new Error('command cannot be found');
+          } else if (exitCode == 137) {
+            throw new Error(
+              'command or timeout itself is sent the KILL signal',
+            );
+          } else {
+            throw new Error(stderrOutput);
+          }
         }
 
         return stdoutOutput;
@@ -212,6 +232,7 @@ export class JudgeService {
   private async test(
     container: Docker.Container,
     problemId: number,
+    timeLimit: number,
     cmdline: string,
   ): Promise<JudgeResult> {
     const dir = path.join(TESTCASE_DIR, `${problemId}`);
@@ -227,7 +248,7 @@ export class JudgeService {
       const input = await readFile(path.join(dir, inputFile), 'utf-8');
       const answer = await readFile(path.join(dir, outputFile), 'utf-8');
 
-      const output = await this.execute(container, input, cmdline);
+      const output = await this.execute(container, input, timeLimit, cmdline);
 
       if (answer.trim() !== output.trim()) {
         status = 'WRONG_ANSWER';
@@ -316,7 +337,12 @@ export class JudgeService {
       )
       .then(() =>
         executeWithTimeout(
-          this.test(curContainer, problem.id, curLangProfile.execution),
+          this.test(
+            curContainer,
+            problem.id,
+            problem.timeLimit,
+            curLangProfile.execution,
+          ),
           2 * 1000,
           new Error('Testing testcases tooks so long'),
         ),
