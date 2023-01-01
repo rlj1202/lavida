@@ -70,7 +70,7 @@ const languageProfiles: Record<string, LanguageProfile> = {
     execution: './main',
   },
   Python3: {
-    image: 'lavida-python',
+    image: 'lavida-python3',
     extension: '.py',
     execution: 'python3 main.py',
   },
@@ -264,7 +264,7 @@ export class JudgeService {
         Tty: true,
         OpenStdin: true,
         StdinOnce: true,
-        Image: 'lavida-gcc',
+        Image: curLangProfile.image,
         Cmd: ['/bin/bash'],
         HostConfig: {
           // Runtime: 'runsc', // Later for gVisor
