@@ -1,9 +1,8 @@
 import {
   AbilityBuilder,
-  AbilityClass,
+  createMongoAbility,
   InferSubjects,
   MongoAbility,
-  PureAbility,
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
@@ -28,8 +27,8 @@ export type AppAbility = MongoAbility<[Action, Subjects]>;
 @Injectable()
 export class CaslAbilityFactory {
   createForUser(user: User) {
-    const { can, cannot, build } = new AbilityBuilder(
-      PureAbility as AbilityClass<AppAbility>,
+    const { can, cannot, build } = new AbilityBuilder<AppAbility>(
+      createMongoAbility,
     );
 
     can(Action.Update, User, { id: user.id });

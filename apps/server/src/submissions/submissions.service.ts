@@ -7,6 +7,9 @@ import { UsersService } from 'src/users/users.service';
 
 import { SubmitDto } from './dto/submit.dto';
 import { Submission } from './entities/submission.entity';
+import { InjectQueue } from '@nestjs/bull';
+import { Queue } from 'bull';
+import { JudgeJob } from 'src/judge/judge.job';
 
 @Injectable()
 export class SubmissionsService {
@@ -15,6 +18,8 @@ export class SubmissionsService {
     private readonly submissionsRepository: Repository<Submission>,
     private readonly usersService: UsersService,
     private readonly problemsService: ProblemsService,
+    @InjectQueue('judge')
+    private readonly judgeQueue: Queue<JudgeJob>,
   ) {}
 
   async findById(id: number): Promise<Submission> {
@@ -29,9 +34,9 @@ export class SubmissionsService {
     return submission;
   }
 
-  async submit(submitDto: SubmitDto): Promise<Submission> {
+  async submit(userId: number, submitDto: SubmitDto): Promise<Submission> {
     const problem = await this.problemsService.findById(submitDto.problemId);
-    const user = await this.usersService.findById(submitDto.userId);
+    const user = await this.usersService.findById(userId);
 
     const submission = this.submissionsRepository.create({
       problem,
@@ -39,6 +44,23 @@ export class SubmissionsService {
       code: submitDto.code,
       language: submitDto.language,
     });
+
+    await this.submissionsRepository.save(submission);
+
+    await this.judgeQueue.add({
+      problemId: problem.id,
+      submissionId: submission.id,
+      code: submission.code,
+      language: submission.language,
+    });
+
+    return submission;
+  }
+
+  async update(id: number): Promise<Submission> {
+    const submission = await this.findById(id);
+
+    // TODO:
 
     await this.submissionsRepository.save(submission);
 

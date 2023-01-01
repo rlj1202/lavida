@@ -33,7 +33,7 @@ export class AuthController {
   @UseGuards(LocalAuthGuard)
   @Post('login')
   async login(@GetUser() user: User) {
-    const accessToken = this.authService.generateAccessToken(user);
+    const accessToken = await this.authService.generateAccessToken(user);
 
     return {
       user,
@@ -44,7 +44,7 @@ export class AuthController {
   @Post('register')
   async register(@Body() registerDto: RegisterDto) {
     const user = await this.authService.register(registerDto);
-    const accessToken = this.authService.generateAccessToken(user);
+    const accessToken = await this.authService.generateAccessToken(user);
 
     return {
       user,

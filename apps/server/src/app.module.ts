@@ -12,6 +12,7 @@ import { UsersModule } from './users/users.module';
 import { SubmissionsModule } from './submissions/submissions.module';
 import { ProblemsModule } from './problems/problems.module';
 import { JudgeModule } from './judge/judge.module';
+import { BullModule } from '@nestjs/bull';
 
 const validationSchema = Joi.object({
   PORT: Joi.number().default(3000),
@@ -49,6 +50,7 @@ const validationSchema = Joi.object({
       load: [appConfig, databaseConfig, jwtConfig],
       validationSchema,
     }),
+    BullModule.forRoot({}),
     AuthModule,
     UsersModule,
     ProblemsModule,

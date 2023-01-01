@@ -11,6 +11,12 @@ export class ProblemsService {
     private readonly problemsRepository: Repository<Problem>,
   ) {}
 
+  async findAll(): Promise<Problem[]> {
+    const problems = await this.problemsRepository.find();
+
+    return problems;
+  }
+
   async findById(id: number): Promise<Problem> {
     const problem = await this.problemsRepository.findOne({ where: { id } });
 

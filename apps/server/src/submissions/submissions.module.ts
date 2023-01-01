@@ -1,3 +1,4 @@
+import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { CaslModule } from 'src/casl/casl.module';
@@ -12,6 +13,9 @@ import { SubmissionsService } from './submissions.service';
 @Module({
   imports: [
     TypeOrmModule.forFeature([Submission]),
+    BullModule.registerQueue({
+      name: 'judge',
+    }),
     UsersModule,
     ProblemsModule,
     CaslModule,
