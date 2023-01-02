@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
@@ -13,6 +13,7 @@ import { SubmissionsModule } from './submissions/submissions.module';
 import { ProblemsModule } from './problems/problems.module';
 import { JudgeModule } from './judge/judge.module';
 import { BullModule } from '@nestjs/bull';
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 const validationSchema = Joi.object({
   PORT: Joi.number().default(3000),
@@ -60,4 +61,8 @@ const validationSchema = Joi.object({
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(LoggerMiddleware).forRoutes('*');
+  }
+}
