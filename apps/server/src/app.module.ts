@@ -16,7 +16,9 @@ import { BullModule } from '@nestjs/bull';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 const validationSchema = Joi.object({
-  PORT: Joi.number().default(3000),
+  PORT: Joi.number().default(3100),
+  PUBLIC_URL: Joi.string().default('http://localhost:3000'),
+  PUBLIC_SERVER_URL: Joi.string().default('http://localhost:3100'),
 
   DATABASE_HOST: Joi.string().required(),
   DATABASE_PORT: Joi.number().default(3306),

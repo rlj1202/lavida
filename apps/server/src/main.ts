@@ -15,9 +15,12 @@ async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   const configService = app.get(ConfigService);
 
-  const port = configService.get<number>('app.port', 3000);
+  const port = configService.get<number>('app.port', 3100);
+
+  const appUrl = configService.get<string>('app.url', 'http://localhost:3000');
 
   // Middlewares
+  app.enableCors({ origin: [appUrl], credentials: true });
   app.use(cookieParser());
 
   // Pipes
