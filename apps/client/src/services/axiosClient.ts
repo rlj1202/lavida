@@ -1,18 +1,25 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { ClientRequest } from "http";
 
-const baseURL = "/api";
+import store from "../store/index";
+import { logout } from "../store/auth/authSlice";
+import Router from "next/router";
+
+// const baseURL = "http://localhost:3100/api";
+const baseURL = "http://localhost:3100";
 const client = axios.create({ baseURL });
 
 const withAccessToken = (config: AxiosRequestConfig) => {
   if (!config.headers) return config;
 
-  const accessToken = localStorage.getItem("access_token");
+  const { accessToken } = store.getState().auth;
 
-  config.headers = {
-    ...config.headers,
-    Authorization: `Bearer ${accessToken}`,
-  };
+  if (accessToken) {
+    config.headers = {
+      ...config.headers,
+      Authorization: `Bearer ${accessToken}`,
+    };
+  }
 
   return config;
 };
@@ -36,6 +43,8 @@ client.interceptors.response.use(
       if (status === 401 || status === 404) {
         // TODO: Do something
         // Get refresh token or do logout or redirect to login page or something
+        store.dispatch(logout());
+        Router.push("/");
       }
 
       throw response.data;

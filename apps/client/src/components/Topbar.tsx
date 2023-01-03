@@ -1,8 +1,16 @@
 import Link from "next/link";
+import { useRouter } from "next/router";
 import React from "react";
+import { logout } from "../store/auth/authSlice";
+import { useAppDispatch, useAppSelector } from "../store/hooks";
 import Container from "./Container";
 
 const Topbar: React.FC = () => {
+  const router = useRouter();
+
+  const user = useAppSelector((state) => state.auth.user);
+  const dispatch = useAppDispatch();
+
   return (
     <div className="wrapper">
       <Container>
@@ -28,8 +36,26 @@ const Topbar: React.FC = () => {
           <div className="pagelink">
             <Link href="/tools">Tools</Link>
           </div>
-          <button className="button">로그인</button>
-          <button className="button">회원가입</button>
+          {user ? (
+            <>
+              <button className="button" onClick={() => dispatch(logout())}>
+                로그아웃
+              </button>
+              <span>{user.email}</span>
+            </>
+          ) : (
+            <>
+              <button
+                className="button"
+                onClick={() => router.push("/auth/login")}
+              >
+                로그인
+              </button>
+              <button className="button" onClick={() => {}}>
+                회원가입
+              </button>
+            </>
+          )}
         </div>
       </Container>
 

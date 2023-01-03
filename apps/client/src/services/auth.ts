@@ -1,5 +1,10 @@
 import { AxiosResponse } from "axios";
+
 import axiosClient from "./axiosClient";
+
+import { User } from "../schemas/user";
+import { setAccessToken, setUser } from "../store/auth/authSlice";
+import store from "../store/index";
 
 export interface LoginParams {
   username: string;
@@ -7,25 +12,24 @@ export interface LoginParams {
 }
 
 export interface LoginResponseDTO {
-  // TODO:
-  user: any;
+  user: User;
   accessToken: string;
   refreshToken: string;
 }
 
-export const login = async (loginDTO: LoginParams) => {
-  const {
-    data: { user, accessToken, refreshToken },
-  } = await axiosClient.post<
+export const login = async (
+  loginDTO: LoginParams
+): Promise<LoginResponseDTO> => {
+  const response = await axiosClient.post<
     LoginResponseDTO,
     AxiosResponse<LoginResponseDTO>,
     LoginParams
   >("/auth/login", loginDTO);
 
-  // TODO: Do something
-  // Set user and access token and refresh token
+  store.dispatch(setUser(response.data.user));
+  store.dispatch(setAccessToken(response.data.accessToken));
 
-  return;
+  return response.data;
 };
 
 export const logout = async () => {

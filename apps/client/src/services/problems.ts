@@ -1,7 +1,6 @@
 import axiosClient from "./axiosClient";
 
-// TODO:
-interface Problem {}
+import { Problem } from "../schemas/problem";
 
 export const getProblems = async (): Promise<Problem[]> => {
   const response = await axiosClient.get<Problem[]>(`/problems`);
