@@ -17,6 +17,17 @@ export interface LoginResponseDTO {
   refreshToken: string;
 }
 
+export interface RegisterParams {
+  username: string;
+  password: string;
+  email: string;
+}
+
+export interface RegisterResponseDTO {
+  user: User;
+  accessToken: string;
+}
+
 export const login = async (
   loginDTO: LoginParams
 ): Promise<LoginResponseDTO> => {
@@ -34,4 +45,19 @@ export const login = async (
 
 export const logout = async () => {
   return;
+};
+
+export const register = async (
+  registerParams: RegisterParams
+): Promise<RegisterResponseDTO> => {
+  const response = await axiosClient.post<
+    RegisterResponseDTO,
+    AxiosResponse<RegisterResponseDTO>,
+    RegisterParams
+  >("/auth/register", registerParams);
+
+  store.dispatch(setUser(response.data.user));
+  store.dispatch(setAccessToken(response.data.accessToken));
+
+  return response.data;
 };
