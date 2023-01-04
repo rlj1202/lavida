@@ -1,4 +1,6 @@
 import { AxiosResponse } from "axios";
+import { PaginationOptions } from "../schemas/pagination-options";
+import { PaginationResponse } from "../schemas/pagination-response";
 import { Submission } from "../schemas/submission";
 import axiosClient from "./axiosClient";
 
@@ -10,8 +12,18 @@ export interface SubmitParams {
 
 export interface SubmitResponseDTO extends Submission {}
 
-export const getSubmission = async (): Promise<Submission> => {
-  throw new Error("not implemented");
+export const getSubmissions = async (
+  options: PaginationOptions & {
+    username?: string;
+    problemId?: number | string;
+  }
+): Promise<PaginationResponse<Submission>> => {
+  const response = await axiosClient.get<
+    PaginationResponse<Submission>,
+    AxiosResponse<PaginationResponse<Submission>>
+  >("/submissions", { params: options });
+
+  return response.data;
 };
 
 export const submit = async (

@@ -1,21 +1,15 @@
 import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
-import { useState } from "react";
+import { useQuery } from "react-query";
 import Layout from "../../components/Layout";
 import Config from "../../config";
 import { Problem } from "../../schemas/problem";
 import { getProblems } from "../../services/problems";
 
 const Problems: NextPage = () => {
-  const [problems, setProblems] = useState<Problem[]>([]);
-  useState(() => {
-    async function fetch() {
-      setProblems(await getProblems());
-    }
-
-    fetch();
-  });
+  const query = useQuery<Problem[]>(["problems"], () => getProblems());
+  const problems = query.data;
 
   return (
     <>
@@ -26,7 +20,7 @@ const Problems: NextPage = () => {
       <Layout>
         <h1>Problems</h1>
 
-        {problems.map((problem) => {
+        {problems?.map((problem) => {
           return (
             <div key={problem.id} className="problem">
               <div>

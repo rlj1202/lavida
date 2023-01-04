@@ -55,8 +55,7 @@ const Submit: NextPage<
 
     await submit({ problemId, language, code });
 
-    // TODO:
-    router.push("/submissions");
+    router.push("/status");
   };
 
   return (

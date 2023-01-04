@@ -7,8 +7,9 @@ import {
   NextPage,
 } from "next";
 import Head from "next/head";
+import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
-import { useState } from "react";
+import { useQuery } from "react-query";
 import Config from "../../../config";
 
 interface Params extends ParsedUrlQuery {
@@ -40,15 +41,12 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async (
 const Problem: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ problemId }) => {
-  const [problem, setProblem] = useState<Problem>();
+  const router = useRouter();
 
-  useState(() => {
-    async function fetch() {
-      setProblem(await getProblem(problemId));
-    }
-
-    fetch();
-  });
+  const query = useQuery<Problem>(["problem", problemId], () =>
+    getProblem(problemId)
+  );
+  const problem = query.data;
 
   return (
     <>
@@ -62,6 +60,10 @@ const Problem: NextPage<
         <div>{problem?.inputDesc}</div>
         <div>{problem?.outputDesc}</div>
         <div>{problem?.hint}</div>
+
+        <button onClick={() => router.push(`/submit/${problem?.id}`)}>
+          제출하기
+        </button>
       </Layout>
 
       <style jsx>{``}</style>

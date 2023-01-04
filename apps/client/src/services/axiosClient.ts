@@ -39,11 +39,10 @@ client.interceptors.response.use(
     if (response) {
       const { status } = response;
 
-      // TODO: Do something
-      if (status === 401 || status === 404) {
-        // TODO: Do something
-        // Get refresh token or do logout or redirect to login page or something
+      if (status === 401) {
         store.dispatch(logout());
+        Router.push("/");
+      } else if (status === 404) {
         Router.push("/");
       }
 

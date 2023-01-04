@@ -10,6 +10,7 @@ export interface Submission {
   language: string;
   code: string;
 
+  userId: number;
   user?: User;
 
   time: number;
