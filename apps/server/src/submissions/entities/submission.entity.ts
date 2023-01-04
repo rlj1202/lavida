@@ -34,6 +34,9 @@ export class Submission {
   @ManyToOne(() => User)
   user: User;
 
+  @Column()
+  userId: number;
+
   @Column({ default: 0 })
   time: number;
 
