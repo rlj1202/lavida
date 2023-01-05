@@ -56,7 +56,15 @@ const Topbar: React.FC = () => {
               >
                 로그인
               </button>
-              <button className="button" onClick={() => {}}>
+              <button
+                className="button"
+                onClick={() =>
+                  router.push({
+                    pathname: "/auth/register",
+                    query: { from: router.pathname },
+                  })
+                }
+              >
                 회원가입
               </button>
             </>

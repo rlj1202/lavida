@@ -25,11 +25,17 @@ const Register: NextPage = () => {
     const passwordCheck = event.currentTarget.passwordCheck.value;
 
     if (password !== passwordCheck) {
+      alert("Password and password confirmation field does not match");
+      return;
     }
 
     await register({ username, email, password });
 
-    router.push("/");
+    if (router.query.from && typeof router.query.from === "string") {
+      router.push(router.query.from);
+    } else {
+      router.push("/");
+    }
   };
 
   return (
