@@ -24,7 +24,11 @@ const Login: NextPage = () => {
 
     await login({ username, password });
 
-    router.push("/");
+    if (router.query.from && typeof router.query.from === "string") {
+      router.push(router.query.from);
+    } else {
+      router.push("/");
+    }
   };
 
   return (

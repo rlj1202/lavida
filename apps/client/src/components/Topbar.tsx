@@ -47,7 +47,12 @@ const Topbar: React.FC = () => {
             <>
               <button
                 className="button"
-                onClick={() => router.push("/auth/login")}
+                onClick={() =>
+                  router.push({
+                    pathname: "/auth/login",
+                    query: { from: router.pathname },
+                  })
+                }
               >
                 로그인
               </button>
