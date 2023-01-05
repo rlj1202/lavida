@@ -10,6 +10,7 @@ import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
 
 export type JudgeStatus =
   | 'ACCEPTED'
+  | 'JUDGING'
   | 'WRONG_ANSWER'
   | 'COMPILE_ERROR'
   | 'RUNTIME_ERROR'
@@ -264,6 +265,7 @@ export class JudgeService {
     problemId: number,
     timeLimit: number,
     cmdline: string,
+    reportProgress: (value: any) => Promise<void>,
   ): Promise<JudgeResult> {
     const dir = path.join(TESTCASE_DIR, `${problemId}`);
     const files = await readdir(dir);
@@ -272,7 +274,7 @@ export class JudgeService {
 
     let status: JudgeStatus = 'ACCEPTED';
 
-    for (const inputFile of inputFiles) {
+    for (const [i, inputFile] of inputFiles.entries()) {
       const outputFile = `${path.basename(inputFile, '.in')}.out`;
 
       const input = await readFile(path.join(dir, inputFile), 'utf-8');
@@ -284,7 +286,11 @@ export class JudgeService {
         status = 'WRONG_ANSWER';
         break;
       }
+
+      reportProgress((i / inputFiles.length) * 100);
     }
+
+    reportProgress(100);
 
     return {
       status,
@@ -293,7 +299,10 @@ export class JudgeService {
     };
   }
 
-  async judge(submissionId: number): Promise<JudgeResult> {
+  async judge(
+    submissionId: number,
+    reportProgress: (value: any) => Promise<void>,
+  ): Promise<JudgeResult> {
     const submission = await this.submissionsService.findById(submissionId);
     const problem = await this.problemsService.findById(submission.problemId);
 
@@ -306,6 +315,10 @@ export class JudgeService {
         msg: `Language ${submission.language} is not supported`,
       };
     }
+
+    await this.submissionsService.update(submissionId, {
+      status: SubmissionStatus.JUDGING,
+    });
 
     let curContainer: Docker.Container;
     const judgeResult: JudgeResult = await this.docker
@@ -372,6 +385,7 @@ export class JudgeService {
             problem.id,
             problem.timeLimit,
             curLangProfile.execution,
+            reportProgress,
           ),
           problem.timeLimit + 2 * 1000,
           new Error('Testing testcases tooks so long'),

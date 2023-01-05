@@ -11,6 +11,7 @@ import { User } from 'src/users/entities/user.entity';
 
 export enum SubmissionStatus {
   SUBMITTED = 'SUBMITTED',
+  JUDGING = 'JUDGING',
   ACCEPTED = 'ACCEPTED',
   WRONG_ANSWER = 'WRONG_ANSWER',
   COMPILE_ERROR = 'COMPILE_ERROR',

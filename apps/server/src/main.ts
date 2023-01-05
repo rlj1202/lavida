@@ -10,6 +10,7 @@ import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 import cookieParser = require('cookie-parser');
 
 import { AppModule } from './app.module';
+import { RedisIOAdapter as RedisIoAdapter } from './adapters/redis-io.adapter';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
@@ -18,6 +19,11 @@ async function bootstrap() {
   const port = configService.get<number>('app.port', 3100);
 
   const appUrl = configService.get<string>('app.url', 'http://localhost:3000');
+
+  const redisIoAdapter = new RedisIoAdapter(app);
+  await redisIoAdapter.connectToRedis();
+
+  app.useWebSocketAdapter(redisIoAdapter);
 
   // Middlewares
   app.enableCors({ origin: [appUrl], credentials: true });

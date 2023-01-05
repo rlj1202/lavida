@@ -5,11 +5,12 @@ import { SubmissionsModule } from 'src/submissions/submissions.module';
 
 import { JudgeService } from './judge.service';
 import { JudgeProcessor } from './judge.processor';
+import { JudgeGateway } from './judge.gateway';
 
 @Module({
   imports: [SubmissionsModule, ProblemsModule],
   controllers: [],
-  providers: [JudgeService, JudgeProcessor],
+  providers: [JudgeService, JudgeProcessor, JudgeGateway],
   exports: [JudgeService],
 })
 export class JudgeModule {}
