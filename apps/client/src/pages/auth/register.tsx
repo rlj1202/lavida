@@ -1,6 +1,8 @@
 import { NextPage } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { FormEvent } from "react";
+
 import Layout from "../../components/Layout";
 import { register } from "../../services/auth";
 
@@ -41,6 +43,10 @@ const Register: NextPage = () => {
   return (
     <>
       <Layout>
+        <Head>
+          <title>{"회원가입"}</title>
+        </Head>
+
         <form onSubmit={handleSubmit}>
           <label htmlFor="username">Username</label>
           <input id="username" name="username" type="text" />

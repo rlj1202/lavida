@@ -1,6 +1,3 @@
-import Layout from "apps/client/src/components/Layout";
-import { Problem } from "apps/client/src/schemas/problem";
-import { getProblem } from "apps/client/src/services/problems";
 import {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -10,6 +7,12 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { useQuery } from "react-query";
+import convert from "convert-units";
+
+import Layout from "apps/client/src/components/Layout";
+import { Problem } from "apps/client/src/schemas/problem";
+import { getProblem } from "apps/client/src/services/problems";
+
 import Config from "../../../config";
 
 interface Params extends ParsedUrlQuery {
@@ -48,13 +51,17 @@ const Problem: NextPage<
   );
   const problem = query.data;
 
+  function unitToString(data: { val: number; unit: string }) {
+    return `${data.val} ${data.unit}`;
+  }
+
   return (
     <>
-      <Head>
-        <title>{`${Config.title}`}</title>
-      </Head>
-
       <Layout>
+        <Head>
+          <title>{`${Config.title} - ${problem?.title}`}</title>
+        </Head>
+
         <h1>{problem?.title}</h1>
         <table className="info">
           <thead>
@@ -68,8 +75,12 @@ const Problem: NextPage<
           </thead>
           <tbody>
             <tr>
-              <td>{problem?.timeLimit} ms</td>
-              <td>{problem?.memoryLimit} bytes</td>
+              <td>
+                {unitToString(convert(problem?.timeLimit).from("ms").toBest())}
+              </td>
+              <td>
+                {unitToString(convert(problem?.memoryLimit).from("b").toBest())}
+              </td>
               <td>0</td>
               <td>0</td>
               <td>0</td>
@@ -77,11 +88,11 @@ const Problem: NextPage<
           </tbody>
         </table>
         <h2>설명</h2>
-        <p>{problem?.description}</p>
+        <p dangerouslySetInnerHTML={{ __html: problem?.description || "" }}></p>
         <h2>입력</h2>
-        <p>{problem?.inputDesc}</p>
+        <p dangerouslySetInnerHTML={{ __html: problem?.inputDesc || "" }}></p>
         <h2>출력</h2>
-        <p>{problem?.outputDesc}</p>
+        <p dangerouslySetInnerHTML={{ __html: problem?.outputDesc || "" }}></p>
         <h2>예제 입력</h2>
         <div></div>
         <h2>예제 출력</h2>
@@ -89,7 +100,7 @@ const Problem: NextPage<
         {problem?.hint && (
           <>
             <h2>힌트</h2>
-            <p>{problem?.hint}</p>
+            <p dangerouslySetInnerHTML={{ __html: problem?.hint || "" }}></p>
           </>
         )}
 

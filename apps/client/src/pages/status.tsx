@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useQuery, useQueryClient } from "react-query";
 import { io } from "socket.io-client";
 
@@ -12,7 +12,6 @@ import { Submission } from "../schemas/submission";
 import { getSubmissions } from "../services/submissions";
 
 import Config from "../config";
-import { useState } from "react";
 
 type JudgeStatus =
   | "SUBMITTED"
@@ -97,11 +96,11 @@ const Status: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>{`${Config.title} - Status`}</title>
-      </Head>
-
       <Layout>
+        <Head>
+          <title>{`${Config.title} - Status`}</title>
+        </Head>
+
         <h1>Status</h1>
 
         <table className="submissions">

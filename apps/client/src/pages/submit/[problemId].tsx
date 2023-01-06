@@ -3,10 +3,12 @@ import {
   InferGetServerSidePropsType,
   NextPage,
 } from "next";
+import Head from "next/head";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { FormEvent } from "react";
 import { useQuery } from "react-query";
+
 import Layout from "../../components/Layout";
 import { getProblem } from "../../services/problems";
 import { submit } from "../../services/submissions";
@@ -72,6 +74,10 @@ const Submit: NextPage<
   return (
     <>
       <Layout>
+        <Head>
+          <title>{`${problem?.id}번 제출`}</title>
+        </Head>
+
         <h1>{problem?.title}</h1>
         <div>문제 번호: {problem?.id}</div>
 

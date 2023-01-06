@@ -33,11 +33,11 @@ const Login: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>{"로그인"}</title>
-      </Head>
-
       <Layout>
+        <Head>
+          <title>{"로그인"}</title>
+        </Head>
+
         <form onSubmit={handleSubmit}>
           <label htmlFor="username">Username</label>
           <input

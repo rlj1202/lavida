@@ -1,27 +1,45 @@
-import { NextPage } from "next";
+import {
+  GetServerSideProps,
+  InferGetServerSidePropsType,
+  NextPage,
+} from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "react-query";
+
 import Layout from "../../components/Layout";
-import Config from "../../config";
 import { PaginationResponse } from "../../schemas/pagination-response";
 import { Problem } from "../../schemas/problem";
 import { getProblems } from "../../services/problems";
 
-const Problems: NextPage = () => {
+import Config from "../../config";
+
+export const getServerSideProps: GetServerSideProps = async (context) => {
+  return {
+    props: {},
+  };
+};
+
+const Problems: NextPage<
+  InferGetServerSidePropsType<typeof getServerSideProps>
+> = ({}) => {
   const router = useRouter();
 
-  const { offset, limit } = router.query;
+  const { page } = router.query;
 
-  if (offset && typeof offset !== "string") throw new Error();
-  if (limit && typeof limit !== "string") throw new Error();
+  if (page && typeof page !== "string") throw new Error();
+
+  const pageNumber = parseInt(page || "1", 10);
+  const limit = 20;
+  const offset = (pageNumber - 1) * limit;
 
   const [pages, setPages] = useState(0);
 
+  const queryKey = ["problems", page];
   const query = useQuery<PaginationResponse<Problem>>(
-    ["problems"],
+    queryKey,
     () => getProblems({ offset, limit }),
     {
       refetchOnWindowFocus: false,
@@ -34,11 +52,11 @@ const Problems: NextPage = () => {
 
   return (
     <>
-      <Head>
-        <title>{`${Config.title} - Problems`}</title>
-      </Head>
-
       <Layout>
+        <Head>
+          <title>{`${Config.title} - Problems`}</title>
+        </Head>
+
         <h1>Problems</h1>
 
         <table className="problems">
@@ -75,9 +93,13 @@ const Problems: NextPage = () => {
         {Array.from(new Array(pages + 1).keys())
           .slice(1)
           .map((i) => {
+            const isActivePage = pageNumber === i;
+
+            const activeClass = isActivePage ? "active" : "";
+
             return (
-              <div key={i} className="pagination">
-                {i}
+              <div key={i} className={`pagination ${activeClass}`}>
+                <Link href={`/problems?page=${i}`}>{i}</Link>
               </div>
             );
           })}
@@ -111,6 +133,11 @@ const Problems: NextPage = () => {
           font-size: 0.9rem;
           padding: 0.4rem 0.8rem;
           display: inline-block;
+        }
+        .pagination.active {
+          background-color: var(--ansi-red);
+          color: white;
+          font-weight: bold;
         }
       `}</style>
     </>

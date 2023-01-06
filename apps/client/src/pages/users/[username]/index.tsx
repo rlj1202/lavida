@@ -1,5 +1,3 @@
-import Layout from "apps/client/src/components/Layout";
-import { getUser } from "apps/client/src/services/users";
 import {
   GetServerSideProps,
   InferGetServerSidePropsType,
@@ -8,6 +6,10 @@ import {
 import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
 import { useQuery } from "react-query";
+
+import Layout from "apps/client/src/components/Layout";
+import { getUser } from "apps/client/src/services/users";
+
 import Config from "../../../config";
 
 interface Params extends ParsedUrlQuery {
@@ -43,11 +45,11 @@ const UserPage: NextPage<
 
   return (
     <>
-      <Head>
-        <title>{`${Config.title} - ${username}`}</title>
-      </Head>
-
       <Layout>
+        <Head>
+          <title>{`${Config.title} - ${username}`}</title>
+        </Head>
+
         <div>{query.data?.username}</div>
         <div>{query.data?.id}</div>
         <div>{query.data?.email}</div>
