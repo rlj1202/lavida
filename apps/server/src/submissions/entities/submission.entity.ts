@@ -47,7 +47,7 @@ export class Submission {
   @Column()
   language: string;
 
-  @Column()
+  @Column({ type: 'text' })
   code: string;
 
   @Column({

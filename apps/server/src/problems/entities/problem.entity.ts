@@ -18,19 +18,19 @@ export class Problem {
   @Column()
   title: string;
 
-  @Column()
+  @Column({ type: 'text' })
   description: string;
 
   @ManyToOne(() => User)
   author: User;
 
-  @Column()
+  @Column({ type: 'text' })
   inputDesc: string;
 
-  @Column()
+  @Column({ type: 'text' })
   outputDesc: string;
 
-  @Column({ nullable: true })
+  @Column({ type: 'text', nullable: true })
   hint?: string;
 
   /** In milli seconds */
