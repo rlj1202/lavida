@@ -1,4 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, Param, Query } from '@nestjs/common';
+import { ListSubmissionsOptionsDTO } from 'src/submissions/dto/list-submissions-options.dto';
 import { ProblemsService } from './problems.service';
 
 @Controller('problems')
@@ -6,9 +7,8 @@ export class ProblemsController {
   constructor(private readonly problemsService: ProblemsService) {}
 
   @Get()
-  async findAll() {
-    const problems = await this.problemsService.findAll();
-
+  async findAll(@Query() options: ListSubmissionsOptionsDTO) {
+    const problems = await this.problemsService.paginate(options);
     return problems;
   }
 
