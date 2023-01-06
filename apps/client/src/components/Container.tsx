@@ -2,12 +2,12 @@ import React from "react";
 
 const Container: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (
-    <div className="wrapper">
+    <div className="container">
       {children}
 
       <style jsx>{`
-        .wrapper {
-          width: 60rem;
+        .container {
+          max-width: 60rem;
           padding-left: 1rem;
           padding-right: 1rem;
           margin-left: auto;

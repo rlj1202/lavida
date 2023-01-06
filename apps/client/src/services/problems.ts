@@ -1,9 +1,18 @@
+import { AxiosResponse } from "axios";
 import axiosClient from "./axiosClient";
 
 import { Problem } from "../schemas/problem";
+import { PaginationResponse } from "../schemas/pagination-response";
+import { PaginationOptions } from "../schemas/pagination-options";
 
-export const getProblems = async (): Promise<Problem[]> => {
-  const response = await axiosClient.get<Problem[]>(`/problems`);
+export const getProblems = async (
+  options: PaginationOptions
+): Promise<PaginationResponse<Problem>> => {
+  const response = await axiosClient.get<
+    PaginationResponse<Problem>,
+    AxiosResponse<PaginationResponse<Problem>>
+  >(`/problems`, { params: options });
+
   return response.data;
 };
 

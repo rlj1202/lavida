@@ -26,20 +26,28 @@ type JudgeStatus =
 
 const Status: NextPage = () => {
   const router = useRouter();
-  const { username, problemId, offset, limit } = router.query;
+  const { username, problemId, top, offset, limit } = router.query;
 
   if (username && typeof username !== "string") throw new Error();
   if (problemId && typeof problemId !== "string") throw new Error();
+  if (top && typeof top !== "string") throw new Error();
   if (offset && typeof offset !== "string") throw new Error();
   if (limit && typeof limit !== "string") throw new Error();
 
   const queryClient = useQueryClient();
 
+  const [pages, setPages] = useState(0);
+
   const queryKey = ["submissions", username, problemId, offset, limit];
   const query = useQuery<PaginationResponse<Submission>>(
     queryKey,
     () => getSubmissions({ username, problemId, offset, limit }),
-    { refetchOnWindowFocus: false }
+    {
+      refetchOnWindowFocus: false,
+      onSuccess: (data) => {
+        setPages(Math.ceil(data.total / data.limit));
+      },
+    }
   );
 
   const [statuses, setStatuses] = useState<
@@ -82,6 +90,11 @@ const Status: NextPage = () => {
     }
   });
 
+  const dateTimeFormat = new Intl.DateTimeFormat("ko", {
+    dateStyle: "long",
+    timeStyle: "medium",
+  });
+
   return (
     <>
       <Head>
@@ -114,6 +127,25 @@ const Status: NextPage = () => {
                 statusIndicator = `${status} ${progress}%`;
               }
 
+              let statusClassName = "";
+              switch (status) {
+                case "ACCEPTED":
+                  statusClassName = "status-ac";
+                  break;
+                case "WRONG_ANSWER":
+                  statusClassName = "status-wa";
+                  break;
+                case "TIME_LIMIT_EXCEEDED":
+                  statusClassName = "status-tle";
+                  break;
+                case "MEMORY_LIMIT_EXCEEDED":
+                  statusClassName = "status-mem";
+                  break;
+                case "SERVER_ERROR":
+                  statusClassName = "status-er";
+                  break;
+              }
+
               return (
                 <tr key={submission.id}>
                   <td>{submission.id}</td>
@@ -127,8 +159,12 @@ const Status: NextPage = () => {
                       {submission.user?.username}
                     </Link>
                   </td>
-                  <td>{statusIndicator}</td>
-                  <td>{submission.createdAt}</td>
+                  <td className={`status ${statusClassName}`}>
+                    {statusIndicator}
+                  </td>
+                  <td>
+                    {dateTimeFormat.format(new Date(submission.createdAt))}
+                  </td>
                 </tr>
               );
             })}
@@ -137,8 +173,37 @@ const Status: NextPage = () => {
       </Layout>
 
       <style jsx>{`
+        h1 {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+        }
         .submissions {
-          border: 1px solid black;
+          width: 100%;
+          border-collapse: collapse;
+          font-size: 0.9rem;
+        }
+        .submissions,
+        .submissions tr,
+        .submissions td {
+          border: 1px solid #dddddd;
+        }
+        .submissions thead {
+          font-weight: bold;
+        }
+        .submissions td {
+          padding: 0.4rem;
+        }
+
+        .status-ac {
+          color: green;
+        }
+        .status-wa,
+        .status-tle,
+        .status-mem {
+          color: red;
+        }
+        .status-er {
+          color: purple;
         }
       `}</style>
     </>

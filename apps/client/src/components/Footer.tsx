@@ -1,17 +1,24 @@
 import React from "react";
+import Container from "./Container";
 
 const Footer: React.FC = () => {
   return (
     <footer className="wrapper">
-      Copyright (c) 2022, rlj1202@gmail.com
-      <br />
-      Ajou University
+      <Container>
+        <div className="content">
+          Copyright (c) 2022, rlj1202@gmail.com
+          <br />
+          Ajou University
+        </div>
+      </Container>
       <style jsx>{`
-        .wrapper {
-          padding: 1rem 2rem;
+        .content {
           text-align: center;
           font-size: 0.6rem;
-          margin: 2rem;
+          padding-left: 1rem;
+          padding-right: 1rem;
+          margin-top: 4rem;
+          margin-bottom: 4rem;
         }
       `}</style>
     </footer>

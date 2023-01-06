@@ -38,6 +38,17 @@
   --callout-border-rgb: 172, 175, 176;
   --card-rgb: 180, 185, 188;
   --card-border-rgb: 131, 134, 135;
+
+  /* main colors */
+  --ansi-red: #e1443d;
+  --ansi-black: #383131;
+
+  /* bg colors */
+  --ansi-cyan: #75b5c4;
+  --ansi-green: #a6d3b2;
+  --ansi-white: #f6f1f1;
+  --ansi-yellow: #eee273;
+  --ansi-brown: #d5c195;
 }
 
 /* @media (prefers-color-scheme: dark) {
