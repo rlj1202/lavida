@@ -33,6 +33,13 @@ export class Problem {
   @Column({ type: 'text', nullable: true })
   hint?: string;
 
+  @Column({ type: 'json', nullable: true })
+  samples?: { input: string; output: string }[];
+
+  /** Lagacy field from previous lavida platform */
+  @Column({ type: 'text', nullable: true })
+  source: string;
+
   /** In milli seconds */
   @Column()
   timeLimit: number;

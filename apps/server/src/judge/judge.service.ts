@@ -7,6 +7,8 @@ import Docker = require('dockerode');
 import { SubmissionsService } from 'src/submissions/submissions.service';
 import { ProblemsService } from 'src/problems/problems.service';
 import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
+import { ConfigService } from '@nestjs/config';
+import { existsSync } from 'fs';
 
 export type JudgeStatus =
   | 'ACCEPTED'
@@ -26,9 +28,6 @@ export interface JudgeResult {
   memory?: number;
   msg?: string;
 }
-
-// TODO: Move to configuration module... or something else
-const TESTCASE_DIR = path.join(process.cwd(), 'data/testcases');
 
 class CompileError extends Error {
   constructor(public exitCode: number, msg?: string) {
@@ -115,6 +114,7 @@ export class JudgeService {
   constructor(
     private readonly submissionsService: SubmissionsService,
     private readonly problemsService: ProblemsService,
+    private readonly configService: ConfigService,
   ) {
     this.docker = new Docker();
     this.docker
@@ -267,7 +267,25 @@ export class JudgeService {
     cmdline: string,
     reportProgress: (value: any) => Promise<void>,
   ): Promise<JudgeResult> {
-    const dir = path.join(TESTCASE_DIR, `${problemId}`);
+    const dirs = this.configService.get<string[]>('judge.testcaseDirs');
+
+    if (!dirs) {
+      throw new Error('judge.testcaseDirs does not exist');
+    }
+
+    let dir: string | null = null;
+    for (const dirPath of dirs) {
+      const curDir = path.resolve(process.cwd(), dirPath, `${problemId}`);
+      if (existsSync(curDir)) {
+        dir = curDir;
+        break;
+      }
+    }
+
+    if (!dir) {
+      throw new Error(`Testcase dir for ${problemId} does not exist.`);
+    }
+
     const files = await readdir(dir);
 
     const inputFiles = files.filter((file) => path.extname(file) === '.in');

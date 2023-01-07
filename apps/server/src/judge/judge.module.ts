@@ -6,9 +6,10 @@ import { SubmissionsModule } from 'src/submissions/submissions.module';
 import { JudgeService } from './judge.service';
 import { JudgeProcessor } from './judge.processor';
 import { JudgeGateway } from './judge.gateway';
+import { ConfigModule } from '@nestjs/config';
 
 @Module({
-  imports: [SubmissionsModule, ProblemsModule],
+  imports: [SubmissionsModule, ProblemsModule, ConfigModule],
   controllers: [],
   providers: [JudgeService, JudgeProcessor, JudgeGateway],
   exports: [JudgeService],
