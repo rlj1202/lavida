@@ -5,7 +5,10 @@ export interface Problem {
   description: string;
   inputDesc: string;
   outputDesc: string;
+  samples?: { input: string; output: string }[];
   hint?: string;
+
+  source?: string;
 
   timeLimit: number;
   memoryLimit: number;

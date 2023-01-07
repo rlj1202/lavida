@@ -14,6 +14,7 @@ import { Problem } from "apps/client/src/schemas/problem";
 import { getProblem } from "apps/client/src/services/problems";
 
 import Config from "../../../config";
+import { useRef } from "react";
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -55,6 +56,15 @@ const Problem: NextPage<
     return `${data.val} ${data.unit}`;
   }
 
+  const inputSampleRef = useRef<HTMLPreElement>(null);
+  const outputSampleRef = useRef<HTMLPreElement>(null);
+
+  const handleCopy = (value: string | undefined | null) => {
+    if (!value) return;
+
+    navigator.clipboard.writeText(value);
+  };
+
   return (
     <>
       <Layout>
@@ -93,14 +103,33 @@ const Problem: NextPage<
         <p dangerouslySetInnerHTML={{ __html: problem?.inputDesc || "" }}></p>
         <h2>출력</h2>
         <p dangerouslySetInnerHTML={{ __html: problem?.outputDesc || "" }}></p>
-        <h2>예제 입력</h2>
-        <div></div>
-        <h2>예제 출력</h2>
-        <div></div>
+        {problem?.samples &&
+          problem.samples.map((sample, i) => {
+            return (
+              <>
+                <h2>예제 입력 {i + 1}</h2>
+                <button onClick={() => handleCopy(sample.input)}>복사</button>
+                <pre className="sample">
+                  <code>{sample.input}</code>
+                </pre>
+                <h2>예제 출력 {i + 1}</h2>
+                <button onClick={() => handleCopy(sample.output)}>복사</button>
+                <pre className="sample">
+                  <code>{sample.output}</code>
+                </pre>
+              </>
+            );
+          })}
         {problem?.hint && (
           <>
             <h2>힌트</h2>
             <p dangerouslySetInnerHTML={{ __html: problem?.hint || "" }}></p>
+          </>
+        )}
+        {problem?.source && (
+          <>
+            <h2>출처</h2>
+            <p>{problem?.source}</p>
           </>
         )}
 
@@ -113,7 +142,8 @@ const Problem: NextPage<
         p,
         .info,
         h1,
-        h2 {
+        h2,
+        .sample {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }
@@ -133,6 +163,11 @@ const Problem: NextPage<
         }
         .info td {
           padding: 0.4rem;
+        }
+        .sample {
+          border: 1px solid #dddddd;
+          background-color: #efefef;
+          padding: 0.5rem;
         }
       `}</style>
     </>
