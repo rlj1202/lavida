@@ -5,8 +5,15 @@ import { User } from './entities/user.entity';
 import { UsersController } from './users.controller';
 import { UsersService } from './users.service';
 
+import { Submission } from 'src/submissions/entities/submission.entity';
+import { Problem } from 'src/problems/entities/problem.entity';
+import { UserProblemsModule } from 'src/userProblems/user-problems.module';
+
 @Module({
-  imports: [TypeOrmModule.forFeature([User])],
+  imports: [
+    TypeOrmModule.forFeature([User, Problem, Submission]),
+    UserProblemsModule,
+  ],
   controllers: [UsersController],
   providers: [UsersService],
   exports: [UsersService],

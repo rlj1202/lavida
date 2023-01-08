@@ -4,11 +4,13 @@ import {
   DeleteDateColumn,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
 
 import { User } from 'src/users/entities/user.entity';
+import { Submission } from 'src/submissions/entities/submission.entity';
 
 @Entity('problem')
 export class Problem {
@@ -47,6 +49,9 @@ export class Problem {
   /** In bytes */
   @Column()
   memoryLimit: number;
+
+  @OneToMany(() => Submission, (submission) => submission.problem)
+  submissions: Submission[];
 
   @CreateDateColumn()
   createdAt: Date;

@@ -15,6 +15,7 @@ import { ProblemsModule } from './problems/problems.module';
 import { JudgeModule } from './judge/judge.module';
 import { BullModule } from '@nestjs/bull';
 import { LoggerMiddleware } from './middlewares/logger.middleware';
+import { UserProblemsModule } from './userProblems/user-problems.module';
 
 const validationSchema = Joi.object({
   PORT: Joi.number().default(3100),
@@ -57,6 +58,7 @@ const validationSchema = Joi.object({
     BullModule.forRoot({}),
     AuthModule,
     UsersModule,
+    UserProblemsModule,
     ProblemsModule,
     SubmissionsModule,
     JudgeModule,

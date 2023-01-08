@@ -6,6 +6,14 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { UserInfoDTO } from './dto/user-info.dto';
+
+import {
+  Submission,
+  SubmissionStatus,
+} from 'src/submissions/entities/submission.entity';
+import { Problem } from 'src/problems/entities/problem.entity';
+import { UserProblemsService } from 'src/userProblems/user-problems.service';
 
 // TODO:
 const saltRounds = 10;
@@ -15,6 +23,11 @@ export class UsersService {
   constructor(
     @InjectRepository(User)
     private readonly usersRepository: Repository<User>,
+    @InjectRepository(Submission)
+    private readonly submissionsRepository: Repository<Submission>,
+    @InjectRepository(Problem)
+    private readonly problemsRepository: Repository<Problem>,
+    private readonly userProblemService: UserProblemsService,
   ) {}
 
   async findById(id: number): Promise<User> {
@@ -86,5 +99,29 @@ export class UsersService {
 
   async delete(id: number): Promise<void> {
     await this.usersRepository.softDelete(id);
+  }
+
+  async fetchUserInfoByUsername(username: string): Promise<UserInfoDTO> {
+    const user = await this.usersRepository.findOneOrFail({
+      where: {
+        username,
+      },
+      relations: {
+        submissions: true,
+      },
+    });
+
+    const accepts = user.submissions.filter(
+      (submission) => submission.status === SubmissionStatus.ACCEPTED,
+    );
+
+    const result = new UserInfoDTO();
+    result.username = user.username;
+    result.email = user.email;
+    result.submissions = user.submissions.length;
+    result.accepts = accepts.length;
+    result.problems = await this.userProblemService.findByUserId(user.id);
+
+    return result;
   }
 }
