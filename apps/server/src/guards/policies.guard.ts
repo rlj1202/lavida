@@ -1,4 +1,9 @@
-import { CanActivate, ExecutionContext, Injectable } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { Observable } from 'rxjs';
 import { RequestWithUser } from 'src/auth/request-with-user.interface';
@@ -32,6 +37,11 @@ export class PoliciesGuard implements CanActivate {
       ) || [];
 
     const { user } = context.switchToHttp().getRequest<RequestWithUser>();
+
+    if (!user) {
+      throw new UnauthorizedException();
+    }
+
     const ability = this.caslAbilityFactory.createForUser(user);
 
     return policyHandlers.every((handler) =>
