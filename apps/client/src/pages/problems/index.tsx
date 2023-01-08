@@ -15,6 +15,10 @@ import { Problem } from "../../schemas/problem";
 import { getProblems } from "../../services/problems";
 
 import Config from "../../config";
+import { getUserProblems } from "../../services/user-problems";
+import { UserProblem } from "../../schemas/user-problem";
+import { useAppSelector } from "../../store/hooks";
+import ProblemTag from "../../components/ProblemTag";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
@@ -37,9 +41,10 @@ const Problems: NextPage<
 
   const [pages, setPages] = useState(0);
 
-  const queryKey = ["problems", page];
-  const query = useQuery<PaginationResponse<Problem>>(
-    queryKey,
+  const userId = useAppSelector((store) => store.auth.user?.id);
+
+  const problemsQuery = useQuery<PaginationResponse<Problem>>(
+    ["problems", page],
     () => getProblems({ offset, limit }),
     {
       refetchOnWindowFocus: false,
@@ -48,7 +53,12 @@ const Problems: NextPage<
       },
     }
   );
-  const problems = query.data;
+  const problems = problemsQuery.data;
+
+  const userProblemsQuery = useQuery<UserProblem[]>(
+    ["user-problems", userId],
+    () => (userId ? getUserProblems(userId) : [])
+  );
 
   return (
     <>
@@ -72,6 +82,10 @@ const Problems: NextPage<
           </thead>
           <tbody>
             {problems?.items.map((problem) => {
+              const userProblem = userProblemsQuery.data?.find(
+                (userProblem) => userProblem.problemId === problem.id
+              );
+
               return (
                 <tr key={problem.id}>
                   <td>{problem.id}</td>
@@ -80,10 +94,23 @@ const Problems: NextPage<
                       {problem.title}
                     </Link>
                   </td>
-                  <td></td>
-                  <td>0</td>
-                  <td>0</td>
-                  <td>0</td>
+                  <td>
+                    {userProblem?.solved === true && (
+                      <ProblemTag type="success" />
+                    )}
+                    {userProblem?.solved === false && (
+                      <ProblemTag type="wrong-answer" />
+                    )}
+                  </td>
+                  <td>{problem.acceptCount}</td>
+                  <td>{problem.submissionCount}</td>
+                  <td>
+                    {problem.submissionCount > 0
+                      ? (problem.acceptCount / problem.submissionCount).toFixed(
+                          2
+                        )
+                      : 0}
+                  </td>
                 </tr>
               );
             })}

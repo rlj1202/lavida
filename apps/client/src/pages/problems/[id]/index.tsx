@@ -14,7 +14,10 @@ import { Problem } from "apps/client/src/schemas/problem";
 import { getProblem } from "apps/client/src/services/problems";
 
 import Config from "../../../config";
-import { useRef } from "react";
+import { UserProblem } from "apps/client/src/schemas/user-problem";
+import { useAppSelector } from "apps/client/src/store/hooks";
+import { getUserProblems } from "apps/client/src/services/user-problems";
+import ProblemTag from "apps/client/src/components/ProblemTag";
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -47,17 +50,21 @@ const Problem: NextPage<
 > = ({ problemId }) => {
   const router = useRouter();
 
-  const query = useQuery<Problem>(["problem", problemId], () =>
+  const userId = useAppSelector((store) => store.auth.user?.id);
+
+  const problemQuery = useQuery<Problem>(["problem", problemId], () =>
     getProblem(problemId)
   );
-  const problem = query.data;
+  const problem = problemQuery.data;
+
+  const userProblemsQuery = useQuery<UserProblem[]>(
+    ["user-problems", userId],
+    () => (userId ? getUserProblems(userId) : [])
+  );
 
   function unitToString(data: { val: number; unit: string }) {
     return `${data.val} ${data.unit}`;
   }
-
-  const inputSampleRef = useRef<HTMLPreElement>(null);
-  const outputSampleRef = useRef<HTMLPreElement>(null);
 
   const handleCopy = (value: string | undefined | null) => {
     if (!value) return;
@@ -73,6 +80,10 @@ const Problem: NextPage<
         </Head>
 
         <h1>{problem?.title}</h1>
+        {userProblemsQuery.data?.find((item) => item.problemId === problem?.id)
+          ?.solved === true && <ProblemTag type="success" />}
+        {userProblemsQuery.data?.find((item) => item.problemId === problem?.id)
+          ?.solved === false && <ProblemTag type="wrong-answer" />}
         <table className="info">
           <thead>
             <tr>
@@ -91,9 +102,16 @@ const Problem: NextPage<
               <td>
                 {unitToString(convert(problem?.memoryLimit).from("b").toBest())}
               </td>
-              <td>0</td>
-              <td>0</td>
-              <td>0</td>
+              <td>{problem?.acceptCount}</td>
+              <td>{problem?.submissionCount}</td>
+              <td>
+                {problemQuery.isSuccess && problemQuery.data.submissionCount > 0
+                  ? (
+                      problemQuery.data.acceptCount /
+                      problemQuery.data.submissionCount
+                    ).toFixed(2)
+                  : 0}
+              </td>
             </tr>
           </tbody>
         </table>

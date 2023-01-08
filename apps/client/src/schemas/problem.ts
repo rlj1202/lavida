@@ -8,6 +8,9 @@ export interface Problem {
   samples?: { input: string; output: string }[];
   hint?: string;
 
+  submissionCount: number;
+  acceptCount: number;
+
   source?: string;
 
   timeLimit: number;
