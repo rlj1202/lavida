@@ -1,12 +1,6 @@
 import { Problem } from 'src/problems/entities/problem.entity';
 import { User } from 'src/users/entities/user.entity';
-import {
-  Column,
-  Entity,
-  ManyToOne,
-  PrimaryColumn,
-  PrimaryGeneratedColumn,
-} from 'typeorm';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class UserProblem {
@@ -15,9 +9,6 @@ export class UserProblem {
     this.problemId = problemId;
     this.solved = solved;
   }
-
-  @PrimaryGeneratedColumn()
-  id: number;
 
   @PrimaryColumn()
   userId: number;

@@ -32,6 +32,18 @@ export class UserProblemsService {
     return userProblems;
   }
 
+  async findByUsername(username: string): Promise<UserProblem[]> {
+    const userProblems = await this.userProblemRepository.find({
+      where: {
+        user: {
+          username,
+        },
+      },
+    });
+
+    return userProblems;
+  }
+
   async findByProblemId(problemId: number): Promise<UserProblem[]> {
     const userProblems = await this.userProblemRepository.find({
       where: {

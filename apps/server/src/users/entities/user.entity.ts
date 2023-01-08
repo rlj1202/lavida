@@ -29,6 +29,12 @@ export class User {
   @Exclude()
   refreshTokenHash?: string;
 
+  @Column()
+  submissionCount: number;
+
+  @Column()
+  acceptCount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

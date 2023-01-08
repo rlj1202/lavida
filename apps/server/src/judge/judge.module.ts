@@ -8,13 +8,15 @@ import { JudgeProcessor } from './judge.processor';
 import { JudgeGateway } from './judge.gateway';
 import { ConfigModule } from '@nestjs/config';
 import { UserProblemsModule } from 'src/userProblems/user-problems.module';
+import { UsersModule } from 'src/users/users.module';
 
 @Module({
   imports: [
-    SubmissionsModule,
-    ProblemsModule,
     ConfigModule,
+    ProblemsModule,
+    UsersModule,
     UserProblemsModule,
+    SubmissionsModule,
   ],
   controllers: [],
   providers: [JudgeService, JudgeProcessor, JudgeGateway],

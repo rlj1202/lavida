@@ -6,7 +6,6 @@ import * as bcrypt from 'bcrypt';
 import { User } from './entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { UserInfoDTO } from './dto/user-info.dto';
 
 import {
   Submission,
@@ -101,27 +100,21 @@ export class UsersService {
     await this.usersRepository.softDelete(id);
   }
 
-  async fetchUserInfoByUsername(username: string): Promise<UserInfoDTO> {
-    const user = await this.usersRepository.findOneOrFail({
+  async updateStats(userId: number) {
+    const submissions = await this.submissionsRepository.find({
       where: {
-        username,
+        userId,
       },
-      relations: {
-        submissions: true,
+      select: {
+        status: true,
       },
     });
 
-    const accepts = user.submissions.filter(
-      (submission) => submission.status === SubmissionStatus.ACCEPTED,
-    );
-
-    const result = new UserInfoDTO();
-    result.username = user.username;
-    result.email = user.email;
-    result.submissions = user.submissions.length;
-    result.accepts = accepts.length;
-    result.problems = await this.userProblemService.findByUserId(user.id);
-
-    return result;
+    await this.usersRepository.update(userId, {
+      submissionCount: submissions.length,
+      acceptCount: submissions.filter(
+        (submission) => submission.status === SubmissionStatus.ACCEPTED,
+      ).length,
+    });
   }
 }

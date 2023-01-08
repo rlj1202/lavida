@@ -53,6 +53,12 @@ export class Problem {
   @OneToMany(() => Submission, (submission) => submission.problem)
   submissions: Submission[];
 
+  @Column()
+  submissionCount: number;
+
+  @Column()
+  acceptCount: number;
+
   @CreateDateColumn()
   createdAt: Date;
 

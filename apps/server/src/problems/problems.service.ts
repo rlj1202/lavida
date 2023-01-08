@@ -53,13 +53,7 @@ export class ProblemsService {
     return problem;
   }
 
-  async fetchProblemInfo(problemId: number): Promise<any> {
-    const problem = await this.problemsRepository.findOne({
-      where: {
-        id: problemId,
-      },
-    });
-
+  async updateStats(problemId: number) {
     const submissions = await this.submissionsRepository.find({
       where: {
         problemId,
@@ -69,12 +63,11 @@ export class ProblemsService {
       },
     });
 
-    const accepts = submissions.filter(
-      (submission) => submission.status === SubmissionStatus.ACCEPTED,
-    );
-
-    // TODO:
-
-    return problem;
+    await this.problemsRepository.update(problemId, {
+      submissionCount: submissions.length,
+      acceptCount: submissions.filter(
+        (submission) => submission.status === SubmissionStatus.ACCEPTED,
+      ).length,
+    });
   }
 }

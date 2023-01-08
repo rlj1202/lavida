@@ -1,18 +1,9 @@
-import { IsArray, IsEmail, IsInt, IsString } from 'class-validator';
+import { IsArray } from 'class-validator';
 
-export class UserInfoDTO {
-  @IsString()
-  username: string;
+import { UserProblem } from 'src/userProblems/user-problem.entity';
+import { User } from '../entities/user.entity';
 
-  @IsEmail()
-  email: string;
-
-  @IsInt()
-  submissions: number;
-
-  @IsInt()
-  accepts: number;
-
+export class UserInfoDTO extends User {
   @IsArray()
-  problems: { problemId: number; solved: boolean }[];
+  problems: UserProblem[];
 }

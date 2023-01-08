@@ -10,6 +10,7 @@ import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
 import { ConfigService } from '@nestjs/config';
 import { existsSync } from 'fs';
 import { UserProblemsService } from 'src/userProblems/user-problems.service';
+import { UsersService } from 'src/users/users.service';
 
 export type JudgeStatus =
   | 'ACCEPTED'
@@ -113,10 +114,11 @@ export class JudgeService {
   private docker: Docker;
 
   constructor(
-    private readonly submissionsService: SubmissionsService,
-    private readonly problemsService: ProblemsService,
     private readonly configService: ConfigService,
+    private readonly usersService: UsersService,
+    private readonly problemsService: ProblemsService,
     private readonly userProblemService: UserProblemsService,
+    private readonly submissionsService: SubmissionsService,
   ) {
     this.docker = new Docker();
     this.docker
@@ -462,6 +464,7 @@ export class JudgeService {
         break;
     }
 
+    // Update judge result
     await this.submissionsService.update(submissionId, {
       status: submissionStatus,
     });
@@ -471,6 +474,9 @@ export class JudgeService {
       submission.problemId,
       submissionStatus === SubmissionStatus.ACCEPTED,
     );
+
+    await this.usersService.updateStats(submission.userId);
+    await this.problemsService.updateStats(submission.problemId);
 
     return judgeResult;
   }
