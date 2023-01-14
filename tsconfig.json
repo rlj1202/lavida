@@ -1,9 +1,7 @@
 {
   "compilerOptions": {
-    "baseUrl": ".",
     "paths": {
-      "@lavida/*": ["packages/*/src"],
-      "@lavida/common/*": ["packages/common/src/*"]
+      "@lavida/common/*": ["./packages/common/src/*"]
     }
   }
 }
