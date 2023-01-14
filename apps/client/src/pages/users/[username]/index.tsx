@@ -7,8 +7,8 @@ import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
 import { useQuery } from "react-query";
 
-import Layout from "apps/client/src/components/Layout";
-import { getUser } from "apps/client/src/services/users";
+import Layout from "../../../components/Layout";
+import { getUser } from "../../../services/users";
 
 import Config from "../../../config";
 import Link from "next/link";
@@ -89,7 +89,7 @@ const UserPage: NextPage<
             .filter((problem) => problem.solved)
             .map((problem) => {
               return (
-                <span key={problem.problemId}>
+                <span key={problem.problemId} className="problem">
                   <Link href={`/problems/${problem.problemId}`}>
                     {problem.problemId}
                   </Link>
@@ -104,7 +104,7 @@ const UserPage: NextPage<
             .filter((problem) => !problem.solved)
             .map((problem) => {
               return (
-                <span key={problem.problemId}>
+                <span key={problem.problemId} className="problem">
                   <Link href={`/problems/${problem.problemId}`}>
                     {problem.problemId}
                   </Link>
@@ -138,6 +138,10 @@ const UserPage: NextPage<
         h2 {
           margin-top: 1rem;
           margin-bottom: 1rem;
+        }
+
+        .problem {
+          margin-right: 0.4rem;
         }
       `}</style>
     </>

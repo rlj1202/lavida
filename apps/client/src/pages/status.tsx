@@ -123,7 +123,7 @@ const Status: NextPage = () => {
               let statusIndicator = `${status}`;
 
               if (status === "JUDGING") {
-                statusIndicator = `${status} ${progress}%`;
+                statusIndicator = `${status} ${progress.toFixed(2)}%`;
               }
 
               let statusClassName = "";

@@ -6,18 +6,26 @@ import {
 import Head from "next/head";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
+import { Fragment } from "react";
 import { useQuery } from "react-query";
 import convert from "convert-units";
 
-import Layout from "apps/client/src/components/Layout";
-import { Problem } from "apps/client/src/schemas/problem";
-import { getProblem } from "apps/client/src/services/problems";
+import ReactMarkdown from "react-markdown";
+import remarkGfm from "remark-gfm";
+import remarkMath from "remark-math";
+import rehypeRaw from "rehype-raw";
+import rehypeKatex from "rehype-katex";
+
+import Layout from "../../../components/Layout";
+import { Problem } from "../../../schemas/problem";
+import { getProblem } from "../../../services/problems";
+
+import { UserProblem } from "../../../schemas/user-problem";
+import { useAppSelector } from "../../../store/hooks";
+import { getUserProblems } from "../../../services/user-problems";
+import ProblemTag from "../../../components/ProblemTag";
 
 import Config from "../../../config";
-import { UserProblem } from "apps/client/src/schemas/user-problem";
-import { useAppSelector } from "apps/client/src/store/hooks";
-import { getUserProblems } from "apps/client/src/services/user-problems";
-import ProblemTag from "apps/client/src/components/ProblemTag";
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -116,15 +124,30 @@ const Problem: NextPage<
           </tbody>
         </table>
         <h2>설명</h2>
-        <p dangerouslySetInnerHTML={{ __html: problem?.description || "" }}></p>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeKatex, rehypeRaw]}
+        >
+          {problem?.description || ""}
+        </ReactMarkdown>
         <h2>입력</h2>
-        <p dangerouslySetInnerHTML={{ __html: problem?.inputDesc || "" }}></p>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeKatex, rehypeRaw]}
+        >
+          {problem?.inputDesc || ""}
+        </ReactMarkdown>
         <h2>출력</h2>
-        <p dangerouslySetInnerHTML={{ __html: problem?.outputDesc || "" }}></p>
+        <ReactMarkdown
+          remarkPlugins={[remarkGfm, remarkMath]}
+          rehypePlugins={[rehypeKatex, rehypeRaw]}
+        >
+          {problem?.outputDesc || ""}
+        </ReactMarkdown>
         {problem?.samples &&
           problem.samples.map((sample, i) => {
             return (
-              <>
+              <Fragment key={i}>
                 <h2>예제 입력 {i + 1}</h2>
                 <button onClick={() => handleCopy(sample.input)}>복사</button>
                 <pre className="sample">
@@ -135,13 +158,18 @@ const Problem: NextPage<
                 <pre className="sample">
                   <code>{sample.output}</code>
                 </pre>
-              </>
+              </Fragment>
             );
           })}
         {problem?.hint && (
           <>
             <h2>힌트</h2>
-            <p dangerouslySetInnerHTML={{ __html: problem?.hint || "" }}></p>
+            <ReactMarkdown
+              remarkPlugins={[remarkGfm, remarkMath]}
+              rehypePlugins={[rehypeKatex, rehypeRaw]}
+            >
+              {problem?.hint}
+            </ReactMarkdown>
           </>
         )}
         {problem?.source && (
@@ -186,6 +214,9 @@ const Problem: NextPage<
           border: 1px solid #dddddd;
           background-color: #efefef;
           padding: 0.5rem;
+        }
+        p {
+          line-height: 1.5;
         }
       `}</style>
     </>

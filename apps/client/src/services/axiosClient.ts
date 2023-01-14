@@ -41,7 +41,7 @@ client.interceptors.response.use(
 
       if (status === 401) {
         store.dispatch(logout());
-        Router.push("/");
+        Router.push("/auth/login");
       } else if (status === 404) {
         Router.push("/");
       }
