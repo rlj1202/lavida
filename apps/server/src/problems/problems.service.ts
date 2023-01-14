@@ -1,9 +1,10 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
 import { PaginationResponseDTO } from 'src/pagination/pagination-response.dto';
 import { ListProblemsOptionsDTO } from './dto/list-problems-options.dto';
+import { SearchProblemsDTO } from './dto/search-problems.dto';
 
 import {
   Submission,
@@ -44,11 +45,9 @@ export class ProblemsService {
   }
 
   async findById(id: number): Promise<Problem> {
-    const problem = await this.problemsRepository.findOne({ where: { id } });
-
-    if (!problem) {
-      throw new HttpException('Problem not found.', HttpStatus.NOT_FOUND);
-    }
+    const problem = await this.problemsRepository.findOneOrFail({
+      where: { id },
+    });
 
     return problem;
   }
@@ -69,5 +68,29 @@ export class ProblemsService {
         (submission) => submission.status === SubmissionStatus.ACCEPTED,
       ).length,
     });
+  }
+
+  async search(
+    options: SearchProblemsDTO,
+  ): Promise<PaginationResponseDTO<Problem>> {
+    const [result, count] = await this.problemsRepository
+      .createQueryBuilder()
+      .select()
+      .where('MATCH(title) AGAINST(:query IN BOOLEAN MODE)', {
+        query: options.query,
+      })
+      .orWhere('MATCH(description) AGAINST(:query IN BOOLEAN MODE)', {
+        query: options.query,
+      })
+      .skip(options.offset)
+      .take(options.limit)
+      .getManyAndCount();
+
+    return {
+      items: result,
+      limit: options.limit,
+      offset: options.offset,
+      total: count,
+    };
   }
 }

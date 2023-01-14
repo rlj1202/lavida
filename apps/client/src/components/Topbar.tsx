@@ -54,6 +54,7 @@ const Topbar: React.FC = () => {
           <PageLink pathname="/contests" label="Contests" />
           <PageLink pathname="/ranks" label="Ranks" />
           <PageLink pathname="/tools" label="Tools" />
+          <PageLink pathname="/search" label="Search" />
           <div className="authinfo">
             {user ? (
               <>

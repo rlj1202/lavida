@@ -3,6 +3,7 @@ import {
   CreateDateColumn,
   DeleteDateColumn,
   Entity,
+  Index,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -17,9 +18,11 @@ export class Problem {
   @PrimaryGeneratedColumn()
   id: number;
 
+  @Index({ fulltext: true, parser: 'ngram' })
   @Column()
   title: string;
 
+  @Index({ fulltext: true, parser: 'ngram' })
   @Column({ type: 'text' })
   description: string;
 
