@@ -3,10 +3,17 @@ import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
 import { useQuery } from "react-query";
+
+import { searchProblems } from "../services/problems";
+
 import Layout from "../components/Layout";
+import Table from "../components/Table";
+import TableBody from "../components/TableBody";
+import TableCell from "../components/TableCell";
+import TableHead from "../components/TableHead";
+import TableRow from "../components/TableRow";
 
 import Config from "../config";
-import { searchProblems } from "../services/problems";
 
 const Search: NextPage = () => {
   const [queryString, setQueryString] = useState("");
@@ -24,6 +31,8 @@ const Search: NextPage = () => {
           <title>{`${Config.title} - 검색`}</title>
         </Head>
 
+        <h1>Search</h1>
+
         <div className="search-form">
           <label htmlFor="query">검색어</label>
           <input
@@ -33,52 +42,43 @@ const Search: NextPage = () => {
           />
         </div>
 
-        <table className="problems">
-          <thead>
-            <tr>
-              <td>제목</td>
-              <td>내용</td>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>제목</TableCell>
+              <TableCell>내용</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {query.isSuccess &&
               query.data.items.map((problem) => {
                 return (
-                  <tr key={problem.id}>
-                    <td>
+                  <TableRow key={problem.id}>
+                    <TableCell>
                       <Link href={`/problems/${problem.id}`}>
                         {problem.title}
                       </Link>
-                    </td>
-                    <td>{problem.description}</td>
-                  </tr>
+                    </TableCell>
+                    <TableCell>
+                      <span className="problem-description">
+                        {problem.description}
+                      </span>
+                    </TableCell>
+                  </TableRow>
                 );
               })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </Layout>
 
       <style jsx>{`
+        h1,
         .search-form {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }
 
-        .problems {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 0.9rem;
-        }
-        .problems thead {
-          font-weight: bold;
-        }
-        .problems td {
-          border: 1px solid #dddddd;
-          padding: 0.4rem;
-          white-space: nowrap;
-          overflow: hidden;
-          text-overflow: ellipsis;
-          max-width: 0;
+        .problem-description {
         }
       `}</style>
     </>

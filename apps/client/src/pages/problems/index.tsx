@@ -9,16 +9,24 @@ import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "react-query";
 
-import Layout from "../../components/Layout";
 import { PaginationResponse } from "../../schemas/pagination-response";
 import { Problem } from "../../schemas/problem";
+import { UserProblem } from "../../schemas/user-problem";
+
 import { getProblems } from "../../services/problems";
+import { getUserProblems } from "../../services/user-problems";
+
+import { useAppSelector } from "../../store/hooks";
+
+import Layout from "../../components/Layout";
+import ProblemTag from "../../components/ProblemTag";
+import Table from "../../components/Table";
+import TableHead from "../../components/TableHead";
+import TableRow from "../../components/TableRow";
+import TableCell from "../../components/TableCell";
+import TableBody from "../../components/TableBody";
 
 import Config from "../../config";
-import { getUserProblems } from "../../services/user-problems";
-import { UserProblem } from "../../schemas/user-problem";
-import { useAppSelector } from "../../store/hooks";
-import ProblemTag from "../../components/ProblemTag";
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
@@ -69,53 +77,53 @@ const Problems: NextPage<
 
         <h1>Problems</h1>
 
-        <table className="problems">
-          <thead>
-            <tr>
-              <td>번호</td>
-              <td>제목</td>
-              <td>정보</td>
-              <td>맞힌 사람</td>
-              <td>제출</td>
-              <td>정답 비율</td>
-            </tr>
-          </thead>
-          <tbody>
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>번호</TableCell>
+              <TableCell>제목</TableCell>
+              <TableCell>정보</TableCell>
+              <TableCell>맞힌 사람</TableCell>
+              <TableCell>제출</TableCell>
+              <TableCell>정답 비율</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {problems?.items.map((problem) => {
               const userProblem = userProblemsQuery.data?.find(
                 (userProblem) => userProblem.problemId === problem.id
               );
 
               return (
-                <tr key={problem.id}>
-                  <td>{problem.id}</td>
-                  <td>
+                <TableRow key={problem.id}>
+                  <TableCell>{problem.id}</TableCell>
+                  <TableCell>
                     <Link href={`/problems/${problem.id}`}>
                       {problem.title}
                     </Link>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     {userProblem?.solved === true && (
                       <ProblemTag type="success" />
                     )}
                     {userProblem?.solved === false && (
                       <ProblemTag type="wrong-answer" />
                     )}
-                  </td>
-                  <td>{problem.acceptCount}</td>
-                  <td>{problem.submissionCount}</td>
-                  <td>
+                  </TableCell>
+                  <TableCell>{problem.acceptCount}</TableCell>
+                  <TableCell>{problem.submissionCount}</TableCell>
+                  <TableCell>
                     {problem.submissionCount > 0
                       ? (problem.acceptCount / problem.submissionCount).toFixed(
                           2
                         )
                       : 0}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
 
         {Array.from(new Array(pages + 1).keys())
           .slice(1)
@@ -137,22 +145,6 @@ const Problems: NextPage<
         .problems {
           margin-top: 1rem;
           margin-bottom: 1rem;
-        }
-        .problems {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 0.9rem;
-        }
-        .problems,
-        .problems tr,
-        .problems td {
-          border: 1px solid #dddddd;
-        }
-        .problems thead {
-          font-weight: bold;
-        }
-        .problems td {
-          padding: 0.4rem;
         }
 
         .pagination {

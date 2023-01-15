@@ -2,14 +2,20 @@ import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useEffect, useState } from "react";
-import { useQuery, useQueryClient } from "react-query";
+import { useEffect, useRef, useState } from "react";
+import { useQuery } from "react-query";
 import { io } from "socket.io-client";
 
 import Layout from "../components/Layout";
 import { PaginationResponse } from "../schemas/pagination-response";
 import { Submission } from "../schemas/submission";
 import { getSubmissions } from "../services/submissions";
+
+import Table from "../components/Table";
+import TableHead from "../components/TableHead";
+import TableBody from "../components/TableBody";
+import TableRow from "../components/TableRow";
+import TableCell from "../components/TableCell";
 
 import Config from "../config";
 
@@ -33,14 +39,18 @@ const Status: NextPage = () => {
   if (offset && typeof offset !== "string") throw new Error();
   if (limit && typeof limit !== "string") throw new Error();
 
-  const queryClient = useQueryClient();
-
   const [pages, setPages] = useState(0);
 
   const queryKey = ["submissions", username, problemId, offset, limit];
   const query = useQuery<PaginationResponse<Submission>>(
     queryKey,
-    () => getSubmissions({ username, problemId, offset, limit }),
+    () =>
+      getSubmissions({
+        ...(!!username && { username }),
+        ...(!!problemId && { problemId }),
+        offset,
+        limit,
+      }),
     {
       refetchOnWindowFocus: false,
       onSuccess: (data) => {
@@ -54,9 +64,10 @@ const Status: NextPage = () => {
   >(new Map());
 
   useEffect(() => {
-    // On 'judge' namespace
     // TODO: server url
-    const socket = io("http://localhost:3100/judge");
+    const serverUrl = "http://localhost:3100";
+    // On 'judge' namespace
+    const socket = io(`${serverUrl}/judge`);
 
     socket.on("connect", () => {
       query.data?.items
@@ -82,17 +93,33 @@ const Status: NextPage = () => {
       }
     );
 
-    if (socket) {
-      return () => {
+    return () => {
+      if (socket && socket.connected) {
         socket.disconnect();
-      };
-    }
+      }
+    };
   });
 
   const dateTimeFormat = new Intl.DateTimeFormat("ko", {
     dateStyle: "long",
     timeStyle: "medium",
   });
+
+  const usernameRef = useRef<HTMLInputElement>(null);
+  const problemIdRef = useRef<HTMLInputElement>(null);
+
+  const handleSearch = () => {
+    const nextUsername = usernameRef.current?.value;
+    const nextProblemId = problemIdRef.current?.value;
+
+    router.push({
+      query: {
+        ...router.query,
+        username: nextUsername,
+        problemId: nextProblemId,
+      },
+    });
+  };
 
   return (
     <>
@@ -103,17 +130,27 @@ const Status: NextPage = () => {
 
         <h1>Status</h1>
 
-        <table className="submissions">
-          <thead>
-            <tr>
-              <td>id</td>
-              <td>problemId</td>
-              <td>username</td>
-              <td>status</td>
-              <td>submittedAt</td>
-            </tr>
-          </thead>
-          <tbody>
+        <div className="form">
+          <label htmlFor="username">유저 이름</label>
+          <input ref={usernameRef} id="username" type="text" />
+
+          <label htmlFor="problem-id">문제 번호</label>
+          <input ref={problemIdRef} id="problem-id" type="text" />
+
+          <button onClick={handleSearch}>검색</button>
+        </div>
+
+        <Table>
+          <TableHead>
+            <TableRow>
+              <TableCell>번호</TableCell>
+              <TableCell>문제 번호</TableCell>
+              <TableCell>유저 이름</TableCell>
+              <TableCell>상태</TableCell>
+              <TableCell>제출 날짜</TableCell>
+            </TableRow>
+          </TableHead>
+          <TableBody>
             {query.data?.items.map((submission) => {
               const info = statuses.get(submission.id);
 
@@ -146,29 +183,31 @@ const Status: NextPage = () => {
               }
 
               return (
-                <tr key={submission.id}>
-                  <td>{submission.id}</td>
-                  <td>
+                <TableRow key={submission.id}>
+                  <TableCell>{submission.id}</TableCell>
+                  <TableCell>
                     <Link href={`/problems/${submission.problemId}`}>
                       {submission.problemId}
                     </Link>
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
                     <Link href={`/users/${submission.user?.username}`}>
                       {submission.user?.username}
                     </Link>
-                  </td>
-                  <td className={`status ${statusClassName}`}>
-                    {statusIndicator}
-                  </td>
-                  <td>
+                  </TableCell>
+                  <TableCell>
+                    <span className={`${statusClassName}`}>
+                      {statusIndicator}
+                    </span>
+                  </TableCell>
+                  <TableCell>
                     {dateTimeFormat.format(new Date(submission.createdAt))}
-                  </td>
-                </tr>
+                  </TableCell>
+                </TableRow>
               );
             })}
-          </tbody>
-        </table>
+          </TableBody>
+        </Table>
       </Layout>
 
       <style jsx>{`
@@ -176,21 +215,10 @@ const Status: NextPage = () => {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }
-        .submissions {
-          width: 100%;
-          border-collapse: collapse;
-          font-size: 0.9rem;
-        }
-        .submissions,
-        .submissions tr,
-        .submissions td {
-          border: 1px solid #dddddd;
-        }
-        .submissions thead {
-          font-weight: bold;
-        }
-        .submissions td {
-          padding: 0.4rem;
+
+        .form {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
         }
 
         .status-ac {
