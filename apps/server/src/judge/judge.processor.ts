@@ -12,6 +12,8 @@ import { JudgeGateway } from './judge.gateway';
 import { JudgeJob } from './judge.job';
 import { JudgeResult, JudgeService } from './judge.service';
 
+const LOG_CONTEXT = 'JudgeProcessor';
+
 @Processor('judge')
 export class JudgeProcessor {
   constructor(
@@ -34,6 +36,7 @@ export class JudgeProcessor {
     const { data } = job;
     Logger.log(
       `Judging submission id ${data.submissionId} on problem id ${data.problemId} in ${data.language} language...`,
+      LOG_CONTEXT,
     );
   }
 
@@ -42,6 +45,7 @@ export class JudgeProcessor {
     const { data } = job;
     Logger.log(
       `Job for submission id ${data.submissionId} progress: ${progress}`,
+      LOG_CONTEXT,
     );
     this.judgeGateway.reportStatus(data.submissionId, progress, 'JUDGING');
     return;
@@ -54,6 +58,7 @@ export class JudgeProcessor {
       `Judging on submission id ${
         data.submissionId
       } has been completed with result ${JSON.stringify(result)}.`,
+      LOG_CONTEXT,
     );
     this.judgeGateway.reportStatus(data.submissionId, 100, result.status);
   }

@@ -1,3 +1,4 @@
+import { Logger } from '@nestjs/common';
 import {
   ConnectedSocket,
   MessageBody,
@@ -11,6 +12,8 @@ import {
 import { Server, Socket } from 'socket.io';
 import { JudgeStatus } from './judge.service';
 
+const LOG_CONTEXT = 'JudgeGateway';
+
 @WebSocketGateway({ namespace: 'judge', cors: { origin: '*' } })
 export class JudgeGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
@@ -21,15 +24,15 @@ export class JudgeGateway
   server: Server;
 
   async afterInit(server: Server) {
-    // console.log('on init');
+    Logger.log('Init', LOG_CONTEXT);
   }
 
   async handleConnection(client: Socket, ...args: any[]) {
-    // console.log('on connection', args);
+    Logger.log('WS connected', LOG_CONTEXT);
   }
 
   async handleDisconnect(client: Socket) {
-    // console.log('on disconnection');
+    Logger.log('WS disconnected', LOG_CONTEXT);
   }
 
   async reportStatus(

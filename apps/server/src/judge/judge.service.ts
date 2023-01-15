@@ -109,6 +109,8 @@ const languageProfiles: Record<string, LanguageProfile> = {
   },
 };
 
+const LOG_CONTEXT = 'JudgeService';
+
 @Injectable()
 export class JudgeService {
   private docker: Docker;
@@ -124,10 +126,10 @@ export class JudgeService {
     this.docker
       .ping()
       .then(() => {
-        Logger.log('Docker has been connected.');
+        Logger.log('Docker has been connected.', LOG_CONTEXT);
       })
       .catch(() => {
-        Logger.error('Docker is not connected.');
+        Logger.error('Docker is not connected.', LOG_CONTEXT);
       });
   }
 
