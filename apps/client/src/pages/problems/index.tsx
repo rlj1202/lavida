@@ -8,6 +8,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
 import { useQuery } from "react-query";
+import Joi from "joi";
 
 import { PaginationResponse } from "../../schemas/pagination-response";
 import { Problem } from "../../schemas/problem";
@@ -34,25 +35,32 @@ export const getServerSideProps: GetServerSideProps = async (context) => {
   };
 };
 
+const querySchema = Joi.object<{
+  page: number;
+}>({
+  page: Joi.number().default(1),
+});
+
 const Problems: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({}) => {
   const router = useRouter();
 
-  const { page } = router.query;
+  const { error, value } = querySchema.validate(router.query);
 
-  if (page && typeof page !== "string") throw new Error();
+  if (error) {
+    throw error;
+  }
 
-  const pageNumber = parseInt(page || "1", 10);
   const limit = 20;
-  const offset = (pageNumber - 1) * limit;
+  const offset = (value.page - 1) * limit;
 
   const [pages, setPages] = useState(0);
 
   const userId = useAppSelector((store) => store.auth.user?.id);
 
   const problemsQuery = useQuery<PaginationResponse<Problem>>(
-    ["problems", page],
+    ["problems", value.page],
     () => getProblems({ offset, limit }),
     {
       refetchOnWindowFocus: false,
@@ -128,7 +136,7 @@ const Problems: NextPage<
         {Array.from(new Array(pages + 1).keys())
           .slice(1)
           .map((i) => {
-            const isActivePage = pageNumber === i;
+            const isActivePage = value.page === i;
 
             const activeClass = isActivePage ? "active" : "";
 

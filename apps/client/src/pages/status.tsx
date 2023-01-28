@@ -5,6 +5,7 @@ import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
 import { useQuery } from "react-query";
 import { io } from "socket.io-client";
+import Joi from "joi";
 
 import Layout from "../components/Layout";
 import { PaginationResponse } from "../schemas/pagination-response";
@@ -29,27 +30,45 @@ type JudgeStatus =
   | "TIME_LIMIT_EXCEEDED"
   | "MEMORY_LIMIT_EXCEEDED";
 
+const querySchema = Joi.object<{
+  username?: string;
+  problemId?: number;
+  top?: number;
+  offset?: number;
+  limit?: number;
+}>({
+  username: Joi.string().optional().allow(""),
+  problemId: Joi.number().optional().allow(""),
+  top: Joi.number().optional(),
+  offset: Joi.number().default(0),
+  limit: Joi.number().default(20),
+});
+
 const Status: NextPage = () => {
   const router = useRouter();
-  const { username, problemId, top, offset, limit } = router.query;
+  const { error, value } = querySchema.validate(router.query);
 
-  if (username && typeof username !== "string") throw new Error();
-  if (problemId && typeof problemId !== "string") throw new Error();
-  if (top && typeof top !== "string") throw new Error();
-  if (offset && typeof offset !== "string") throw new Error();
-  if (limit && typeof limit !== "string") throw new Error();
+  if (error) {
+    throw error;
+  }
 
   const [pages, setPages] = useState(0);
 
-  const queryKey = ["submissions", username, problemId, offset, limit];
+  const queryKey = [
+    "submissions",
+    value.username,
+    value.problemId,
+    value.offset,
+    value.limit,
+  ];
   const query = useQuery<PaginationResponse<Submission>>(
     queryKey,
     () =>
       getSubmissions({
-        ...(!!username && { username }),
-        ...(!!problemId && { problemId }),
-        offset,
-        limit,
+        ...(!!value.username && { username: value.username }),
+        ...(!!value.problemId && { problemId: value.problemId }),
+        offset: value.offset,
+        limit: value.limit,
       }),
     {
       refetchOnWindowFocus: false,
