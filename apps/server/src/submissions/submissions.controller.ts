@@ -8,11 +8,10 @@ import { ListSubmissionsOptionsDTO } from './dto/list-submissions-options.dto';
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PoliciesGuard } from 'src/guards/policies.guard';
 import { CheckPolicies } from 'src/decorators/check-policies.decorator';
-import { Action } from 'src/casl/casl-factory.factory';
 
-import { Submission } from './entities/submission.entity';
 import { GetUser } from 'src/decorators/user.decorator';
 import { User } from 'src/users/entities/user.entity';
+import { CreateSubmissionHandler } from './submissions.handler';
 
 @Controller('submissions')
 export class SubmissionsController {
@@ -26,7 +25,7 @@ export class SubmissionsController {
 
   @Post()
   @UseGuards(JwtGuard, PoliciesGuard)
-  @CheckPolicies((ability) => ability.can(Action.Create, Submission))
+  @CheckPolicies(CreateSubmissionHandler)
   async submit(@Body() submitDto: SubmitDto, @GetUser() user: User) {
     const submission = await this.submissionsService.submit(user.id, submitDto);
 

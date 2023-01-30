@@ -2,19 +2,22 @@ import {
   CanActivate,
   ExecutionContext,
   Injectable,
+  Type,
   UnauthorizedException,
 } from '@nestjs/common';
-import { Reflector } from '@nestjs/core';
-import { Observable } from 'rxjs';
+import { ModuleRef, Reflector } from '@nestjs/core';
 import { RequestWithUser } from 'src/auth/request-with-user.interface';
 
 import { AppAbility, CaslAbilityFactory } from 'src/casl/casl-factory.factory';
 
 export interface IPolicyHandler {
-  handle(ability: AppAbility): boolean;
+  handle(ability: AppAbility, request: RequestWithUser): Promise<boolean>;
 }
 
-export type PolicyHandlerCallback = (ability: AppAbility) => boolean;
+export type PolicyHandlerCallback = (
+  ability: AppAbility,
+  request: RequestWithUser,
+) => Promise<boolean>;
 
 export type PolicyHandler = IPolicyHandler | PolicyHandlerCallback;
 
@@ -25,18 +28,18 @@ export class PoliciesGuard implements CanActivate {
   constructor(
     private readonly reflector: Reflector,
     private readonly caslAbilityFactory: CaslAbilityFactory,
+    private readonly moduleRef: ModuleRef,
   ) {}
 
-  canActivate(
-    context: ExecutionContext,
-  ): boolean | Promise<boolean> | Observable<boolean> {
+  async canActivate(context: ExecutionContext): Promise<boolean> {
     const policyHandlers =
-      this.reflector.get<PolicyHandler[]>(
+      this.reflector.get<Type<PolicyHandler>[]>(
         CHECK_POLICIES_KEY,
         context.getHandler(),
       ) || [];
 
-    const { user } = context.switchToHttp().getRequest<RequestWithUser>();
+    const request = context.switchToHttp().getRequest<RequestWithUser>();
+    const { user } = request;
 
     if (!user) {
       throw new UnauthorizedException();
@@ -44,18 +47,29 @@ export class PoliciesGuard implements CanActivate {
 
     const ability = this.caslAbilityFactory.createForUser(user);
 
-    return policyHandlers.every((handler) =>
-      this.execPolicyHandler(handler, ability),
+    const results = await Promise.all(
+      policyHandlers.map((handler) =>
+        this.execPolicyHandler(handler, ability, request, this.moduleRef),
+      ),
     );
+
+    const allowed = results.every((value) => value);
+
+    return allowed;
   }
 
-  private execPolicyHandler(
-    handler: PolicyHandler,
+  private async execPolicyHandler(
+    handler: Type<PolicyHandler>,
     ability: AppAbility,
-  ): boolean {
-    if (typeof handler === 'function') {
-      return handler(ability);
+    request: RequestWithUser,
+    moduleRef: ModuleRef,
+  ): Promise<boolean> {
+    const handlerInstance = moduleRef.get(handler);
+
+    if (typeof handlerInstance === 'function') {
+      return await handlerInstance(ability, request);
     }
-    return handler.handle(ability);
+
+    return await handlerInstance.handle(ability, request);
   }
 }

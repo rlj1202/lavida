@@ -8,6 +8,7 @@ import { UsersModule } from 'src/users/users.module';
 
 import { Submission } from './entities/submission.entity';
 import { SubmissionsController } from './submissions.controller';
+import { CreateSubmissionHandler } from './submissions.handler';
 import { SubmissionsService } from './submissions.service';
 
 @Module({
@@ -21,7 +22,7 @@ import { SubmissionsService } from './submissions.service';
     CaslModule,
   ],
   controllers: [SubmissionsController],
-  providers: [SubmissionsService],
+  providers: [SubmissionsService, CreateSubmissionHandler],
   exports: [SubmissionsService],
 })
 export class SubmissionsModule {}
