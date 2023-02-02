@@ -4,11 +4,21 @@ import { AppAbility } from 'src/casl/casl-factory.factory';
 import { IPolicyHandler } from 'src/casl/policies.guard';
 
 @Injectable()
-export class CreateSubmissionHandler implements IPolicyHandler {
+export class ReadRoleHandler implements IPolicyHandler {
   async handle(
     ability: AppAbility,
     _request: RequestWithUser,
   ): Promise<boolean> {
-    return ability.can('create', 'Submission');
+    return ability.can('read', 'Role');
+  }
+}
+
+@Injectable()
+export class CreateRoleHandler implements IPolicyHandler {
+  async handle(
+    ability: AppAbility,
+    _request: RequestWithUser,
+  ): Promise<boolean> {
+    return ability.can('create', 'Role');
   }
 }

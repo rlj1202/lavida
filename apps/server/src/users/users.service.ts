@@ -1,6 +1,6 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { Repository, FindOptionsRelations } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
 import { User } from './entities/user.entity';
@@ -30,41 +30,35 @@ export class UsersService {
   ) {}
 
   async findById(id: number): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { id } });
-
-    if (!user)
-      throw new HttpException(
-        'A user with this id does not exist.',
-        HttpStatus.NOT_FOUND,
-      );
+    const user = await this.usersRepository.findOneOrFail({
+      where: { id },
+    });
 
     return user;
   }
 
   async findByUsername(username: string): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { username } });
-
-    if (!user) {
-      throw new HttpException(
-        'A user with this username does not exist.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const user = await this.usersRepository.findOneOrFail({
+      where: { username },
+    });
 
     return user;
   }
 
   async findByEmail(email: string): Promise<User> {
-    const user = await this.usersRepository.findOne({ where: { email } });
-
-    if (!user) {
-      throw new HttpException(
-        'A user with this email does not exist.',
-        HttpStatus.NOT_FOUND,
-      );
-    }
+    const user = await this.usersRepository.findOneOrFail({
+      where: { email },
+    });
 
     return user;
+  }
+
+  async checkUsernameUnique(username: string): Promise<boolean> {
+    const user = await this.usersRepository.findOne({
+      where: { username },
+    });
+
+    return !!user;
   }
 
   async create(createUserDto: CreateUserDto): Promise<User> {

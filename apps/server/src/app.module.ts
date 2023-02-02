@@ -18,6 +18,10 @@ import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { UserProblemsModule } from './userProblems/user-problems.module';
 import { WorkbooksModule } from './workbooks/workbooks.module';
 import { ContestsModule } from './contests/contests.module';
+import { BoardsModule } from './boards/boards.module';
+import { ArticlesModule } from './articles/articles.module';
+import { CommentsModule } from './comments/comments.module';
+import { RolesModule } from './roles/roles.module';
 
 const validationSchema = Joi.object({
   PORT: Joi.number().default(3100),
@@ -66,6 +70,10 @@ const validationSchema = Joi.object({
     JudgeModule,
     ContestsModule,
     WorkbooksModule,
+    BoardsModule,
+    ArticlesModule,
+    CommentsModule,
+    RolesModule,
   ],
   controllers: [],
   providers: [],

@@ -8,7 +8,7 @@ import {
   UseGuards,
 } from '@nestjs/common';
 
-import { GetUser } from 'src/decorators/user.decorator';
+import { GetUser } from 'src/auth/user.decorator';
 
 import { User } from 'src/users/entities/user.entity';
 

@@ -6,10 +6,10 @@ import { SubmitDto } from './dto/submit.dto';
 import { ListSubmissionsOptionsDTO } from './dto/list-submissions-options.dto';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { PoliciesGuard } from 'src/guards/policies.guard';
-import { CheckPolicies } from 'src/decorators/check-policies.decorator';
+import { PoliciesGuard } from 'src/casl/policies.guard';
+import { CheckPolicies } from 'src/casl/check-policies.decorator';
 
-import { GetUser } from 'src/decorators/user.decorator';
+import { GetUser } from 'src/auth/user.decorator';
 import { User } from 'src/users/entities/user.entity';
 import { CreateSubmissionHandler } from './submissions.handler';
 

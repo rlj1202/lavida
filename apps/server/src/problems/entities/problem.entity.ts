@@ -4,6 +4,7 @@ import {
   DeleteDateColumn,
   Entity,
   Index,
+  ManyToMany,
   ManyToOne,
   OneToMany,
   PrimaryGeneratedColumn,
@@ -12,9 +13,13 @@ import {
 
 import { User } from 'src/users/entities/user.entity';
 import { Submission } from 'src/submissions/entities/submission.entity';
+import SubjectClass from 'src/casl/subject-class.decorator';
 
 @Entity('problem')
+@SubjectClass()
 export class Problem {
+  static readonly modelName = 'Problem';
+
   @PrimaryGeneratedColumn()
   id: number;
 
@@ -27,7 +32,13 @@ export class Problem {
   description: string;
 
   @ManyToOne(() => User)
-  author: User;
+  author?: User;
+
+  @Column({ nullable: true })
+  authorId: number;
+
+  @ManyToMany(() => User)
+  testers: User[];
 
   @Column({ type: 'text' })
   inputDesc: string;

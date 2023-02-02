@@ -9,9 +9,9 @@ import {
 } from '@nestjs/common';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { CheckPolicies } from 'src/decorators/check-policies.decorator';
-import { GetUser } from 'src/decorators/user.decorator';
-import { PoliciesGuard } from 'src/guards/policies.guard';
+import { CheckPolicies } from 'src/casl/check-policies.decorator';
+import { GetUser } from 'src/auth/user.decorator';
+import { PoliciesGuard } from 'src/casl/policies.guard';
 
 import { User } from 'src/users/entities/user.entity';
 
@@ -19,7 +19,7 @@ import { CreateContestHandler, DeleteContestHandler } from './contests.handler';
 import { ContestsService } from './contests.service';
 import { CreateContestDto } from './dto/create-contest.dto';
 
-@Controller()
+@Controller('contests')
 export class ContestsController {
   constructor(private readonly contestsService: ContestsService) {}
 

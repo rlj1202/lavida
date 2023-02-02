@@ -1,20 +1,23 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 
-import { ContestProblem } from './contest-problem.entity';
+import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
+import { Board } from 'src/boards/entities/board.entity';
 import SubjectClass from 'src/casl/subject-class.decorator';
 
 @Entity()
 @SubjectClass()
-export class Contest {
-  static readonly modelName = 'Contest';
+export class Article {
+  static readonly modelName = 'Article';
 
   @PrimaryGeneratedColumn()
   id: number;
@@ -23,33 +26,26 @@ export class Contest {
   title: string;
 
   @Column({ type: 'text' })
-  description: string;
+  content: string;
 
-  @Column()
-  startAt: Date;
+  @ManyToOne(() => Board)
+  board: Board;
 
-  @Column()
-  endAt: Date;
-
-  /** The one who created this contest. */
   @ManyToOne(() => User)
   author: User;
 
   @Column()
   authorId: number;
 
-  @ManyToMany(() => User)
-  admins: User[];
-
-  @ManyToMany(() => User)
-  testers: User[];
-
-  @ManyToMany(() => User)
-  participants: User[];
-
-  @ManyToMany(() => ContestProblem)
-  contestProblems: ContestProblem[];
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 
   @CreateDateColumn()
   createdAt: Date;
+
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

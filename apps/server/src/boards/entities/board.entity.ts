@@ -1,23 +1,28 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
-  ManyToMany,
-  ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { WorkbookProblem } from './workbook-problem.entity';
-import { User } from 'src/users/entities/user.entity';
+
+import { Article } from 'src/articles/entities/article.entity';
+
 import SubjectClass from 'src/casl/subject-class.decorator';
 
 @Entity()
 @SubjectClass()
-export class Workbook {
-  static readonly modelName = 'Workbook';
+export class Board {
+  static readonly modelName = 'Board';
 
   @PrimaryGeneratedColumn()
   id: number;
+
+  /** Also used in url */
+  @Column({ unique: true })
+  name: string;
 
   @Column({ type: 'text' })
   title: string;
@@ -25,19 +30,15 @@ export class Workbook {
   @Column({ type: 'text' })
   description: string;
 
-  @Column()
-  authorId: number;
-
-  /** The one who created this workbook. */
-  @ManyToOne(() => User)
-  author: User;
-
-  @ManyToMany(() => WorkbookProblem)
-  workbookProblems: WorkbookProblem[];
+  @OneToMany(() => Article, (article) => article.board)
+  articles: Article[];
 
   @CreateDateColumn()
   createdAt: Date;
 
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

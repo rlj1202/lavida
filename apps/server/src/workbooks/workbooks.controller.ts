@@ -9,10 +9,10 @@ import {
 } from '@nestjs/common';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { GetUser } from 'src/decorators/user.decorator';
+import { GetUser } from 'src/auth/user.decorator';
 
-import { CheckPolicies } from 'src/decorators/check-policies.decorator';
-import { PoliciesGuard } from 'src/guards/policies.guard';
+import { CheckPolicies } from 'src/casl/check-policies.decorator';
+import { PoliciesGuard } from 'src/casl/policies.guard';
 
 import { Workbook } from './entities/workbook.entity';
 import { User } from 'src/users/entities/user.entity';

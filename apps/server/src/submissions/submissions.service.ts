@@ -1,18 +1,19 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { DeepPartial, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 
 import { ProblemsService } from 'src/problems/problems.service';
 import { UsersService } from 'src/users/users.service';
 
-import { SubmitDto } from './dto/submit.dto';
 import { Submission } from './entities/submission.entity';
+
 import { JudgeJob } from 'src/judge/judge.job';
 
 import { PaginationResponseDTO } from 'src/pagination/pagination-response.dto';
 import { ListSubmissionsOptionsDTO } from './dto/list-submissions-options.dto';
+import { SubmitDto } from './dto/submit.dto';
 
 @Injectable()
 export class SubmissionsService {
@@ -91,7 +92,7 @@ export class SubmissionsService {
 
   async update(
     id: number,
-    submissionParams: Partial<Submission>,
+    submissionParams: DeepPartial<Submission>,
   ): Promise<void> {
     await this.submissionsRepository.update(id, submissionParams);
   }

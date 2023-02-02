@@ -1,8 +1,10 @@
 import { Controller, Get, Param } from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
-import { UserProblemsService } from 'src/userProblems/user-problems.service';
-import { UserInfoDTO } from './dto/user-info.dto';
+
 import { UsersService } from './users.service';
+import { UserProblemsService } from 'src/userProblems/user-problems.service';
+
+import { UserInfoDTO } from './dto/user-info.dto';
 
 @Controller('users')
 export class UsersController {

@@ -8,6 +8,7 @@ import {
 
 import { Problem } from 'src/problems/entities/problem.entity';
 import { User } from 'src/users/entities/user.entity';
+import SubjectClass from 'src/casl/subject-class.decorator';
 
 export enum SubmissionStatus {
   SUBMITTED = 'SUBMITTED',
@@ -22,7 +23,10 @@ export enum SubmissionStatus {
 }
 
 @Entity('submission')
+@SubjectClass()
 export class Submission {
+  static readonly modelName = 'Submission';
+
   @PrimaryGeneratedColumn()
   id: number;
 

@@ -1,6 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
+import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
 import { Request } from 'express';
 import {
   ExtractJwt,
@@ -11,7 +13,6 @@ import {
 } from 'passport-jwt';
 
 import { User } from 'src/users/entities/user.entity';
-import { UsersService } from 'src/users/users.service';
 
 import { JwtPayload } from '../jwt-payload.interface';
 
@@ -32,7 +33,8 @@ export class JwtStrategy
   implements IVerifyCallback
 {
   constructor(
-    private readonly usersService: UsersService,
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
     readonly configService: ConfigService,
   ) {
     super(<StrategyOptions>{
@@ -58,7 +60,14 @@ export class JwtStrategy
    * @returns User entity
    */
   async validate(payload: JwtPayload): Promise<User> {
-    const user = await this.usersService.findById(payload.id);
+    const user = await this.usersRepository.findOneOrFail({
+      where: {
+        id: payload.id,
+      },
+      relations: {
+        role: true,
+      },
+    });
 
     return user;
   }
