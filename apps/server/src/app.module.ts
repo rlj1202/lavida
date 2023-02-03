@@ -1,20 +1,20 @@
 import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { TypeOrmModule } from '@nestjs/typeorm';
 import * as Joi from 'joi';
 
 import appConfig from './config/app.config';
 import databaseConfig from './config/database.config';
 import jwtConfig from './config/jwt.config';
 import judgeConfig from './config/judge.config';
+import dockerConfig from './config/docker.config';
 
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { BullModule } from '@nestjs/bull';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { SubmissionsModule } from './submissions/submissions.module';
 import { ProblemsModule } from './problems/problems.module';
 import { JudgeModule } from './judge/judge.module';
-import { BullModule } from '@nestjs/bull';
-import { LoggerMiddleware } from './middlewares/logger.middleware';
 import { UserProblemsModule } from './userProblems/user-problems.module';
 import { WorkbooksModule } from './workbooks/workbooks.module';
 import { ContestsModule } from './contests/contests.module';
@@ -22,6 +22,8 @@ import { BoardsModule } from './boards/boards.module';
 import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
 import { RolesModule } from './roles/roles.module';
+
+import { LoggerMiddleware } from './middlewares/logger.middleware';
 
 const validationSchema = Joi.object({
   PORT: Joi.number().default(3100),
@@ -38,6 +40,10 @@ const validationSchema = Joi.object({
   JWT_ACCESS_TOKEN_EXPIRE_TIME: Joi.string().default('30m'),
   JWT_REFRESH_TOKEN_SECRET: Joi.string().required(),
   JWT_REFRESH_TOKEN_EXPIRE_TIME: Joi.string().default('30d'),
+
+  DOCKET_SOCKET_PATH: Joi.string(),
+  DOCKER_HOST: Joi.string(),
+  DOCKER_PORT: Joi.number().default(2375),
 });
 
 @Module({
@@ -57,8 +63,9 @@ const validationSchema = Joi.object({
       }),
     }),
     ConfigModule.forRoot({
-      envFilePath: ['.env.development.local'],
-      load: [appConfig, databaseConfig, jwtConfig, judgeConfig],
+      // First one takes precedence
+      envFilePath: ['.env', '.env.development', '.env.development.local'],
+      load: [appConfig, databaseConfig, jwtConfig, judgeConfig, dockerConfig],
       validationSchema,
     }),
     BullModule.forRoot({}),

@@ -10,6 +10,7 @@ import {
   WebSocketServer,
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
+
 import { JudgeStatus } from './judge.service';
 
 const LOG_CONTEXT = 'JudgeGateway';
@@ -18,20 +19,22 @@ const LOG_CONTEXT = 'JudgeGateway';
 export class JudgeGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
-  // constructor() {}
+  constructor() {
+    return;
+  }
 
   @WebSocketServer()
   server: Server;
 
-  async afterInit(server: Server) {
+  async afterInit(_server: Server) {
     Logger.log('Init', LOG_CONTEXT);
   }
 
-  async handleConnection(client: Socket, ...args: any[]) {
+  async handleConnection(_client: Socket, ..._args: any[]) {
     Logger.log('WS connected', LOG_CONTEXT);
   }
 
-  async handleDisconnect(client: Socket) {
+  async handleDisconnect(_client: Socket) {
     Logger.log('WS disconnected', LOG_CONTEXT);
   }
 

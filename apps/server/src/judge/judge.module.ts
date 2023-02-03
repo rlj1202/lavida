@@ -2,7 +2,7 @@ import { Logger, Module } from '@nestjs/common';
 
 import Docker = require('dockerode');
 
-import { ConfigModule } from '@nestjs/config';
+import { ConfigModule, ConfigService } from '@nestjs/config';
 import { ProblemsModule } from 'src/problems/problems.module';
 import { UserProblemsModule } from 'src/userProblems/user-problems.module';
 import { UsersModule } from 'src/users/users.module';
@@ -29,8 +29,24 @@ const LOG_CONTEXT = 'JudgeModule';
     JudgeGateway,
     {
       provide: Docker,
-      useFactory: async (): Promise<Docker> => {
-        const docker = new Docker();
+      useFactory: async (configService: ConfigService): Promise<Docker> => {
+        const socketPath = configService.get<string>('docker.socketPath');
+
+        const host = configService.get<string>('docker.host');
+        const port = configService.get<number>('docker.port');
+
+        if (socketPath) {
+          Logger.log(`Connect docker to "${socketPath}"`, LOG_CONTEXT);
+        } else if (host) {
+          Logger.log(`Connect docker to "${host}:${port}"`, LOG_CONTEXT);
+        }
+
+        const docker = new Docker({
+          socketPath,
+
+          host,
+          port,
+        });
 
         try {
           await docker.ping();
@@ -44,6 +60,7 @@ const LOG_CONTEXT = 'JudgeModule';
 
         return docker;
       },
+      inject: [ConfigService],
     },
   ],
   exports: [JudgeService],

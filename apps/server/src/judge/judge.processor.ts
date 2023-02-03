@@ -7,6 +7,7 @@ import {
 } from '@nestjs/bull';
 import { Logger } from '@nestjs/common';
 import { Job } from 'bull';
+
 import { JudgeGateway } from './judge.gateway';
 
 import { JudgeJob } from './judge.job';
