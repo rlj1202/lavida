@@ -3,6 +3,7 @@ import { databaseConfigTuple } from './database.config';
 import { jwtConfigTuple } from './jwt.config';
 import { judgeConfigTuple } from './judge.config';
 import { dockerConfigTuple } from './docker.config';
+import { mailerConfigTuple } from './mailer.config';
 
 export type ConfigTuple = readonly [string, () => object];
 
@@ -12,6 +13,7 @@ const configTuples = [
   jwtConfigTuple,
   judgeConfigTuple,
   dockerConfigTuple,
+  mailerConfigTuple,
 ] as const satisfies readonly ConfigTuple[];
 
 export const configs = configTuples.map((tuple) => tuple[1]);

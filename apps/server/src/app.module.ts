@@ -1,11 +1,13 @@
-import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
+import { Logger, MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
+import path = require('path');
 import * as Joi from 'joi';
 
 import { AppConfigType, configs } from './config';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
+import { MailerModule } from '@nestjs-modules/mailer';
 import { AuthModule } from './auth/auth.module';
 import { UsersModule } from './users/users.module';
 import { SubmissionsModule } from './submissions/submissions.module';
@@ -18,6 +20,8 @@ import { BoardsModule } from './boards/boards.module';
 import { ArticlesModule } from './articles/articles.module';
 import { CommentsModule } from './comments/comments.module';
 import { RolesModule } from './roles/roles.module';
+
+import { EjsAdapter } from '@nestjs-modules/mailer/dist/adapters/ejs.adapter';
 
 import { LoggerMiddleware } from './middlewares/logger.middleware';
 
@@ -40,6 +44,13 @@ const validationSchema = Joi.object({
   DOCKET_SOCKET_PATH: Joi.string(),
   DOCKER_HOST: Joi.string(),
   DOCKER_PORT: Joi.number().default(2375),
+
+  /** For example, `example@gmail.com`. */
+  EMAIL_AUTH_EMAIL: Joi.string().required(),
+  EMAIL_AUTH_PASSWORD: Joi.string().required(),
+  /** For example, `smtp.gmail.com`. */
+  EMAIL_HOST: Joi.string().required(),
+  EMAIL_FROM_USER_NAME: Joi.string().required(),
 });
 
 @Module({
@@ -63,6 +74,40 @@ const validationSchema = Joi.object({
       envFilePath: ['.env', '.env.development', '.env.development.local'],
       load: configs,
       validationSchema,
+    }),
+    MailerModule.forRootAsync({
+      imports: [ConfigModule],
+      inject: [ConfigService],
+      useFactory: (configService: ConfigService<AppConfigType>) => {
+        const email = configService.get('mailer.email');
+        const password = configService.get('mailer.password');
+        const host = configService.get('mailer.host');
+        const from = configService.get('mailer.fromUsername');
+
+        const options = {
+          transport: `smtps://${email}:${password}@${host}`,
+          defaults: {
+            from: `"${from}" <${email}>`,
+            context: {},
+          },
+          preview: false,
+          template: {
+            dir: path.join(process.cwd(), '/templates'),
+            adapter: new EjsAdapter(),
+            options: {
+              strict: true,
+            },
+          },
+        };
+
+        const logger = new Logger(MailerModule.name);
+
+        logger.log(`Transport URL: ${options.transport}`);
+        logger.log(`From username: ${options.defaults.from}`);
+        logger.log(`Template dir: ${options.template.dir}`);
+
+        return options;
+      },
     }),
     BullModule.forRoot({}),
     AuthModule,

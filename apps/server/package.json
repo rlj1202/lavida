@@ -21,6 +21,7 @@
   },
   "dependencies": {
     "@casl/ability": "^6.3.3",
+    "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/bull": "^0.6.2",
     "@nestjs/common": "^9.0.0",
     "@nestjs/config": "^2.2.0",
@@ -40,8 +41,10 @@
     "class-validator": "^0.14.0",
     "cookie-parser": "^1.4.6",
     "dockerode": "^3.3.4",
+    "ejs": "^3.1.8",
     "joi": "^17.7.0",
     "mysql2": "^2.3.3",
+    "nodemailer": "^6.9.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.1",
     "passport-local": "^1.0.0",
