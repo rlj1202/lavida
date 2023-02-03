@@ -1,5 +1,6 @@
-import { Problem } from 'src/problems/entities/problem.entity';
 import { Column, Entity, ManyToOne, PrimaryColumn, Unique } from 'typeorm';
+
+import { Problem } from 'src/problems/entities/problem.entity';
 import { Workbook } from './workbook.entity';
 
 @Entity()

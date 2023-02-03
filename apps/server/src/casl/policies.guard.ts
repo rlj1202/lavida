@@ -15,12 +15,25 @@ export interface IPolicyHandler {
   handle(ability: AppAbility, request: RequestWithUser): Promise<boolean>;
 }
 
-export type PolicyHandlerCallback = (
-  ability: AppAbility,
-  request: RequestWithUser,
-) => Promise<boolean>;
+export type PolicyHandlerTuple<T extends readonly any[] = readonly any[]> = [
+  (
+    ability: AppAbility,
+    request: RequestWithUser,
+    ...args: { [P in keyof T]: InstanceType<T[P]> }
+  ) => Promise<boolean>,
+  T,
+];
+export type PolicyHandlerTupleItem = <R>(
+  cb: <T extends readonly any[]>(i: PolicyHandlerTuple<T>) => Promise<R>,
+) => Promise<R>;
+export const policyHandlerTupleItem =
+  <T extends readonly any[]>(
+    i: PolicyHandlerTuple<T>,
+  ): PolicyHandlerTupleItem =>
+  (cb) =>
+    cb(i);
 
-export type PolicyHandler = IPolicyHandler | PolicyHandlerCallback;
+export type PolicyHandler = Type<IPolicyHandler> | PolicyHandlerTuple;
 
 export const CHECK_POLICIES_KEY = 'check_policy';
 
@@ -34,7 +47,7 @@ export class PoliciesGuard implements CanActivate {
 
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const policyHandlers =
-      this.reflector.get<Type<PolicyHandler>[]>(
+      this.reflector.get<PolicyHandler[]>(
         CHECK_POLICIES_KEY,
         context.getHandler(),
       ) || [];
@@ -60,17 +73,21 @@ export class PoliciesGuard implements CanActivate {
   }
 
   private async execPolicyHandler(
-    handler: Type<PolicyHandler>,
+    handler: PolicyHandler,
     ability: AppAbility,
     request: RequestWithUser,
     moduleRef: ModuleRef,
   ): Promise<boolean> {
-    const handlerInstance = moduleRef.get(handler);
+    if (handler instanceof Array) {
+      const [handlerFunction, dependencies] = handler;
 
-    if (typeof handlerInstance === 'function') {
-      return await handlerInstance(ability, request);
+      const instances = dependencies.map((dep) => moduleRef.get(dep));
+
+      return await handlerFunction(ability, request, ...instances);
+    } else {
+      const handlerInstance = moduleRef.get(handler);
+
+      return await handlerInstance.handle(ability, request);
     }
-
-    return await handlerInstance.handle(ability, request);
   }
 }

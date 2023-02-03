@@ -1,7 +1,8 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { User } from 'src/users/entities/user.entity';
 import { Repository } from 'typeorm';
+
+import { User } from 'src/users/entities/user.entity';
 import { CreateContestDto } from './dto/create-contest.dto';
 import { Contest } from './entities/contest.entity';
 

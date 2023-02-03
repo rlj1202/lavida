@@ -36,22 +36,23 @@ type InferForcedSubjects<T> =
       ? ForcedSubject<Name>
       : never);
 
-export type Subjects =
-  | InferSubjects<
-      InferForcedSubjects<
-        | typeof User
-        | typeof Submission
-        | typeof Problem
-        | typeof Workbook
-        | typeof Contest
-        | typeof Board
-        | typeof Article
-        | typeof Comment
-        | typeof Role
-      >,
-      true
-    >
-  | 'all';
+export const Subjects = [
+  User,
+  Submission,
+  Problem,
+  Workbook,
+  Contest,
+  Board,
+  Article,
+  Comment,
+  Role,
+  'all',
+] as const;
+
+export type Subjects = InferSubjects<
+  InferForcedSubjects<typeof Subjects[number]>,
+  true
+>;
 
 export type AppAbilities = [Actions, Subjects];
 export type AppAbility = MongoAbility<AppAbilities>;

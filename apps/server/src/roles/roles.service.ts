@@ -4,6 +4,8 @@ import { TreeRepository } from 'typeorm';
 
 import { Role } from './entities/role.entity';
 
+import { CreatePermissionDto } from './dto/create-permission.dto';
+
 @Injectable()
 export class RolesService {
   constructor(
@@ -45,5 +47,21 @@ export class RolesService {
     await this.rolesRepository.save(role);
 
     return role;
+  }
+
+  async addPermission(id: number, dto: CreatePermissionDto) {
+    const role = await this.findById(id);
+
+    role.permissions.push(dto);
+
+    await this.rolesRepository.save(role);
+  }
+
+  async removePermission(id: number, index: number) {
+    const role = await this.findById(id);
+
+    role.permissions.splice(index, 1);
+
+    await this.rolesRepository.save(role);
   }
 }

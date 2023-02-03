@@ -7,8 +7,10 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+
 import { WorkbookProblem } from './workbook-problem.entity';
 import { User } from 'src/users/entities/user.entity';
+
 import SubjectClass from 'src/casl/subject-class.decorator';
 
 @Entity()
