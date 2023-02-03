@@ -13,12 +13,12 @@ import { Server, Socket } from 'socket.io';
 
 import { JudgeStatus } from './judge.service';
 
-const LOG_CONTEXT = 'JudgeGateway';
-
 @WebSocketGateway({ namespace: 'judge', cors: { origin: '*' } })
 export class JudgeGateway
   implements OnGatewayInit, OnGatewayConnection, OnGatewayDisconnect
 {
+  private readonly logger = new Logger(JudgeGateway.name);
+
   constructor() {
     return;
   }
@@ -27,15 +27,15 @@ export class JudgeGateway
   server: Server;
 
   async afterInit(_server: Server) {
-    Logger.log('Init', LOG_CONTEXT);
+    this.logger.log('Init');
   }
 
   async handleConnection(_client: Socket, ..._args: any[]) {
-    Logger.log('WS connected', LOG_CONTEXT);
+    this.logger.log('WS connected');
   }
 
   async handleDisconnect(_client: Socket) {
-    Logger.log('WS disconnected', LOG_CONTEXT);
+    this.logger.log('WS disconnected');
   }
 
   async reportStatus(

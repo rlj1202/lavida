@@ -110,10 +110,10 @@ const languageProfiles: Record<string, LanguageProfile> = {
   },
 };
 
-const LOG_CONTEXT = 'JudgeService';
-
 @Injectable()
 export class JudgeService {
+  private readonly logger = new Logger(JudgeService.name);
+
   constructor(
     private readonly configService: ConfigService,
     private readonly usersService: UsersService,
@@ -122,7 +122,7 @@ export class JudgeService {
     private readonly submissionsService: SubmissionsService,
     private readonly docker: Docker,
   ) {
-    Logger.log('Service created', LOG_CONTEXT);
+    this.logger.log('Service created');
   }
 
   private async demux(stream: Duplex): Promise<{

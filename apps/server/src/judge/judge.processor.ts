@@ -13,10 +13,10 @@ import { JudgeGateway } from './judge.gateway';
 import { JudgeJob } from './judge.job';
 import { JudgeResult, JudgeService } from './judge.service';
 
-const LOG_CONTEXT = 'JudgeProcessor';
-
 @Processor('judge')
 export class JudgeProcessor {
+  private readonly logger = new Logger(JudgeProcessor.name);
+
   constructor(
     private readonly judgeService: JudgeService,
     private readonly judgeGateway: JudgeGateway,
@@ -35,18 +35,16 @@ export class JudgeProcessor {
   @OnQueueActive()
   onActive(job: Job<JudgeJob>) {
     const { data } = job;
-    Logger.log(
+    this.logger.log(
       `Judging submission id ${data.submissionId} on problem id ${data.problemId} in ${data.language} language...`,
-      LOG_CONTEXT,
     );
   }
 
   @OnQueueProgress()
   onProgress(job: Job<JudgeJob>, progress: number) {
     const { data } = job;
-    Logger.log(
+    this.logger.log(
       `Job for submission id ${data.submissionId} progress: ${progress}`,
-      LOG_CONTEXT,
     );
     this.judgeGateway.reportStatus(data.submissionId, progress, 'JUDGING');
     return;
@@ -55,11 +53,10 @@ export class JudgeProcessor {
   @OnQueueCompleted()
   onCompleted(job: Job<JudgeJob>, result: JudgeResult) {
     const { data } = job;
-    Logger.log(
+    this.logger.log(
       `Judging on submission id ${
         data.submissionId
       } has been completed with result ${JSON.stringify(result)}.`,
-      LOG_CONTEXT,
     );
     this.judgeGateway.reportStatus(data.submissionId, 100, result.status);
   }

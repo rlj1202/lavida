@@ -12,8 +12,6 @@ import { JudgeService } from './judge.service';
 import { JudgeProcessor } from './judge.processor';
 import { JudgeGateway } from './judge.gateway';
 
-const LOG_CONTEXT = 'JudgeModule';
-
 @Module({
   imports: [
     ConfigModule,
@@ -35,10 +33,12 @@ const LOG_CONTEXT = 'JudgeModule';
         const host = configService.get<string>('docker.host');
         const port = configService.get<number>('docker.port');
 
+        const logger = new Logger(JudgeModule.name);
+
         if (socketPath) {
-          Logger.log(`Connect docker to "${socketPath}"`, LOG_CONTEXT);
+          logger.log(`Connect docker to "${socketPath}"`);
         } else if (host) {
-          Logger.log(`Connect docker to "${host}:${port}"`, LOG_CONTEXT);
+          logger.log(`Connect docker to "${host}:${port}"`);
         }
 
         const docker = new Docker({
@@ -51,9 +51,9 @@ const LOG_CONTEXT = 'JudgeModule';
         try {
           await docker.ping();
 
-          Logger.log('Docker has been connected.', LOG_CONTEXT);
+          logger.log('Docker has been connected.');
         } catch (err) {
-          Logger.error('Docker is not connected.', LOG_CONTEXT);
+          logger.error('Docker is not connected.');
 
           throw err;
         }

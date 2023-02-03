@@ -6,17 +6,17 @@ import { Role } from './entities/role.entity';
 
 import { CreatePermissionDto } from './dto/create-permission.dto';
 
-const LOG_CONTEXT = 'RolesService';
-
 @Injectable()
 export class RolesService implements OnModuleInit {
+  private readonly logger = new Logger(RolesService.name);
+
   constructor(
     @InjectRepository(Role)
     private readonly rolesRepository: TreeRepository<Role>,
   ) {}
 
   async onModuleInit() {
-    Logger.log('Initializing default roles', LOG_CONTEXT);
+    this.logger.log('Initializing default roles');
 
     const adminRole = await this.rolesRepository.findOne({
       where: {
@@ -26,7 +26,7 @@ export class RolesService implements OnModuleInit {
     });
 
     if (!adminRole) {
-      Logger.log('Admin role does not exist, creates one', LOG_CONTEXT);
+      this.logger.log('Admin role does not exist, creates one');
 
       const role = new Role();
       role.name = 'admin';
@@ -39,9 +39,9 @@ export class RolesService implements OnModuleInit {
 
       await this.rolesRepository.save(role);
 
-      Logger.log('Admin role has been created', LOG_CONTEXT);
+      this.logger.log('Admin role has been created');
     } else {
-      Logger.log('Admin role exists', LOG_CONTEXT);
+      this.logger.log('Admin role exists');
     }
   }
 
