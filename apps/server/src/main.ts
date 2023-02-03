@@ -12,11 +12,13 @@ import cookieParser = require('cookie-parser');
 import { AppModule } from './app.module';
 import { RedisIOAdapter as RedisIoAdapter } from './adapters/redis-io.adapter';
 
+import { AppConfigType } from './config';
+
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
-  const configService = app.get(ConfigService);
+  const configService: ConfigService<AppConfigType> = app.get(ConfigService);
 
-  const port = configService.get<number>('app.port', 3100);
+  const port = configService.get('app.port', 3100);
 
   const appUrl = configService.get<string>('app.url', 'http://localhost:3000');
 

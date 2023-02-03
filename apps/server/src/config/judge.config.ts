@@ -1,7 +1,9 @@
 import { registerAs } from '@nestjs/config';
 import * as Joi from 'joi';
 
-export default registerAs('judge', () => {
+const token = 'judge';
+
+const judgeConfig = registerAs(token, () => {
   const schema = Joi.object({
     testcaseDirs: Joi.array<string[]>().required(),
   });
@@ -20,3 +22,5 @@ export default registerAs('judge', () => {
 
   return values;
 });
+
+export const judgeConfigTuple = [token, judgeConfig] as const;

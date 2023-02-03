@@ -1,6 +1,8 @@
 import { registerAs } from '@nestjs/config';
 
-export default registerAs('database', () => ({
+const token = 'database';
+
+const databaseConfig = registerAs(token, () => ({
   host: process.env.DATABASE_HOST || 'localhost',
   port:
     (process.env.DATABASE_PORT && parseInt(process.env.DATABASE_PORT, 10)) ||
@@ -9,3 +11,5 @@ export default registerAs('database', () => ({
   password: process.env.DATABASE_PASSWORD,
   name: process.env.DATABASE_NAME,
 }));
+
+export const databaseConfigTuple = [token, databaseConfig] as const;

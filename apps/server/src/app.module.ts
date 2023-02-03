@@ -2,11 +2,7 @@ import { MiddlewareConsumer, Module, NestModule } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import * as Joi from 'joi';
 
-import appConfig from './config/app.config';
-import databaseConfig from './config/database.config';
-import jwtConfig from './config/jwt.config';
-import judgeConfig from './config/judge.config';
-import dockerConfig from './config/docker.config';
+import { AppConfigType, configs } from './config';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { BullModule } from '@nestjs/bull';
@@ -51,13 +47,13 @@ const validationSchema = Joi.object({
     TypeOrmModule.forRootAsync({
       imports: [ConfigModule],
       inject: [ConfigService],
-      useFactory: (ConfigService: ConfigService) => ({
+      useFactory: (configService: ConfigService<AppConfigType>) => ({
         type: 'mysql',
-        host: ConfigService.get<string>('database.host'),
-        port: ConfigService.get<number>('database.port'),
-        username: ConfigService.get<string>('database.username'),
-        password: ConfigService.get<string>('database.password'),
-        database: ConfigService.get<string>('database.name'),
+        host: configService.get('database.host'),
+        port: configService.get('database.port'),
+        username: configService.get('database.username'),
+        password: configService.get('database.password'),
+        database: configService.get('database.name'),
         autoLoadEntities: true,
         synchronize: true,
       }),
@@ -65,7 +61,7 @@ const validationSchema = Joi.object({
     ConfigModule.forRoot({
       // First one takes precedence
       envFilePath: ['.env', '.env.development', '.env.development.local'],
-      load: [appConfig, databaseConfig, jwtConfig, judgeConfig, dockerConfig],
+      load: configs,
       validationSchema,
     }),
     BullModule.forRoot({}),
