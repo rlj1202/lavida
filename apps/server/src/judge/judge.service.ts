@@ -113,24 +113,15 @@ const LOG_CONTEXT = 'JudgeService';
 
 @Injectable()
 export class JudgeService {
-  private docker: Docker;
-
   constructor(
     private readonly configService: ConfigService,
     private readonly usersService: UsersService,
     private readonly problemsService: ProblemsService,
     private readonly userProblemService: UserProblemsService,
     private readonly submissionsService: SubmissionsService,
+    private readonly docker: Docker,
   ) {
-    this.docker = new Docker();
-    this.docker
-      .ping()
-      .then(() => {
-        Logger.log('Docker has been connected.', LOG_CONTEXT);
-      })
-      .catch(() => {
-        Logger.error('Docker is not connected.', LOG_CONTEXT);
-      });
+    Logger.log('Service created', LOG_CONTEXT);
   }
 
   private async demux(stream: Duplex): Promise<{
