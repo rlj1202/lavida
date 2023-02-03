@@ -18,8 +18,6 @@ const judgeConfig = registerAs(token, () => {
     throw new Error(error.message);
   }
 
-  console.log(values.testcaseDirs);
-
   return values;
 });
 

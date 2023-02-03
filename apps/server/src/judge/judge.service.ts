@@ -1,4 +1,4 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { Duplex, PassThrough, Readable, Stream, Writable } from 'stream';
 import { readdir, readFile } from 'fs/promises';
@@ -12,6 +12,7 @@ import { SubmissionsService } from 'src/submissions/submissions.service';
 import { ProblemsService } from 'src/problems/problems.service';
 import { UserProblemsService } from 'src/userProblems/user-problems.service';
 import { UsersService } from 'src/users/users.service';
+import { AppConfigType } from 'src/config';
 
 export type JudgeStatus =
   | 'ACCEPTED'
@@ -111,18 +112,21 @@ const languageProfiles: Record<string, LanguageProfile> = {
 };
 
 @Injectable()
-export class JudgeService {
+export class JudgeService implements OnModuleInit {
   private readonly logger = new Logger(JudgeService.name);
 
   constructor(
-    private readonly configService: ConfigService,
+    private readonly configService: ConfigService<AppConfigType>,
     private readonly usersService: UsersService,
     private readonly problemsService: ProblemsService,
     private readonly userProblemService: UserProblemsService,
     private readonly submissionsService: SubmissionsService,
     private readonly docker: Docker,
-  ) {
-    this.logger.log('Service created');
+  ) {}
+
+  async onModuleInit() {
+    const testcaseDirs = this.configService.get<string[]>('judge.testcaseDirs');
+    this.logger.log(`Testcase dirs: ${testcaseDirs}`);
   }
 
   private async demux(stream: Duplex): Promise<{
