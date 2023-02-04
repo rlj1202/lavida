@@ -9,28 +9,20 @@ import {
   Strategy,
   StrategyOptions,
   VerifyCallback,
-  VerifyCallbackWithRequest,
 } from 'passport-jwt';
 
 import { User } from 'src/users/entities/user.entity';
 
 import { JwtPayload } from '../jwt-payload.interface';
 
-interface IVerifyCallback {
-  validate(...args: Parameters<VerifyCallback>): ReturnType<VerifyCallback>;
-}
+import { IVerifyCallback } from '../verify-callback.interface';
 
-// eslint-disable-next-line @typescript-eslint/no-unused-vars
-interface IVerifyCallbackWithRequest {
-  validate(
-    ...args: Parameters<VerifyCallbackWithRequest>
-  ): ReturnType<VerifyCallbackWithRequest>;
-}
+export const STRATEGY_NAME = 'jwt';
 
 @Injectable()
 export class JwtStrategy
-  extends PassportStrategy(Strategy)
-  implements IVerifyCallback
+  extends PassportStrategy(Strategy, STRATEGY_NAME)
+  implements IVerifyCallback<VerifyCallback>
 {
   constructor(
     @InjectRepository(User)

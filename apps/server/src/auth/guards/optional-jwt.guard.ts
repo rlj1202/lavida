@@ -3,8 +3,10 @@ import { AuthGuard } from '@nestjs/passport';
 
 import { User } from 'src/users/entities/user.entity';
 
+import { STRATEGY_NAME } from '../strategies/jwt.strategy';
+
 @Injectable()
-export class OptionalJwtGuard extends AuthGuard('jwt') {
+export class OptionalJwtGuard extends AuthGuard(STRATEGY_NAME) {
   handleRequest<TUser = User>(
     _err: any,
     user: TUser,

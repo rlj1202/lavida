@@ -5,14 +5,14 @@ import { IStrategyOptions, Strategy, VerifyFunction } from 'passport-local';
 import { User } from 'src/users/entities/user.entity';
 import { AuthService } from '../auth.service';
 
-interface IVerifyCallback {
-  validate(...args: Parameters<VerifyFunction>): ReturnType<VerifyFunction>;
-}
+import { IVerifyCallback } from '../verify-callback.interface';
+
+export const STRATEGY_NAME = 'local';
 
 @Injectable()
 export class LocalStrategy
-  extends PassportStrategy(Strategy)
-  implements IVerifyCallback
+  extends PassportStrategy(Strategy, STRATEGY_NAME)
+  implements IVerifyCallback<VerifyFunction>
 {
   constructor(private authService: AuthService) {
     super(<IStrategyOptions>{});

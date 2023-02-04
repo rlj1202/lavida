@@ -12,6 +12,7 @@ import {
 
 import { AppRawRule } from 'src/casl/casl-factory.factory';
 import SubjectClass from 'src/casl/subject-class.decorator';
+
 import { Submission } from 'src/submissions/entities/submission.entity';
 import { Role } from 'src/roles/entities/role.entity';
 
@@ -32,10 +33,6 @@ export class User {
   @Column()
   @Exclude()
   passwordHash: string;
-
-  @Column({ nullable: true })
-  @Exclude()
-  refreshTokenHash?: string;
 
   @Column()
   submissionCount: number;
