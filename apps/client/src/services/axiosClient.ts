@@ -1,13 +1,15 @@
 import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
 import { ClientRequest } from "http";
+import Router from "next/router";
+import HttpStatus from "http-status";
 
 import store from "../store/index";
-import { logout } from "../store/auth/authSlice";
-import Router from "next/router";
+import { refresh } from "./auth";
+import { clearAuthInfo, setAuthInfo } from "../store/auth/authSlice";
 
-// const baseURL = "http://localhost:3100/api";
-const baseURL = "http://localhost:3100";
-const client = axios.create({ baseURL });
+const serverURL = "http://localhost:3100";
+const suffixURL = "";
+const client = axios.create({ baseURL: `${serverURL}${suffixURL}` });
 
 const withAccessToken = (config: AxiosRequestConfig) => {
   if (!config.headers) return config;
@@ -32,25 +34,41 @@ client.interceptors.response.use(
     response?: AxiosResponse;
     request?: ClientRequest;
     message?: string;
-    config?: any;
+    config?: AxiosRequestConfig<any>;
   }) => {
-    const { response } = error;
+    const { response, config: originalConfig } = error;
 
     if (response) {
       const { status } = response;
 
-      if (status === 401) {
-        store.dispatch(logout());
-        Router.push("/auth/login");
-      } else if (status === 404) {
+      if (status === HttpStatus.UNAUTHORIZED) {
+        try {
+          await refresh();
+
+          console.log("The access token has been refreshed.");
+
+          if (originalConfig) {
+            return client(originalConfig);
+          }
+
+          // TODO: What should i return in this case?
+          return;
+        } catch (err) {
+          // Don't call another axios request again to solve the error.
+          // This can lead to infinite loop of requests.
+          store.dispatch(clearAuthInfo());
+
+          Router.push("/auth/login");
+
+          return Promise.reject(`Failed to refresh token: ${err}`);
+        }
+      } else if (status === HttpStatus.NOT_FOUND) {
         Router.push("/");
       }
-
-      throw response.data;
     }
 
-    throw error;
-  }
+    return Promise.reject(error);
+  },
 );
 
 export default client;

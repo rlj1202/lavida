@@ -83,85 +83,87 @@ const Problems: NextPage<
           <title>{`${Config.title} - Problems`}</title>
         </Head>
 
-        <h1>Problems</h1>
+        <div className="wrapper">
+          <h1>Problems</h1>
 
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>번호</TableCell>
-              <TableCell>제목</TableCell>
-              <TableCell>정보</TableCell>
-              <TableCell>맞힌 사람</TableCell>
-              <TableCell>제출</TableCell>
-              <TableCell>정답 비율</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {problems?.items.map((problem) => {
-              const userProblem = userProblemsQuery.data?.find(
-                (userProblem) => userProblem.problemId === problem.id
-              );
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>번호</TableCell>
+                <TableCell>제목</TableCell>
+                <TableCell>정보</TableCell>
+                <TableCell>맞힌 사람</TableCell>
+                <TableCell>제출</TableCell>
+                <TableCell>정답 비율</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {problems?.items.map((problem) => {
+                const userProblem = userProblemsQuery.data?.find(
+                  (userProblem) => userProblem.problemId === problem.id
+                );
 
-              return (
-                <TableRow key={problem.id}>
-                  <TableCell>{problem.id}</TableCell>
-                  <TableCell>
-                    <Link href={`/problems/${problem.id}`}>
-                      {problem.title}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    {userProblem?.solved === true && (
-                      <ProblemTag type="success" />
-                    )}
-                    {userProblem?.solved === false && (
-                      <ProblemTag type="wrong-answer" />
-                    )}
-                  </TableCell>
-                  <TableCell>{problem.acceptCount}</TableCell>
-                  <TableCell>{problem.submissionCount}</TableCell>
-                  <TableCell>
-                    {problem.submissionCount > 0
-                      ? (problem.acceptCount / problem.submissionCount).toFixed(
-                          2
-                        )
-                      : 0}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
+                return (
+                  <TableRow key={problem.id}>
+                    <TableCell>{problem.id}</TableCell>
+                    <TableCell>
+                      <Link href={`/problems/${problem.id}`}>
+                        {problem.title}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      {userProblem?.solved === true && (
+                        <ProblemTag type="success" />
+                      )}
+                      {userProblem?.solved === false && (
+                        <ProblemTag type="wrong-answer" />
+                      )}
+                    </TableCell>
+                    <TableCell>{problem.acceptCount}</TableCell>
+                    <TableCell>{problem.submissionCount}</TableCell>
+                    <TableCell>
+                      {problem.submissionCount > 0
+                        ? (
+                            problem.acceptCount / problem.submissionCount
+                          ).toFixed(2)
+                        : 0}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
 
-        {Array.from(new Array(pages + 1).keys())
-          .slice(1)
-          .map((i) => {
-            const isActivePage = value.page === i;
+          <div className="pagination">
+            {Array.from(new Array(pages + 1).keys())
+              .slice(1)
+              .map((i) => {
+                const isActivePage = value.page === i;
+                const activeClass = isActivePage ? "active" : "";
 
-            const activeClass = isActivePage ? "active" : "";
-
-            return (
-              <div key={i} className={`pagination ${activeClass}`}>
-                <Link href={`/problems?page=${i}`}>{i}</Link>
-              </div>
-            );
-          })}
+                return (
+                  <div key={i} className={`page-button ${activeClass}`}>
+                    <Link href={`/problems?page=${i}`}>{i}</Link>
+                  </div>
+                );
+              })}
+          </div>
+        </div>
       </Layout>
 
       <style jsx>{`
-        h1,
-        .problems {
+        .wrapper > * {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }
 
-        .pagination {
+        .page-button {
           border: 1px solid #dddddd;
           font-size: 0.9rem;
           padding: 0.4rem 0.8rem;
           display: inline-block;
         }
-        .pagination.active {
+        .page-button.active {
           background-color: var(--ansi-red);
           color: white;
           font-weight: bold;

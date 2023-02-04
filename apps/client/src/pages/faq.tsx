@@ -12,10 +12,20 @@ const Faq: NextPage = () => {
           <title>{`${Config.title} - FAQ`}</title>
         </Head>
 
-        <h1>FAQ</h1>
+        <div className="wrapper">
+          <h1>FAQ</h1>
+
+          <h2>Q. 대충 여기다가 질문을 적고</h2>
+          <p>대충 여기다가 답변을 적을 예정입니다.</p>
+        </div>
       </Layout>
 
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .wrapper > * {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+        }
+      `}</style>
     </>
   );
 };

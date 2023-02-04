@@ -38,30 +38,44 @@ const Login: NextPage = () => {
           <title>{"로그인"}</title>
         </Head>
 
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username</label>
-          <input
-            id="username"
-            type="text"
-            name="username"
-            placeholder="유저네임"
-          />
+        <div className="wrapper">
+          <h1>로그인</h1>
 
-          <label htmlFor="password">Password</label>
-          <input
-            id="password"
-            type="password"
-            name="password"
-            placeholder="비밀번호"
-            pattern="[a-zA-Z0-9]{3,20}"
-            title="Password should be digits (0 to 9) or alphabets (a to z)."
-          />
-
-          <button type="submit">로그인</button>
-        </form>
+          <form className="form" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="username">유저이름</label>
+              <input
+                id="username"
+                type="text"
+                name="username"
+                placeholder="유저네임"
+              />
+            </div>
+            <div>
+              <label htmlFor="password">비밀번호</label>
+              <input
+                id="password"
+                type="password"
+                name="password"
+                placeholder="비밀번호"
+                pattern="[a-zA-Z0-9]{3,20}"
+                title="Password should be digits (0 to 9) or alphabets (a to z)."
+              />
+            </div>
+            <button type="submit">로그인</button>
+          </form>
+        </div>
       </Layout>
 
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .wrapper > * {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .form {
+        }
+      `}</style>
     </>
   );
 };

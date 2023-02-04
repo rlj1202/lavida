@@ -12,10 +12,17 @@ const Tools: NextPage = () => {
           <title>{`${Config.title} - Tools`}</title>
         </Head>
 
-        <h1>Tools</h1>
+        <div className="wrapper">
+          <h1>Tools</h1>
+        </div>
       </Layout>
 
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .wrapper > * {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+        }
+      `}</style>
     </>
   );
 };

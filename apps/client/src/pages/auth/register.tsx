@@ -47,24 +47,44 @@ const Register: NextPage = () => {
           <title>{"회원가입"}</title>
         </Head>
 
-        <form onSubmit={handleSubmit}>
-          <label htmlFor="username">Username</label>
-          <input id="username" name="username" type="text" />
+        <div className="wrapper">
+          <h1>회원가입</h1>
 
-          <label htmlFor="email">Email</label>
-          <input id="email" name="email" type="email" />
+          <form className="form" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="username">Username</label>
+              <input id="username" name="username" type="text" />
+            </div>
 
-          <label htmlFor="password">Password</label>
-          <input id="password" name="password" type="password" />
+            <div>
+              <label htmlFor="email">Email</label>
+              <input id="email" name="email" type="email" />
+            </div>
 
-          <label htmlFor="passwordCheck">Password Check</label>
-          <input id="passwordCheck" name="passwordCheck" type="password" />
+            <div>
+              <label htmlFor="password">Password</label>
+              <input id="password" name="password" type="password" />
+            </div>
 
-          <button type="submit">등록하기</button>
-        </form>
+            <div>
+              <label htmlFor="passwordCheck">Password Check</label>
+              <input id="passwordCheck" name="passwordCheck" type="password" />
+            </div>
+
+            <button type="submit">등록하기</button>
+          </form>
+        </div>
       </Layout>
 
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .wrapper > * {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+        }
+
+        .form {
+        }
+      `}</style>
     </>
   );
 };

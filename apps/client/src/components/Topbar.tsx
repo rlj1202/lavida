@@ -1,9 +1,11 @@
 import Link from "next/link";
 import { useRouter } from "next/router";
 import React from "react";
-import { logout } from "../store/auth/authSlice";
-import { useAppDispatch, useAppSelector } from "../store/hooks";
+
 import Container from "./Container";
+
+import { logout } from "../services/auth";
+import { useAppSelector } from "../store/hooks";
 
 const PageLink: React.FC<{ pathname: string; label: string }> = ({
   pathname,
@@ -38,7 +40,6 @@ const Topbar: React.FC = () => {
   const router = useRouter();
 
   const user = useAppSelector((state) => state.auth.user);
-  const dispatch = useAppDispatch();
 
   return (
     <div className="wrapper">
@@ -58,12 +59,21 @@ const Topbar: React.FC = () => {
           <div className="authinfo">
             {user ? (
               <>
-                <button className="button" onClick={() => dispatch(logout())}>
+                <button className="button" onClick={() => logout()}>
                   로그아웃
                 </button>
-                <span>
-                  <Link href={`/users/${user.username}`}>{user.email}</Link>
-                </span>
+                <button
+                  className="button"
+                  onClick={() => router.push("/setting")}
+                >
+                  설정
+                </button>
+                <button
+                  className="button"
+                  onClick={() => router.push(`/users/${user.username}`)}
+                >
+                  내 정보
+                </button>
               </>
             ) : (
               <>

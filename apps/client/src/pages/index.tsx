@@ -14,10 +14,17 @@ export default function Home() {
           <title>{Config.title}</title>
         </Head>
 
-        <div>test</div>
+        <div className="wrapper">
+          <div>test</div>
+        </div>
       </Layout>
 
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .wrapper > * {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+        }
+      `}</style>
     </>
   );
 }

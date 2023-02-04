@@ -78,35 +78,38 @@ const Submit: NextPage<
           <title>{`${problem?.id}번 제출`}</title>
         </Head>
 
-        <h1>{problem?.title}</h1>
-        <div>문제 번호: {problem?.id}</div>
+        <div className="wrapper">
+          <h1>{problem?.title}</h1>
+          <div>문제 번호: {problem?.id}</div>
 
-        <form className="" onSubmit={handleSubmit}>
-          <div>
-            <label htmlFor="language">언어</label>
-            <select id="language" name="language">
-              <option value="C++11">C++11</option>
-              <option value="Python3">Python3</option>
-            </select>
-          </div>
-          <div>
-            <label htmlFor="code">소스 코드</label>
-            <textarea
-              id="code"
-              name="code"
-              placeholder="여기에 코드를 작성하세요"
-              className="code"
-            ></textarea>
-          </div>
-          <button type="submit">제출</button>
-        </form>
+          <form className="" onSubmit={handleSubmit}>
+            <div>
+              <label htmlFor="language">언어</label>
+              <select id="language" name="language">
+                <option value="C++11">C++11</option>
+                <option value="Python3">Python3</option>
+              </select>
+            </div>
+            <div>
+              <label htmlFor="code">소스 코드</label>
+              <textarea
+                id="code"
+                name="code"
+                placeholder="여기에 코드를 작성하세요"
+                className="code"
+              ></textarea>
+            </div>
+            <button type="submit">제출</button>
+          </form>
+        </div>
       </Layout>
 
       <style jsx>{`
-        h1 {
+        .wrapper > * {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }
+
         .code {
           display: block;
           width: 100%;

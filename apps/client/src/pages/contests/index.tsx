@@ -12,10 +12,17 @@ const Contests: NextPage = () => {
           <title>{`${Config.title} - Contests`}</title>
         </Head>
 
-        <h1>Contests</h1>
+        <div className="wrapper">
+          <h1>Contests</h1>
+        </div>
       </Layout>
 
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .wrapper > * {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+        }
+      `}</style>
     </>
   );
 };

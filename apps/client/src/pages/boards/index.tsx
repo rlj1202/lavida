@@ -12,10 +12,17 @@ const Boards: NextPage = () => {
           <title>{`${Config.title} - Boards`}</title>
         </Head>
 
-        <h1>Boards</h1>
+        <div className="wrapper">
+          <h1>Boards</h1>
+        </div>
       </Layout>
 
-      <style jsx>{``}</style>
+      <style jsx>{`
+        .wrapper > * {
+          margin-top: 1rem;
+          margin-bottom: 1rem;
+        }
+      `}</style>
     </>
   );
 };

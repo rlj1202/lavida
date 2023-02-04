@@ -31,49 +31,50 @@ const Search: NextPage = () => {
           <title>{`${Config.title} - 검색`}</title>
         </Head>
 
-        <h1>Search</h1>
+        <div className="wrapper">
+          <h1>Search</h1>
 
-        <div className="search-form">
-          <label htmlFor="query">검색어</label>
-          <input
-            id="query"
-            type="text"
-            onChange={(event) => setQueryString(event.currentTarget.value)}
-          />
+          <div className="search-form">
+            <label htmlFor="query">검색어</label>
+            <input
+              id="query"
+              type="text"
+              onChange={(event) => setQueryString(event.currentTarget.value)}
+            />
+          </div>
+
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>제목</TableCell>
+                <TableCell>내용</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {query.isSuccess &&
+                query.data.items.map((problem) => {
+                  return (
+                    <TableRow key={problem.id}>
+                      <TableCell>
+                        <Link href={`/problems/${problem.id}`}>
+                          {problem.title}
+                        </Link>
+                      </TableCell>
+                      <TableCell>
+                        <span className="problem-description">
+                          {problem.description}
+                        </span>
+                      </TableCell>
+                    </TableRow>
+                  );
+                })}
+            </TableBody>
+          </Table>
         </div>
-
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>제목</TableCell>
-              <TableCell>내용</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {query.isSuccess &&
-              query.data.items.map((problem) => {
-                return (
-                  <TableRow key={problem.id}>
-                    <TableCell>
-                      <Link href={`/problems/${problem.id}`}>
-                        {problem.title}
-                      </Link>
-                    </TableCell>
-                    <TableCell>
-                      <span className="problem-description">
-                        {problem.description}
-                      </span>
-                    </TableCell>
-                  </TableRow>
-                );
-              })}
-          </TableBody>
-        </Table>
       </Layout>
 
       <style jsx>{`
-        h1,
-        .search-form {
+        .wrapper > * {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }

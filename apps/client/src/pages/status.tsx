@@ -147,95 +147,92 @@ const Status: NextPage = () => {
           <title>{`${Config.title} - Status`}</title>
         </Head>
 
-        <h1>Status</h1>
+        <div className="wrapper">
+          <h1>Status</h1>
 
-        <div className="form">
-          <label htmlFor="username">유저 이름</label>
-          <input ref={usernameRef} id="username" type="text" />
+          <div className="form">
+            <label htmlFor="username">유저 이름</label>
+            <input ref={usernameRef} id="username" type="text" />
 
-          <label htmlFor="problem-id">문제 번호</label>
-          <input ref={problemIdRef} id="problem-id" type="text" />
+            <label htmlFor="problem-id">문제 번호</label>
+            <input ref={problemIdRef} id="problem-id" type="text" />
 
-          <button onClick={handleSearch}>검색</button>
+            <button onClick={handleSearch}>검색</button>
+          </div>
+
+          <Table>
+            <TableHead>
+              <TableRow>
+                <TableCell>번호</TableCell>
+                <TableCell>문제 번호</TableCell>
+                <TableCell>유저 이름</TableCell>
+                <TableCell>상태</TableCell>
+                <TableCell>제출 날짜</TableCell>
+              </TableRow>
+            </TableHead>
+            <TableBody>
+              {query.data?.items.map((submission) => {
+                const info = statuses.get(submission.id);
+
+                const status = info?.status || submission.status;
+                const progress = info?.progress || 0;
+
+                let statusIndicator = `${status}`;
+
+                if (status === "JUDGING") {
+                  statusIndicator = `${status} ${progress.toFixed(2)}%`;
+                }
+
+                let statusClassName = "";
+                switch (status) {
+                  case "ACCEPTED":
+                    statusClassName = "status-ac";
+                    break;
+                  case "WRONG_ANSWER":
+                    statusClassName = "status-wa";
+                    break;
+                  case "TIME_LIMIT_EXCEEDED":
+                    statusClassName = "status-tle";
+                    break;
+                  case "MEMORY_LIMIT_EXCEEDED":
+                    statusClassName = "status-mem";
+                    break;
+                  case "SERVER_ERROR":
+                    statusClassName = "status-er";
+                    break;
+                }
+
+                return (
+                  <TableRow key={submission.id}>
+                    <TableCell>{submission.id}</TableCell>
+                    <TableCell>
+                      <Link href={`/problems/${submission.problemId}`}>
+                        {submission.problemId}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <Link href={`/users/${submission.user?.username}`}>
+                        {submission.user?.username}
+                      </Link>
+                    </TableCell>
+                    <TableCell>
+                      <span className={`${statusClassName}`}>
+                        {statusIndicator}
+                      </span>
+                    </TableCell>
+                    <TableCell>
+                      {dateTimeFormat.format(new Date(submission.createdAt))}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
+          </Table>
         </div>
-
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell>번호</TableCell>
-              <TableCell>문제 번호</TableCell>
-              <TableCell>유저 이름</TableCell>
-              <TableCell>상태</TableCell>
-              <TableCell>제출 날짜</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {query.data?.items.map((submission) => {
-              const info = statuses.get(submission.id);
-
-              const status = info?.status || submission.status;
-              const progress = info?.progress || 0;
-
-              let statusIndicator = `${status}`;
-
-              if (status === "JUDGING") {
-                statusIndicator = `${status} ${progress.toFixed(2)}%`;
-              }
-
-              let statusClassName = "";
-              switch (status) {
-                case "ACCEPTED":
-                  statusClassName = "status-ac";
-                  break;
-                case "WRONG_ANSWER":
-                  statusClassName = "status-wa";
-                  break;
-                case "TIME_LIMIT_EXCEEDED":
-                  statusClassName = "status-tle";
-                  break;
-                case "MEMORY_LIMIT_EXCEEDED":
-                  statusClassName = "status-mem";
-                  break;
-                case "SERVER_ERROR":
-                  statusClassName = "status-er";
-                  break;
-              }
-
-              return (
-                <TableRow key={submission.id}>
-                  <TableCell>{submission.id}</TableCell>
-                  <TableCell>
-                    <Link href={`/problems/${submission.problemId}`}>
-                      {submission.problemId}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <Link href={`/users/${submission.user?.username}`}>
-                      {submission.user?.username}
-                    </Link>
-                  </TableCell>
-                  <TableCell>
-                    <span className={`${statusClassName}`}>
-                      {statusIndicator}
-                    </span>
-                  </TableCell>
-                  <TableCell>
-                    {dateTimeFormat.format(new Date(submission.createdAt))}
-                  </TableCell>
-                </TableRow>
-              );
-            })}
-          </TableBody>
-        </Table>
       </Layout>
 
       <style jsx>{`
-        h1 {
-          margin-top: 1rem;
-          margin-bottom: 1rem;
-        }
-
-        .form {
+        .wrapper > * {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }

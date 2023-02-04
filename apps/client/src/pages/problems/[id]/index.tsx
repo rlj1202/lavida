@@ -87,112 +87,121 @@ const Problem: NextPage<
           <title>{`${Config.title} - ${problem?.title}`}</title>
         </Head>
 
-        <h1>{problem?.title}</h1>
-        {userProblemsQuery.data?.find((item) => item.problemId === problem?.id)
-          ?.solved === true && <ProblemTag type="success" />}
-        {userProblemsQuery.data?.find((item) => item.problemId === problem?.id)
-          ?.solved === false && <ProblemTag type="wrong-answer" />}
-        <table className="info">
-          <thead>
-            <tr>
-              <td>시간 제한</td>
-              <td>메모리 제한</td>
-              <td>제출</td>
-              <td>맞힌 사람</td>
-              <td>정답 비율</td>
-            </tr>
-          </thead>
-          <tbody>
-            <tr>
-              <td>
-                {unitToString(convert(problem?.timeLimit).from("ms").toBest())}
-              </td>
-              <td>
-                {unitToString(convert(problem?.memoryLimit).from("b").toBest())}
-              </td>
-              <td>{problem?.acceptCount}</td>
-              <td>{problem?.submissionCount}</td>
-              <td>
-                {problemQuery.isSuccess && problemQuery.data.submissionCount > 0
-                  ? (
-                      problemQuery.data.acceptCount /
-                      problemQuery.data.submissionCount
-                    ).toFixed(2)
-                  : 0}
-              </td>
-            </tr>
-          </tbody>
-        </table>
-        <h2>설명</h2>
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeKatex, rehypeRaw]}
-        >
-          {problem?.description || ""}
-        </ReactMarkdown>
-        <h2>입력</h2>
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeKatex, rehypeRaw]}
-        >
-          {problem?.inputDesc || ""}
-        </ReactMarkdown>
-        <h2>출력</h2>
-        <ReactMarkdown
-          remarkPlugins={[remarkGfm, remarkMath]}
-          rehypePlugins={[rehypeKatex, rehypeRaw]}
-        >
-          {problem?.outputDesc || ""}
-        </ReactMarkdown>
-        {problem?.samples &&
-          problem.samples.map((sample, i) => {
-            return (
-              <Fragment key={i}>
-                <h2>예제 입력 {i + 1}</h2>
-                <button onClick={() => handleCopy(sample.input)}>복사</button>
-                <pre className="sample">
-                  <code>{sample.input}</code>
-                </pre>
-                <h2>예제 출력 {i + 1}</h2>
-                <button onClick={() => handleCopy(sample.output)}>복사</button>
-                <pre className="sample">
-                  <code>{sample.output}</code>
-                </pre>
-              </Fragment>
-            );
-          })}
-        {problem?.hint && (
-          <>
-            <h2>힌트</h2>
-            <ReactMarkdown
-              remarkPlugins={[remarkGfm, remarkMath]}
-              rehypePlugins={[rehypeKatex, rehypeRaw]}
-            >
-              {problem?.hint}
-            </ReactMarkdown>
-          </>
-        )}
-        {problem?.source && (
-          <>
-            <h2>출처</h2>
-            <p>{problem?.source}</p>
-          </>
-        )}
+        <div className="wrapper">
+          <h1>{problem?.title}</h1>
+          {userProblemsQuery.data?.find(
+            (item) => item.problemId === problem?.id
+          )?.solved === true && <ProblemTag type="success" />}
+          {userProblemsQuery.data?.find(
+            (item) => item.problemId === problem?.id
+          )?.solved === false && <ProblemTag type="wrong-answer" />}
 
-        <button onClick={() => router.push(`/submit/${problem?.id}`)}>
-          제출하기
-        </button>
+          <table className="info">
+            <thead>
+              <tr>
+                <td>시간 제한</td>
+                <td>메모리 제한</td>
+                <td>제출</td>
+                <td>맞힌 사람</td>
+                <td>정답 비율</td>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <td>
+                  {unitToString(
+                    convert(problem?.timeLimit).from("ms").toBest()
+                  )}
+                </td>
+                <td>
+                  {unitToString(
+                    convert(problem?.memoryLimit).from("b").toBest()
+                  )}
+                </td>
+                <td>{problem?.acceptCount}</td>
+                <td>{problem?.submissionCount}</td>
+                <td>
+                  {problemQuery.isSuccess &&
+                  problemQuery.data.submissionCount > 0
+                    ? (
+                        problemQuery.data.acceptCount /
+                        problemQuery.data.submissionCount
+                      ).toFixed(2)
+                    : 0}
+                </td>
+              </tr>
+            </tbody>
+          </table>
+          <h2>설명</h2>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex, rehypeRaw]}
+          >
+            {problem?.description || ""}
+          </ReactMarkdown>
+          <h2>입력</h2>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex, rehypeRaw]}
+          >
+            {problem?.inputDesc || ""}
+          </ReactMarkdown>
+          <h2>출력</h2>
+          <ReactMarkdown
+            remarkPlugins={[remarkGfm, remarkMath]}
+            rehypePlugins={[rehypeKatex, rehypeRaw]}
+          >
+            {problem?.outputDesc || ""}
+          </ReactMarkdown>
+          {problem?.samples &&
+            problem.samples.map((sample, i) => {
+              return (
+                <Fragment key={i}>
+                  <h2>예제 입력 {i + 1}</h2>
+                  <button onClick={() => handleCopy(sample.input)}>복사</button>
+                  <pre className="sample">
+                    <code>{sample.input}</code>
+                  </pre>
+                  <h2>예제 출력 {i + 1}</h2>
+                  <button onClick={() => handleCopy(sample.output)}>
+                    복사
+                  </button>
+                  <pre className="sample">
+                    <code>{sample.output}</code>
+                  </pre>
+                </Fragment>
+              );
+            })}
+          {problem?.hint && (
+            <>
+              <h2>힌트</h2>
+              <ReactMarkdown
+                remarkPlugins={[remarkGfm, remarkMath]}
+                rehypePlugins={[rehypeKatex, rehypeRaw]}
+              >
+                {problem?.hint}
+              </ReactMarkdown>
+            </>
+          )}
+          {problem?.source && (
+            <>
+              <h2>출처</h2>
+              <p>{problem?.source}</p>
+            </>
+          )}
+
+          <button onClick={() => router.push(`/submit/${problem?.id}`)}>
+            제출하기
+          </button>
+        </div>
       </Layout>
 
       <style jsx>{`
-        p,
-        .info,
-        h1,
-        h2,
-        .sample {
+        .wrapper > * {
           margin-top: 1rem;
           margin-bottom: 1rem;
         }
+
         .info,
         .info tr,
         .info td {
