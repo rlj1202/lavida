@@ -36,9 +36,9 @@ import { JudgeGateway } from './judge.gateway';
         const logger = new Logger(JudgeModule.name);
 
         if (socketPath) {
-          logger.log(`Connect docker to "${socketPath}"`);
+          logger.verbose(`Connect docker to "${socketPath}"`);
         } else if (host) {
-          logger.log(`Connect docker to "${host}:${port}"`);
+          logger.verbose(`Connect docker to "${host}:${port}"`);
         }
 
         const docker = new Docker({

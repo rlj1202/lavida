@@ -27,15 +27,15 @@ export class JudgeGateway
   server: Server;
 
   async afterInit(_server: Server) {
-    this.logger.log('Init');
+    this.logger.verbose('Init');
   }
 
   async handleConnection(_client: Socket, ..._args: any[]) {
-    this.logger.log('WS connected');
+    this.logger.verbose('WS connected');
   }
 
   async handleDisconnect(_client: Socket) {
-    this.logger.log('WS disconnected');
+    this.logger.verbose('WS disconnected');
   }
 
   async reportStatus(

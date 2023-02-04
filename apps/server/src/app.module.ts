@@ -102,9 +102,9 @@ const validationSchema = Joi.object({
 
         const logger = new Logger(MailerModule.name);
 
-        logger.log(`Transport URL: ${options.transport}`);
-        logger.log(`From username: ${options.defaults.from}`);
-        logger.log(`Template dir: ${options.template.dir}`);
+        logger.verbose(`Transport URL: ${options.transport}`);
+        logger.verbose(`From username: ${options.defaults.from}`);
+        logger.verbose(`Template dir: ${options.template.dir}`);
 
         return options;
       },

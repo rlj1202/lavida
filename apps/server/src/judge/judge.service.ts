@@ -126,7 +126,7 @@ export class JudgeService implements OnModuleInit {
 
   async onModuleInit() {
     const testcaseDirs = this.configService.get<string[]>('judge.testcaseDirs');
-    this.logger.log(`Testcase dirs: ${testcaseDirs}`);
+    this.logger.verbose(`Testcase dirs: ${testcaseDirs}`);
   }
 
   private async demux(stream: Duplex): Promise<{
