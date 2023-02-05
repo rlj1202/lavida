@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, OnModuleInit } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -17,6 +17,7 @@ import { RegisterDto } from './dto/register.dto';
 import { JwtPayload } from './jwt-payload.interface';
 
 import { AppConfigType } from 'src/config';
+import { MailerService } from '@nestjs-modules/mailer';
 
 export class InvalidUserCredentialsError extends Error {
   constructor() {
@@ -25,14 +26,19 @@ export class InvalidUserCredentialsError extends Error {
 }
 
 @Injectable()
-export class AuthService {
+export class AuthService implements OnModuleInit {
   constructor(
     private readonly usersService: UsersService,
     private readonly jwtService: JwtService,
     private readonly configService: ConfigService<AppConfigType, true>,
     @InjectRepository(RefreshToken)
     private readonly refreshTokensRepository: Repository<RefreshToken>,
+    private readonly mailerService: MailerService,
   ) {}
+
+  async onModuleInit() {
+    return;
+  }
 
   /** @throws {InvalidUserCredentialsError} */
   async validateUser(username: string, password: string): Promise<User> {
@@ -50,6 +56,27 @@ export class AuthService {
     const user = await this.usersService.create({
       ...registerDto,
     });
+
+    try {
+      this.mailerService.sendMail({
+        to: user.email,
+        // Set by default values of MailerModule
+        // from: '',
+        subject: 'Lavida 가입을 환영합니다',
+        template: 'registerGreeting',
+        context: {
+          user: {
+            username: user.username,
+          },
+        },
+      });
+    } catch (err) {
+      if (err instanceof ReferenceError) {
+        throw err;
+      }
+
+      throw err;
+    }
 
     return user;
   }

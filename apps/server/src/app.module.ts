@@ -95,6 +95,7 @@ const validationSchema = Joi.object({
             dir: path.join(process.cwd(), '/templates'),
             adapter: new EjsAdapter(),
             options: {
+              // Enabling this options makes it to use `locals` object.
               strict: true,
             },
           },
