@@ -9,6 +9,7 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { AppRawRule } from 'src/casl/casl-factory.factory';
 import SubjectClass from 'src/casl/subject-class.decorator';
@@ -21,12 +22,15 @@ import { Role } from 'src/roles/entities/role.entity';
 export class User {
   static readonly modelName = 'User';
 
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column({ unique: true })
   username: string;
 
+  @ApiProperty()
   @Column({ unique: true })
   email: string;
 
@@ -34,18 +38,23 @@ export class User {
   @Exclude()
   passwordHash: string;
 
+  @ApiProperty()
   @Column()
   submissionCount: number;
 
+  @ApiProperty()
   @Column()
   acceptCount: number;
 
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @ApiProperty()
   @DeleteDateColumn()
   deletedAt: Date;
 
@@ -55,9 +64,11 @@ export class User {
   @ManyToOne(() => Role)
   role?: Role;
 
+  @ApiProperty()
   @Column({ nullable: true })
   roleId?: number;
 
+  @ApiProperty()
   @Column({ type: 'json', nullable: true })
   permissions?: AppRawRule[];
 }

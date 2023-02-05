@@ -8,7 +8,9 @@ import {
 
 import { Problem } from 'src/problems/entities/problem.entity';
 import { User } from 'src/users/entities/user.entity';
+
 import SubjectClass from 'src/casl/subject-class.decorator';
+import { ApiProperty } from '@nestjs/swagger';
 
 export enum SubmissionStatus {
   SUBMITTED = 'SUBMITTED',
@@ -27,33 +29,41 @@ export enum SubmissionStatus {
 export class Submission {
   static readonly modelName = 'Submission';
 
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => Problem)
   problem: Problem;
 
+  @ApiProperty()
   @Column()
   problemId: number;
 
   @ManyToOne(() => User)
   user: User;
 
+  @ApiProperty()
   @Column()
   userId: number;
 
+  @ApiProperty()
   @Column({ default: 0 })
   time: number;
 
+  @ApiProperty()
   @Column({ default: 0 })
   memory: number;
 
+  @ApiProperty()
   @Column()
   language: string;
 
+  @ApiProperty()
   @Column({ type: 'text' })
   code: string;
 
+  @ApiProperty({ enum: SubmissionStatus })
   @Column({
     type: 'enum',
     enum: SubmissionStatus,
@@ -61,6 +71,7 @@ export class Submission {
   })
   status: SubmissionStatus;
 
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 }

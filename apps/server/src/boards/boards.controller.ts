@@ -7,6 +7,13 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CheckPolicies } from 'src/casl/check-policies.decorator';
@@ -18,11 +25,14 @@ import { BoardsService } from './boards.service';
 
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';
+import { Board } from './entities/board.entity';
 
+@ApiTags('boards')
 @Controller('boards')
 export class BoardsController {
   constructor(private readonly boardsService: BoardsService) {}
 
+  @ApiOkResponse({ type: Board })
   @Get(':id')
   async findById(@Param('id') id: number) {
     const board = await this.boardsService.findById(id);
@@ -30,6 +40,19 @@ export class BoardsController {
     return board;
   }
 
+  @ApiOkResponse({
+    schema: { type: 'array', items: { $ref: getSchemaPath(Board) } },
+  })
+  @Get()
+  async findAll() {
+    const boards = await this.boardsService.findAll();
+
+    return boards;
+  }
+
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateBoardDto })
+  @ApiOkResponse({ type: Board })
   @Post()
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(CreateBoardHandler)
@@ -39,6 +62,8 @@ export class BoardsController {
     return board;
   }
 
+  @ApiBearerAuth()
+  @ApiBody({ type: UpdateBoardDto })
   @Patch(':id')
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(UpdateBoardHandler)

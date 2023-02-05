@@ -1,12 +1,14 @@
 import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
 import { EntityNotFoundError } from 'typeorm';
 import { plainToClass } from 'class-transformer';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
 import { UserProblemsService } from 'src/userProblems/user-problems.service';
 
-import { UserInfoDTO } from './dto/user-info.dto';
+import { UserInfoDto } from './dto/user-info.dto';
 
+@ApiTags('users')
 @Controller('users')
 export class UsersController {
   constructor(
@@ -14,6 +16,7 @@ export class UsersController {
     private readonly userProblemsService: UserProblemsService,
   ) {}
 
+  @ApiOkResponse({ type: UserInfoDto })
   @Get(':username')
   async findUserByUsername(@Param('username') username: string) {
     try {
@@ -22,7 +25,7 @@ export class UsersController {
         username,
       );
 
-      return plainToClass(UserInfoDTO, {
+      return plainToClass(UserInfoDto, {
         ...user,
         problems: userProblems,
       });

@@ -7,6 +7,12 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CheckPolicies } from 'src/casl/check-policies.decorator';
@@ -14,15 +20,20 @@ import { GetUser } from 'src/auth/user.decorator';
 import { PoliciesGuard } from 'src/casl/policies.guard';
 
 import { User } from 'src/users/entities/user.entity';
+import { Contest } from './entities/contest.entity';
 
-import { CreateContestHandler, DeleteContestHandler } from './contests.handler';
 import { ContestsService } from './contests.service';
+
 import { CreateContestDto } from './dto/create-contest.dto';
 
+import { CreateContestHandler, DeleteContestHandler } from './contests.handler';
+
+@ApiTags('contests')
 @Controller('contests')
 export class ContestsController {
   constructor(private readonly contestsService: ContestsService) {}
 
+  @ApiOkResponse({ type: Contest })
   @Get(':id')
   async findById(@Param('id') id: number) {
     const contest = await this.contestsService.findById(id);
@@ -30,6 +41,9 @@ export class ContestsController {
     return contest;
   }
 
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateContestDto })
+  @ApiOkResponse({ type: Contest })
   @Post()
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(CreateContestHandler)
@@ -42,6 +56,7 @@ export class ContestsController {
     return contest;
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(DeleteContestHandler)

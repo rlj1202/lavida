@@ -10,6 +10,13 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import { EntityNotFoundError } from 'typeorm';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { GetUser } from 'src/auth/user.decorator';
@@ -29,12 +36,13 @@ import {
   DeleteWorkbookHandler,
   UpdateWorkbookHandler,
 } from './workbooks.handler';
-import { EntityNotFoundError } from 'typeorm';
 
+@ApiTags('workbooks')
 @Controller('workbooks')
 export class WorkbooksController {
   constructor(private readonly workbooksService: WorkbooksService) {}
 
+  @ApiOkResponse({ type: Workbook })
   @Get(':id')
   async findById(@Param('id') id: number) {
     try {
@@ -50,6 +58,9 @@ export class WorkbooksController {
     }
   }
 
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateWorkbookDto })
+  @ApiOkResponse({ type: Workbook })
   @Post()
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(CreateWorkbookHandler)
@@ -65,6 +76,8 @@ export class WorkbooksController {
     return workbook;
   }
 
+  @ApiBearerAuth()
+  @ApiBody({ type: UpdateWorkbookDto })
   @Patch(':id')
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(UpdateWorkbookHandler)
@@ -75,6 +88,7 @@ export class WorkbooksController {
     await this.workbooksService.update(id, updateWorkbookDto);
   }
 
+  @ApiBearerAuth()
   @Delete(':id')
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(DeleteWorkbookHandler)

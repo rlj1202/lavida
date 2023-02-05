@@ -13,7 +13,9 @@ import {
 
 import { User } from 'src/users/entities/user.entity';
 import { Article } from 'src/articles/entities/article.entity';
+
 import SubjectClass from 'src/casl/subject-class.decorator';
+import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 @Tree('closure-table')
@@ -21,15 +23,18 @@ import SubjectClass from 'src/casl/subject-class.decorator';
 export class Comment {
   static readonly modelName = 'Comment';
 
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
   @ManyToOne(() => User)
   author: User;
 
+  @ApiProperty()
   @Column()
   authorId: number;
 
+  @ApiProperty()
   @Column({ type: 'text' })
   content: string;
 
@@ -42,12 +47,15 @@ export class Comment {
   @TreeChildren()
   children: Comment[];
 
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 
+  @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
 
+  @ApiProperty()
   @DeleteDateColumn()
   deletedAt: Date;
 }

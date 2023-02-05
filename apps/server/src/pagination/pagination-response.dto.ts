@@ -1,3 +1,4 @@
+import { ApiProperty } from '@nestjs/swagger';
 import { PaginationOptionsDTO } from './pagination-options.dto';
 
 export class PaginationResponseDTO<T> {
@@ -10,8 +11,13 @@ export class PaginationResponseDTO<T> {
   }
 
   readonly items: T[];
+
+  @ApiProperty()
   readonly total: number;
 
+  @ApiProperty()
   readonly offset: number;
+
+  @ApiProperty()
   readonly limit: number;
 }

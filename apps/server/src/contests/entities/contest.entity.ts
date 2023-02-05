@@ -6,9 +6,11 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { ContestProblem } from './contest-problem.entity';
 import { User } from 'src/users/entities/user.entity';
+
 import SubjectClass from 'src/casl/subject-class.decorator';
 
 @Entity()
@@ -16,18 +18,23 @@ import SubjectClass from 'src/casl/subject-class.decorator';
 export class Contest {
   static readonly modelName = 'Contest';
 
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column({ type: 'text' })
   title: string;
 
+  @ApiProperty()
   @Column({ type: 'text' })
   description: string;
 
+  @ApiProperty()
   @Column()
   startAt: Date;
 
+  @ApiProperty()
   @Column()
   endAt: Date;
 
@@ -35,6 +42,7 @@ export class Contest {
   @ManyToOne(() => User)
   author: User;
 
+  @ApiProperty()
   @Column()
   authorId: number;
 
@@ -50,6 +58,7 @@ export class Contest {
   @ManyToMany(() => ContestProblem)
   contestProblems: ContestProblem[];
 
+  @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
 }

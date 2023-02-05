@@ -6,6 +6,7 @@ import {
   TreeChildren,
   TreeParent,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { AppRawRule } from 'src/casl/casl-factory.factory';
 import SubjectClass from 'src/casl/subject-class.decorator';
@@ -16,9 +17,11 @@ import SubjectClass from 'src/casl/subject-class.decorator';
 export class Role {
   static readonly modelName = 'Role';
 
+  @ApiProperty()
   @PrimaryGeneratedColumn()
   id: number;
 
+  @ApiProperty()
   @Column({ unique: true })
   name: string;
 

@@ -1,6 +1,8 @@
+import { ApiProperty } from '@nestjs/swagger';
+import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
+
 import { Problem } from 'src/problems/entities/problem.entity';
 import { User } from 'src/users/entities/user.entity';
-import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 
 @Entity()
 export class UserProblem {
@@ -10,9 +12,11 @@ export class UserProblem {
     this.solved = solved;
   }
 
+  @ApiProperty()
   @PrimaryColumn()
   userId: number;
 
+  @ApiProperty()
   @PrimaryColumn()
   problemId: number;
 
@@ -22,6 +26,7 @@ export class UserProblem {
   @ManyToOne(() => Problem)
   problem: Problem;
 
+  @ApiProperty()
   @Column()
   solved: boolean;
 }

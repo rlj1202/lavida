@@ -7,6 +7,14 @@ import {
   Post,
   UseGuards,
 } from '@nestjs/common';
+import {
+  ApiBasicAuth,
+  ApiBearerAuth,
+  ApiBody,
+  ApiOkResponse,
+  ApiResponse,
+  ApiTags,
+} from '@nestjs/swagger';
 
 import { GetUser } from 'src/auth/user.decorator';
 
@@ -15,12 +23,18 @@ import { User } from 'src/users/entities/user.entity';
 import { MailerService } from '@nestjs-modules/mailer';
 import { AuthService } from './auth.service';
 
+import { LoginDto } from './dto/login.dto';
+import { LoginResponseDto } from './dto/login-response.dto';
 import { RegisterDto } from './dto/register.dto';
+import { RegisterResponseDto } from './dto/register-response.dto';
+import { RefreshResponseDto } from './dto/refresh-response.dto';
+import { RefreshDto } from './dto/refresh.dto';
 
 import { LocalAuthGuard } from './guards/local.guard';
 import { JwtGuard } from './guards/jwt.guard';
 import { JwtRefreshGuard } from './guards/refresh-jwt.guard';
 
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
   constructor(
@@ -28,16 +42,20 @@ export class AuthController {
     private readonly mailerService: MailerService,
   ) {}
 
+  @ApiBearerAuth()
   @UseGuards(JwtGuard)
   @Get()
   async authenticate(@GetUser() user: User) {
     return user;
   }
 
+  @ApiBasicAuth()
+  @ApiBody({ type: LoginDto })
+  @ApiOkResponse({ type: LoginResponseDto })
   @HttpCode(HttpStatus.OK)
   @UseGuards(LocalAuthGuard)
   @Post('login')
-  async login(@GetUser() user: User) {
+  async login(@GetUser() user: User): Promise<LoginResponseDto> {
     const accessToken = await this.authService.generateAccessToken(user);
     const refreshToken = await this.authService.generateRefreshToken();
 
@@ -50,15 +68,19 @@ export class AuthController {
     };
   }
 
+  @ApiBearerAuth()
   @Post('logout')
   @UseGuards(JwtGuard)
   async logout(@GetUser() user: User) {
     await this.authService.setRefreshToken(user.id, null);
   }
 
+  @ApiOkResponse({ type: RegisterResponseDto })
   @HttpCode(HttpStatus.OK)
   @Post('register')
-  async register(@Body() registerDto: RegisterDto) {
+  async register(
+    @Body() registerDto: RegisterDto,
+  ): Promise<RegisterResponseDto> {
     const user = await this.authService.register(registerDto);
 
     const accessToken = await this.authService.generateAccessToken(user);
@@ -94,9 +116,19 @@ export class AuthController {
     };
   }
 
+  @ApiBody({ type: RefreshDto })
+  @ApiOkResponse({ type: RefreshResponseDto })
+  @ApiResponse({
+    status: HttpStatus.BAD_REQUEST,
+    description: 'Refresh token is not provided.',
+  })
+  @ApiResponse({
+    status: HttpStatus.UNAUTHORIZED,
+    description: 'Refresh token has been expired.',
+  })
   @Post('refresh')
   @UseGuards(JwtRefreshGuard)
-  async refresh(@GetUser() user: User) {
+  async refresh(@GetUser() user: User): Promise<RefreshResponseDto> {
     const accessToken = await this.authService.generateAccessToken(user);
     const refreshToken = await this.authService.generateRefreshToken();
 

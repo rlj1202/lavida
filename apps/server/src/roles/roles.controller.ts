@@ -8,6 +8,14 @@ import {
   UseGuards,
 } from '@nestjs/common';
 import { subject } from '@casl/ability';
+import {
+  ApiBearerAuth,
+  ApiBody,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { CheckPolicies } from 'src/casl/check-policies.decorator';
@@ -17,13 +25,26 @@ import { RolesService } from './roles.service';
 
 import { CreateRoleHandler, ReadRoleHandler } from './roles.handler';
 
+import { Role } from './entities/role.entity';
+
 import { CreateRoleDto } from './dto/create-role.dto';
 import { CreatePermissionDto } from './dto/create-permission.dto';
 
+@ApiTags('roles')
+@ApiExtraModels(Role)
 @Controller('roles')
 export class RolesController {
   constructor(private readonly rolesService: RolesService) {}
 
+  @ApiBearerAuth()
+  @ApiOkResponse({
+    schema: {
+      type: 'array',
+      items: {
+        $ref: getSchemaPath(Role),
+      },
+    },
+  })
   @Get()
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(ReadRoleHandler)
@@ -33,6 +54,8 @@ export class RolesController {
     return roles;
   }
 
+  @ApiBearerAuth()
+  @ApiOkResponse({ type: Role })
   @Get(':id')
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies([
@@ -49,6 +72,8 @@ export class RolesController {
     return role;
   }
 
+  @ApiBearerAuth()
+  @ApiOkResponse({ schema: { type: 'array', items: { type: 'object' } } })
   @Get(':id/permissions')
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies([
@@ -61,6 +86,8 @@ export class RolesController {
     return role.permissions;
   }
 
+  @ApiBearerAuth()
+  @ApiBody({ type: CreatePermissionDto })
   @Post(':id/permissions')
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies([
@@ -78,6 +105,7 @@ export class RolesController {
     await this.rolesService.addPermission(id, createPermissionDto);
   }
 
+  @ApiBearerAuth()
   @Delete(':id/permissions/:index')
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies([
@@ -95,6 +123,9 @@ export class RolesController {
     await this.rolesService.removePermission(id, index);
   }
 
+  @ApiBearerAuth()
+  @ApiBody({ type: CreateRoleDto })
+  @ApiOkResponse({ type: Role })
   @Post()
   @UseGuards(JwtGuard, PoliciesGuard)
   @CheckPolicies(CreateRoleHandler)
