@@ -29,6 +29,7 @@ export class UsersService {
     private readonly userProblemService: UserProblemsService,
   ) {}
 
+  /** @throws {EntityNotFoundError} */
   async findById(id: number): Promise<User> {
     const user = await this.usersRepository.findOneOrFail({
       where: { id },
@@ -37,6 +38,7 @@ export class UsersService {
     return user;
   }
 
+  /** @throws {EntityNotFoundError} */
   async findByUsername(username: string): Promise<User> {
     const user = await this.usersRepository.findOneOrFail({
       where: { username },
@@ -45,6 +47,7 @@ export class UsersService {
     return user;
   }
 
+  /** @throws {EntityNotFoundError} */
   async findByEmail(email: string): Promise<User> {
     const user = await this.usersRepository.findOneOrFail({
       where: { email },
@@ -73,6 +76,7 @@ export class UsersService {
     return user;
   }
 
+  /** @throws {EntityNotFoundError} */
   async update(id: number, updateUserDto: UpdateUserDto): Promise<User> {
     const user = await this.findById(id);
     if (updateUserDto.email) {

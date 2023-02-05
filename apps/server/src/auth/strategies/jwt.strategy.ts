@@ -1,8 +1,8 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { PassportStrategy } from '@nestjs/passport';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { EntityNotFoundError, Repository } from 'typeorm';
 import { Request } from 'express';
 import {
   ExtractJwt,
@@ -52,15 +52,23 @@ export class JwtStrategy
    * @returns User entity
    */
   async validate(payload: JwtPayload): Promise<User> {
-    const user = await this.usersRepository.findOneOrFail({
-      where: {
-        id: payload.id,
-      },
-      relations: {
-        role: true,
-      },
-    });
+    try {
+      const user = await this.usersRepository.findOneOrFail({
+        where: {
+          id: payload.id,
+        },
+        relations: {
+          role: true,
+        },
+      });
 
-    return user;
+      return user;
+    } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw new HttpException('Invalid user id', HttpStatus.BAD_REQUEST);
+      }
+
+      throw err;
+    }
   }
 }

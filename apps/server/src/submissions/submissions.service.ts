@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DeepPartial, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
@@ -55,14 +55,11 @@ export class SubmissionsService {
     return submissions;
   }
 
+  /** @throws {EntityNotFoundError} */
   async findById(id: number): Promise<Submission> {
-    const submission = await this.submissionsRepository.findOne({
+    const submission = await this.submissionsRepository.findOneOrFail({
       where: { id },
     });
-
-    if (!submission) {
-      throw new HttpException('Submission not found', HttpStatus.NOT_FOUND);
-    }
 
     return submission;
   }

@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { Request } from 'express';
 import { Strategy } from 'passport-custom';
+import { EntityNotFoundError } from 'typeorm';
 
 import { User } from 'src/users/entities/user.entity';
 
@@ -35,15 +36,23 @@ export class JwtRefreshStrategy
       );
     }
 
-    const refreshToken = await this.authService.validateRefreshToken(token);
+    try {
+      const refreshToken = await this.authService.validateRefreshToken(token);
 
-    if (refreshToken.expiresAt < new Date()) {
-      throw new HttpException(
-        'Refresh token has been expired.',
-        HttpStatus.UNAUTHORIZED,
-      );
+      if (refreshToken.expiresAt < new Date()) {
+        throw new HttpException(
+          'Refresh token has been expired.',
+          HttpStatus.UNAUTHORIZED,
+        );
+      }
+
+      return refreshToken.user;
+    } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw new HttpException('no refresh token', HttpStatus.BAD_REQUEST);
+      }
+
+      throw err;
     }
-
-    return refreshToken.user;
   }
 }

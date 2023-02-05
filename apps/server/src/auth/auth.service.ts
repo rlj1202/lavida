@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { JwtService } from '@nestjs/jwt';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -18,6 +18,12 @@ import { JwtPayload } from './jwt-payload.interface';
 
 import { AppConfigType } from 'src/config';
 
+export class InvalidUserCredentialsError extends Error {
+  constructor() {
+    super('Provided username and password does not match.');
+  }
+}
+
 @Injectable()
 export class AuthService {
   constructor(
@@ -28,15 +34,13 @@ export class AuthService {
     private readonly refreshTokensRepository: Repository<RefreshToken>,
   ) {}
 
+  /** @throws {InvalidUserCredentialsError} */
   async validateUser(username: string, password: string): Promise<User> {
     const user = await this.usersService.findByUsername(username);
 
     const doesMatch = await bcrypt.compare(password, user.passwordHash);
     if (!doesMatch) {
-      throw new HttpException(
-        'User password does not match.',
-        HttpStatus.UNAUTHORIZED,
-      );
+      throw new InvalidUserCredentialsError();
     }
 
     return user;
@@ -71,6 +75,7 @@ export class AuthService {
     return token;
   }
 
+  /** @throws {EntityNotFoundError} */
   async validateRefreshToken(token: string): Promise<RefreshToken> {
     const refreshToken = await this.refreshTokensRepository.findOneOrFail({
       where: {

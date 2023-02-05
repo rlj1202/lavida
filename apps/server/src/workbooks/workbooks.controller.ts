@@ -2,6 +2,9 @@ import {
   Body,
   Controller,
   Delete,
+  Get,
+  HttpException,
+  HttpStatus,
   Param,
   Patch,
   Post,
@@ -26,10 +29,26 @@ import {
   DeleteWorkbookHandler,
   UpdateWorkbookHandler,
 } from './workbooks.handler';
+import { EntityNotFoundError } from 'typeorm';
 
 @Controller('workbooks')
 export class WorkbooksController {
   constructor(private readonly workbooksService: WorkbooksService) {}
+
+  @Get(':id')
+  async findById(@Param('id') id: number) {
+    try {
+      const workbook = await this.workbooksService.findById(id);
+
+      return workbook;
+    } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw new HttpException('Invalid id', HttpStatus.BAD_REQUEST);
+      }
+
+      throw err;
+    }
+  }
 
   @Post()
   @UseGuards(JwtGuard, PoliciesGuard)

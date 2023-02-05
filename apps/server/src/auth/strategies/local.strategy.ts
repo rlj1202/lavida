@@ -1,9 +1,9 @@
-import { Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { IStrategyOptions, Strategy, VerifyFunction } from 'passport-local';
 
 import { User } from 'src/users/entities/user.entity';
-import { AuthService } from '../auth.service';
+import { AuthService, InvalidUserCredentialsError } from '../auth.service';
 
 import { IVerifyCallback } from '../verify-callback.interface';
 
@@ -19,8 +19,16 @@ export class LocalStrategy
   }
 
   async validate(username: string, password: string): Promise<User> {
-    const user = await this.authService.validateUser(username, password);
+    try {
+      const user = await this.authService.validateUser(username, password);
 
-    return user;
+      return user;
+    } catch (err) {
+      if (err instanceof InvalidUserCredentialsError) {
+        throw new HttpException(err.message, HttpStatus.FORBIDDEN);
+      }
+
+      throw err;
+    }
   }
 }

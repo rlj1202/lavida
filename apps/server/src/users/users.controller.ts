@@ -1,4 +1,5 @@
-import { Controller, Get, Param } from '@nestjs/common';
+import { Controller, Get, NotFoundException, Param } from '@nestjs/common';
+import { EntityNotFoundError } from 'typeorm';
 import { plainToClass } from 'class-transformer';
 
 import { UsersService } from './users.service';
@@ -15,14 +16,22 @@ export class UsersController {
 
   @Get(':username')
   async findUserByUsername(@Param('username') username: string) {
-    const user = await this.usersService.findByUsername(username);
-    const userProblems = await this.userProblemsService.findByUsername(
-      username,
-    );
+    try {
+      const user = await this.usersService.findByUsername(username);
+      const userProblems = await this.userProblemsService.findByUsername(
+        username,
+      );
 
-    return plainToClass(UserInfoDTO, {
-      ...user,
-      problems: userProblems,
-    });
+      return plainToClass(UserInfoDTO, {
+        ...user,
+        problems: userProblems,
+      });
+    } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw new NotFoundException();
+      }
+
+      throw err;
+    }
   }
 }
