@@ -30,8 +30,20 @@ export class BoardsService {
     return board;
   }
 
+  async findByName(name: string): Promise<Board> {
+    const board = await this.boardsRepository.findOneOrFail({
+      where: {
+        name,
+      },
+    });
+
+    return board;
+  }
+
+  /** @throws {QueryFailedError} */
   async create(dto: CreateBoardDto): Promise<Board> {
     const board = new Board();
+    board.name = dto.name;
     board.title = dto.title;
     board.description = dto.description;
 

@@ -4,6 +4,10 @@ import { IsString } from 'class-validator';
 export class CreateBoardDto {
   @ApiProperty()
   @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsString()
   title: string;
 
   @ApiProperty()

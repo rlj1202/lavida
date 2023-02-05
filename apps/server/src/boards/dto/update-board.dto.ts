@@ -1,12 +1,19 @@
-import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { ApiPropertyOptional } from '@nestjs/swagger';
+import { IsOptional, IsString } from 'class-validator';
 
 export class UpdateBoardDto {
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
-  title: string;
+  @IsOptional()
+  title?: string;
 
-  @ApiProperty()
+  @ApiPropertyOptional()
   @IsString()
-  description: string;
+  @IsOptional()
+  name?: string;
+
+  @ApiPropertyOptional()
+  @IsString()
+  @IsOptional()
+  description?: string;
 }

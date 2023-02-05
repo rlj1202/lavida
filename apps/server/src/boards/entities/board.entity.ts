@@ -7,11 +7,11 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { Article } from 'src/articles/entities/article.entity';
 
 import SubjectClass from 'src/casl/subject-class.decorator';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 @SubjectClass()
