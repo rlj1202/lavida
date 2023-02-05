@@ -69,6 +69,22 @@ export class CaslAbilityFactory {
     return build();
   }
 
+  createForGuest(): AppAbility {
+    const { can, build } = new AbilityBuilder<AppAbility>(createMongoAbility);
+
+    can<Board>('read', 'Board');
+    can<Article>('read', 'Article');
+    can<Comment>('read', 'Comment');
+
+    can<User>('read', 'User');
+
+    can<Problem>('read', 'Problem');
+    can<Workbook>('read', 'Workbook');
+    can<Contest>('read', 'Contest');
+
+    return build();
+  }
+
   createForUser(user: User): AppAbility {
     const { can, cannot, rules } = new AbilityBuilder<AppAbility>(
       createMongoAbility,
@@ -138,6 +154,7 @@ export class CaslAbilityFactory {
 
     // Order matters because later one will override previous rules.
     const ability = createMongoAbility<AppAbility>([
+      ...this.createForGuest().rules,
       ...rules,
       ...(!!user.role?.permissions ? user.role.permissions : []),
       ...(!!user.permissions ? user.permissions : []),

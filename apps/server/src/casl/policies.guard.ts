@@ -3,7 +3,6 @@ import {
   ExecutionContext,
   Injectable,
   Type,
-  UnauthorizedException,
 } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
 
@@ -55,11 +54,9 @@ export class PoliciesGuard implements CanActivate {
     const request = context.switchToHttp().getRequest<RequestWithUser>();
     const { user } = request;
 
-    if (!user) {
-      throw new UnauthorizedException();
-    }
-
-    const ability = this.caslAbilityFactory.createForUser(user);
+    const ability = user
+      ? this.caslAbilityFactory.createForUser(user)
+      : this.caslAbilityFactory.createForGuest();
 
     const results = await Promise.all(
       policyHandlers.map((handler) =>
