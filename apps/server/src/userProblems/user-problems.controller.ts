@@ -17,7 +17,7 @@ export class UserProblemsController {
     },
   })
   @Get(':userId')
-  async findAllByUserId(@Param() userId: number) {
+  async findAllByUserId(@Param('userId') userId: number) {
     const userProblems = await this.userProblemsService.findByUserId(userId);
 
     return userProblems;
