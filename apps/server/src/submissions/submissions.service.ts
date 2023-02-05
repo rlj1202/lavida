@@ -11,7 +11,7 @@ import { Submission } from './entities/submission.entity';
 
 import { JudgeJob } from 'src/judge/judge.job';
 
-import { PaginationResponseDTO } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
 import { ListSubmissionsOptionsDTO } from './dto/list-submissions-options.dto';
 import { SubmitDto } from './dto/submit.dto';
 
@@ -28,7 +28,7 @@ export class SubmissionsService {
 
   async paginate(
     options: ListSubmissionsOptionsDTO,
-  ): Promise<PaginationResponseDTO<Submission>> {
+  ): Promise<PaginationResponseDto<Submission>> {
     const [submissions, total] = await this.submissionsRepository.findAndCount({
       where: {
         user: {
@@ -46,7 +46,7 @@ export class SubmissionsService {
       take: options.limit,
     });
 
-    return new PaginationResponseDTO(submissions, total, options);
+    return new PaginationResponseDto(submissions, total, options);
   }
 
   async findAll(): Promise<Submission[]> {

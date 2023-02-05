@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { PaginationOptionsDTO } from './pagination-options.dto';
+import { PaginationOptionsDto } from './pagination-options.dto';
 
-export class PaginationResponseDTO<T> {
-  constructor(items: T[], total: number, options: PaginationOptionsDTO) {
+export class PaginationResponseDto<T> {
+  constructor(items: T[], total: number, options: PaginationOptionsDto) {
     this.items = items;
     this.total = total;
 

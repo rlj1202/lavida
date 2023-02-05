@@ -1,9 +1,9 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { IsString } from 'class-validator';
 
-import { PaginationOptionsDTO } from 'src/pagination/pagination-options.dto';
+import { PaginationOptionsDto } from 'src/pagination/pagination-options.dto';
 
-export class SearchProblemsDTO extends PaginationOptionsDTO {
+export class SearchProblemsDTO extends PaginationOptionsDto {
   @ApiProperty()
   @IsString()
   query: string;

@@ -12,10 +12,10 @@ import { ProblemsService } from './problems.service';
 
 import { ListProblemsOptionsDTO } from './dto/list-problems-options.dto';
 import { SearchProblemsDTO } from './dto/search-problems.dto';
-import { PaginationResponseDTO } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
 
 @ApiTags('problems')
-@ApiExtraModels(PaginationResponseDTO)
+@ApiExtraModels(PaginationResponseDto)
 @Controller('problems')
 export class ProblemsController {
   constructor(private readonly problemsService: ProblemsService) {}
@@ -23,7 +23,7 @@ export class ProblemsController {
   @ApiOkResponse({
     schema: {
       allOf: [
-        { $ref: getSchemaPath(PaginationResponseDTO) },
+        { $ref: getSchemaPath(PaginationResponseDto) },
         {
           properties: {
             items: { type: 'array', items: { $ref: getSchemaPath(Problem) } },
@@ -41,7 +41,7 @@ export class ProblemsController {
   @ApiOkResponse({
     schema: {
       allOf: [
-        { $ref: getSchemaPath(PaginationResponseDTO) },
+        { $ref: getSchemaPath(PaginationResponseDto) },
         {
           properties: {
             items: { type: 'array', items: { $ref: getSchemaPath(Problem) } },

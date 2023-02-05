@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { PaginationResponseDTO } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
 import { ListProblemsOptionsDTO } from './dto/list-problems-options.dto';
 import { SearchProblemsDTO } from './dto/search-problems.dto';
 
@@ -25,7 +25,7 @@ export class ProblemsService {
 
   async paginate(
     options: ListProblemsOptionsDTO,
-  ): Promise<PaginationResponseDTO<Problem>> {
+  ): Promise<PaginationResponseDto<Problem>> {
     const [problems, total] = await this.problemsRepository.findAndCount({
       where: {},
       order: {
@@ -35,7 +35,7 @@ export class ProblemsService {
       take: options.limit,
     });
 
-    return new PaginationResponseDTO(problems, total, options);
+    return new PaginationResponseDto(problems, total, options);
   }
 
   async findAll(): Promise<Problem[]> {
@@ -72,7 +72,7 @@ export class ProblemsService {
 
   async search(
     options: SearchProblemsDTO,
-  ): Promise<PaginationResponseDTO<Problem>> {
+  ): Promise<PaginationResponseDto<Problem>> {
     const [result, count] = await this.problemsRepository
       .createQueryBuilder()
       .select()

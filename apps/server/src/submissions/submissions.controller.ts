@@ -12,7 +12,7 @@ import { SubmissionsService } from './submissions.service';
 
 import { SubmitDto } from './dto/submit.dto';
 import { ListSubmissionsOptionsDTO } from './dto/list-submissions-options.dto';
-import { PaginationResponseDTO } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
 
 import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { PoliciesGuard } from 'src/casl/policies.guard';
@@ -26,7 +26,7 @@ import { Submission } from './entities/submission.entity';
 import { CreateSubmissionHandler } from './submissions.handler';
 
 @ApiTags('submissions')
-@ApiExtraModels(PaginationResponseDTO)
+@ApiExtraModels(PaginationResponseDto)
 @Controller('submissions')
 export class SubmissionsController {
   constructor(private readonly submissionsService: SubmissionsService) {}
@@ -34,7 +34,7 @@ export class SubmissionsController {
   @ApiOkResponse({
     schema: {
       allOf: [
-        { $ref: getSchemaPath(PaginationResponseDTO) },
+        { $ref: getSchemaPath(PaginationResponseDto) },
         {
           properties: {
             items: {
