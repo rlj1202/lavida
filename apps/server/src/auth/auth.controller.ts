@@ -12,6 +12,7 @@ import { GetUser } from 'src/auth/user.decorator';
 
 import { User } from 'src/users/entities/user.entity';
 
+import { MailerService } from '@nestjs-modules/mailer';
 import { AuthService } from './auth.service';
 
 import { RegisterDto } from './dto/register.dto';
@@ -22,7 +23,10 @@ import { JwtRefreshGuard } from './guards/refresh-jwt.guard';
 
 @Controller('auth')
 export class AuthController {
-  constructor(private readonly authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly mailerService: MailerService,
+  ) {}
 
   @UseGuards(JwtGuard)
   @Get()
@@ -61,6 +65,27 @@ export class AuthController {
     const refreshToken = await this.authService.generateRefreshToken();
 
     await this.authService.setRefreshToken(user.id, refreshToken);
+
+    try {
+      this.mailerService.sendMail({
+        to: user.email,
+        // Set by default values of MailerModule
+        // from: '',
+        subject: 'Lavida 가입을 환영합니다',
+        template: 'registerGreeting',
+        context: {
+          user: {
+            username: user.username,
+          },
+        },
+      });
+    } catch (err) {
+      if (err instanceof ReferenceError) {
+        throw err;
+      }
+
+      throw err;
+    }
 
     return {
       user,
