@@ -37,7 +37,9 @@ export class CommentsService {
   ): Promise<Comment> {
     const comment = new Comment();
     comment.author = author;
+    comment.articleId = createCommentDto.articleId;
     comment.content = createCommentDto.content;
+    comment.parentId = createCommentDto.parentId;
 
     await this.commentsRepository.save(comment);
 

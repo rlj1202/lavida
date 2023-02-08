@@ -10,12 +10,12 @@ import {
   TreeParent,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { User } from 'src/users/entities/user.entity';
 import { Article } from 'src/articles/entities/article.entity';
 
 import SubjectClass from 'src/casl/subject-class.decorator';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 @Tree('closure-table')
@@ -41,8 +41,15 @@ export class Comment {
   @ManyToOne(() => Article)
   article: Article;
 
+  @ApiProperty()
+  @Column()
+  articleId: number;
+
   @TreeParent()
   parent: Comment;
+
+  @Column()
+  parentId?: number;
 
   @TreeChildren()
   children: Comment[];

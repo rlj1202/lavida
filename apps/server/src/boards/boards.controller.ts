@@ -22,12 +22,13 @@ import { Board } from './entities/board.entity';
 
 import { BoardsService } from './boards.service';
 
-import { CreateBoardDto } from './dto/create-board.dto';
-import { UpdateBoardDto } from './dto/update-board.dto';
 import {
   UseAuthPolicies,
   UsePolicies,
 } from 'src/decorators/use-policies.decorator';
+
+import { CreateBoardDto } from './dto/create-board.dto';
+import { UpdateBoardDto } from './dto/update-board.dto';
 
 @ApiTags('boards')
 @Controller('boards')

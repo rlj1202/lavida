@@ -3,22 +3,20 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
-  UseGuards,
 } from '@nestjs/common';
-import {
-  ApiBearerAuth,
-  ApiBody,
-  ApiOkResponse,
-  ApiTags,
-} from '@nestjs/swagger';
+import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import { EntityNotFoundError } from 'typeorm';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { CheckPolicies } from 'src/casl/check-policies.decorator';
 import { GetUser } from 'src/auth/user.decorator';
-import { PoliciesGuard } from 'src/casl/policies.guard';
+
+import {
+  UseAuthPolicies,
+  UsePolicies,
+} from 'src/decorators/use-policies.decorator';
 
 import { User } from 'src/users/entities/user.entity';
 import { Comment } from './entities/comment.entity';
@@ -34,12 +32,10 @@ import { UpdateCommentDto } from './dto/update-comment.dto';
 export class CommentsControler {
   constructor(private readonly commentsService: CommentsService) {}
 
-  @ApiBearerAuth()
   @ApiBody({ type: CreateCommentDto })
   @ApiOkResponse({ type: Comment })
   @Post()
-  @UseGuards(JwtGuard, PoliciesGuard)
-  @CheckPolicies()
+  @UseAuthPolicies([async (ability) => ability.can('create', 'Comment'), []])
   async create(
     @Body() createCommentDto: CreateCommentDto,
     @GetUser() user: User,
@@ -49,11 +45,9 @@ export class CommentsControler {
     return comment;
   }
 
-  @ApiBearerAuth()
   @ApiBody({ type: UpdateCommentDto })
   @Patch(':id')
-  @UseGuards(JwtGuard, PoliciesGuard)
-  @CheckPolicies(UpdateCommentHandler)
+  @UseAuthPolicies(UpdateCommentHandler)
   async update(
     @Param('id') id: number,
     @Body() updateCommentDto: UpdateCommentDto,
@@ -63,16 +57,23 @@ export class CommentsControler {
 
   @ApiOkResponse({ type: Comment })
   @Get(':id')
+  @UsePolicies([async (ability) => ability.can('read', 'Comment'), []])
   async findById(@Param('id') id: number) {
-    const comment = await this.commentsService.findById(id);
+    try {
+      const comment = await this.commentsService.findById(id);
 
-    return comment;
+      return comment;
+    } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw new NotFoundException();
+      }
+
+      throw err;
+    }
   }
 
-  @ApiBearerAuth()
   @Delete(':id')
-  @UseGuards(JwtGuard, PoliciesGuard)
-  @CheckPolicies(DeleteCommentHandler)
+  @UseAuthPolicies(DeleteCommentHandler)
   async delete(@Param('id') id: number) {
     await this.commentsService.delete(id);
   }

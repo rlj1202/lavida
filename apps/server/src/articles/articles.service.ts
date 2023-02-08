@@ -29,6 +29,9 @@ export class ArticlesService {
           name: options.boardName,
         },
       },
+      relations: {
+        author: true,
+      },
     });
 
     return new PaginationResponseDto(articles, total, options);
