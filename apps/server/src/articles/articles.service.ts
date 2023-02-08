@@ -4,16 +4,35 @@ import { Repository } from 'typeorm';
 
 import { User } from 'src/users/entities/user.entity';
 import { Article } from './entities/article.entity';
+import { Board } from 'src/boards/entities/board.entity';
 
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { ListArticlesOptionsDto } from './dto/list-articles-options.dto';
 
 @Injectable()
 export class ArticlesService {
   constructor(
     @InjectRepository(Article)
     private readonly articlesRepository: Repository<Article>,
+    @InjectRepository(Board)
+    private readonly boardsRepository: Repository<Board>,
   ) {}
+
+  async paginate(
+    options: ListArticlesOptionsDto,
+  ): Promise<PaginationResponseDto<Article>> {
+    const [articles, total] = await this.articlesRepository.findAndCount({
+      where: {
+        board: {
+          name: options.boardName,
+        },
+      },
+    });
+
+    return new PaginationResponseDto(articles, total, options);
+  }
 
   async findAll(): Promise<Article[]> {
     const articles = await this.articlesRepository.find();
@@ -32,10 +51,17 @@ export class ArticlesService {
   }
 
   async create(author: User, dto: CreateArticleDto): Promise<Article> {
+    const board = await this.boardsRepository.findOneOrFail({
+      where: {
+        name: dto.boardName,
+      },
+    });
+
     const article = new Article();
     article.author = author;
     article.title = dto.title;
     article.content = dto.content;
+    article.board = board;
 
     await this.articlesRepository.save(article);
 

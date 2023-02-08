@@ -9,4 +9,8 @@ export class CreateArticleDto {
   @ApiProperty()
   @IsString()
   content: string;
+
+  @ApiProperty()
+  @IsString()
+  boardName: string;
 }

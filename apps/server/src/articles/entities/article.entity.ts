@@ -8,13 +8,13 @@ import {
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { Comment } from 'src/comments/entities/comment.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Board } from 'src/boards/entities/board.entity';
 
 import SubjectClass from 'src/casl/subject-class.decorator';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Entity()
 @SubjectClass()
@@ -35,6 +35,10 @@ export class Article {
 
   @ManyToOne(() => Board)
   board: Board;
+
+  @ApiProperty()
+  @Column()
+  boardId: number;
 
   @ManyToOne(() => User)
   author: User;

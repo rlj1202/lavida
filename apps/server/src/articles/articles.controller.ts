@@ -3,33 +3,42 @@ import {
   Controller,
   Delete,
   Get,
+  NotFoundException,
   Param,
   Patch,
   Post,
-  UseGuards,
+  Query,
 } from '@nestjs/common';
 import {
-  ApiBearerAuth,
   ApiBody,
   ApiOkResponse,
   ApiTags,
+  getSchemaPath,
 } from '@nestjs/swagger';
+import { EntityNotFoundError } from 'typeorm';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
 import { GetUser } from 'src/auth/user.decorator';
-
-import { CheckPolicies } from 'src/casl/check-policies.decorator';
-import { PoliciesGuard } from 'src/casl/policies.guard';
 
 import { User } from 'src/users/entities/user.entity';
 import { Article } from './entities/article.entity';
 
 import { ArticlesService } from './articles.service';
 
-import { DeleteArticleHandler, UpdateArticleHandler } from './articles.handler';
+import {
+  CreateArticleHandler,
+  DeleteArticleHandler,
+  UpdateArticleHandler,
+} from './articles.handler';
+
+import {
+  UseAuthPolicies,
+  UsePolicies,
+} from 'src/decorators/use-policies.decorator';
 
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
+import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { ListArticlesOptionsDto } from './dto/list-articles-options.dto';
 
 @ApiTags('articles')
 @Controller('articles')
@@ -38,18 +47,48 @@ export class ArticlesController {
 
   @ApiOkResponse({ type: Article })
   @Get(':id')
+  @UsePolicies([async (ability) => ability.can('read', 'Article'), []])
   async findById(@Param('id') id: number) {
-    const article = await this.articlesService.findById(id);
+    try {
+      const article = await this.articlesService.findById(id);
 
-    return article;
+      return article;
+    } catch (err) {
+      if (err instanceof EntityNotFoundError) {
+        throw new NotFoundException();
+      }
+
+      throw err;
+    }
   }
 
-  @ApiBearerAuth()
+  @ApiOkResponse({
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(PaginationResponseDto) },
+        {
+          properties: {
+            items: {
+              type: 'array',
+              items: { $ref: getSchemaPath(Article) },
+            },
+          },
+        },
+      ],
+    },
+  })
+  @Get()
+  @UsePolicies([async (ability) => ability.can('read', 'Article'), []])
+  async findAll(@Query() options: ListArticlesOptionsDto) {
+    const articles = await this.articlesService.paginate(options);
+
+    return articles;
+  }
+
   @ApiBody({ type: CreateArticleDto })
   @ApiOkResponse({ type: Article })
   @Post()
-  @UseGuards(JwtGuard, PoliciesGuard)
-  @CheckPolicies()
+  @UseAuthPolicies(CreateArticleHandler)
   async create(
     @Body() createArticleDto: CreateArticleDto,
     @GetUser() user: User,
@@ -59,11 +98,9 @@ export class ArticlesController {
     return article;
   }
 
-  @ApiBearerAuth()
   @ApiBody({ type: UpdateArticleDto })
   @Patch(':id')
-  @UseGuards(JwtGuard, PoliciesGuard)
-  @CheckPolicies(UpdateArticleHandler)
+  @UseAuthPolicies(UpdateArticleHandler)
   async update(
     @Param('id') id: number,
     @Body() updateArticleDto: UpdateArticleDto,
@@ -71,10 +108,8 @@ export class ArticlesController {
     await this.articlesService.update(id, updateArticleDto);
   }
 
-  @ApiBearerAuth()
   @Delete(':id')
-  @UseGuards(JwtGuard, PoliciesGuard)
-  @CheckPolicies(DeleteArticleHandler)
+  @UseAuthPolicies(DeleteArticleHandler)
   async delete(@Param('id') id: number) {
     await this.articlesService.delete(id);
   }
