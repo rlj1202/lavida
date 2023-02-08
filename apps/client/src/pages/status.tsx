@@ -3,7 +3,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useEffect, useRef, useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 import { io } from "socket.io-client";
 import Joi from "joi";
 

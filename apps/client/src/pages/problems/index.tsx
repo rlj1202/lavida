@@ -7,7 +7,7 @@ import Head from "next/head";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 import Joi from "joi";
 
 import { PaginationResponse } from "../../schemas/pagination-response";

@@ -1,44 +1,43 @@
 import { AxiosResponse } from "axios";
-import isServerSide from "../utils/isServerSide";
+
+import { Board } from "../schemas/board";
+
 import axiosClient from "./axiosClient";
 
-interface Board {}
-
-export interface GetBoardParams {
-  slug: string;
-}
-
 export interface CreateBoardParams {
-  slug: string;
+  name: string;
+  title: string;
+  description: string;
 }
 
 export interface UpdateBoardParams {
-  slug: string;
+  name?: string;
+  title?: string;
+  description?: string;
 }
 
 export const getBoards = async (): Promise<Board[]> => {
-  if (isServerSide()) {
-    // TODO:
-    const response = await fetch(`/boards?test=${"something"}`);
-    return response.json();
-  }
-
   const response = await axiosClient.get<Board[]>("/boards");
+
   return response.data;
 };
 
-export const getBoard = async (getBoardDto: GetBoardParams): Promise<Board> => {
-  const response = await axiosClient.get<
-    Board,
-    AxiosResponse<Board>,
-    GetBoardParams
-  >(`/boards/${getBoardDto.slug}`);
+export const getBoardById = async (id: number): Promise<Board> => {
+  const response = await axiosClient.get<Board, AxiosResponse<Board>>(
+    `/boards/${id}`,
+  );
+
+  return response.data;
+};
+
+export const getBoardByName = async (name: string): Promise<Board> => {
+  const response = await axiosClient.get<Board>(`/boards/name/${name}`);
 
   return response.data;
 };
 
 export const createBoard = async (
-  createBoardDto: CreateBoardParams
+  createBoardDto: CreateBoardParams,
 ): Promise<Board> => {
   const response = await axiosClient.post<
     Board,
@@ -50,13 +49,13 @@ export const createBoard = async (
 };
 
 export const updateBoard = async (
-  updateBoardDto: UpdateBoardParams
+  updateBoardDto: UpdateBoardParams,
 ): Promise<Board> => {
   const response = await axiosClient.patch<
     Board,
     AxiosResponse<Board>,
     UpdateBoardParams
-  >(`/boards/${updateBoardDto.slug}`, updateBoardDto);
+  >(`/boards/name/${updateBoardDto.name}`, updateBoardDto);
 
   return response.data;
 };

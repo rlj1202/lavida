@@ -7,7 +7,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { FormEvent } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 
 import Layout from "../../components/Layout";
 import { getProblem } from "../../services/problems";

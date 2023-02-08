@@ -5,11 +5,11 @@ import HttpStatus from "http-status";
 
 import store from "../store/index";
 import { refresh } from "./auth";
-import { clearAuthInfo, setAuthInfo } from "../store/auth/authSlice";
+import { clearAuthInfo } from "../store/auth/authSlice";
 
 const serverURL = "http://localhost:3100";
 const suffixURL = "";
-const client = axios.create({ baseURL: `${serverURL}${suffixURL}` });
+const axiosClient = axios.create({ baseURL: `${serverURL}${suffixURL}` });
 
 const withAccessToken = (config: AxiosRequestConfig) => {
   if (!config.headers) return config;
@@ -26,9 +26,9 @@ const withAccessToken = (config: AxiosRequestConfig) => {
   return config;
 };
 
-client.interceptors.request.use(withAccessToken);
+axiosClient.interceptors.request.use(withAccessToken);
 
-client.interceptors.response.use(
+axiosClient.interceptors.response.use(
   (config) => config,
   async (error: {
     response?: AxiosResponse;
@@ -48,7 +48,7 @@ client.interceptors.response.use(
           console.log("The access token has been refreshed.");
 
           if (originalConfig) {
-            return client(originalConfig);
+            return axiosClient(originalConfig);
           }
 
           // TODO: What should i return in this case?
@@ -71,4 +71,4 @@ client.interceptors.response.use(
   },
 );
 
-export default client;
+export default axiosClient;

@@ -1,6 +1,6 @@
 import { NextPage } from "next";
 import Head from "next/head";
-import { useQuery } from "react-query";
+import { useQuery } from "@tanstack/react-query";
 
 import Layout from "../../components/Layout";
 import Table from "../../components/Table";
@@ -14,7 +14,7 @@ import { authenticate } from "../../services/auth";
 import { useAppSelector } from "../../store/hooks";
 
 const SettingPage: NextPage = () => {
-  const query = useQuery("authenticate", () => authenticate(), {
+  const query = useQuery(["authenticate"], () => authenticate(), {
     initialData: useAppSelector((state) => state.auth.user),
   });
 

@@ -5,7 +5,7 @@ import {
 } from "next";
 import Head from "next/head";
 import { ParsedUrlQuery } from "querystring";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 
 import Layout from "../../../components/Layout";
 import { getUser } from "../../../services/users";

@@ -7,7 +7,7 @@ import Head from "next/head";
 import { useRouter } from "next/router";
 import { ParsedUrlQuery } from "querystring";
 import { Fragment } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 import convert from "convert-units";
 
 import ReactMarkdown from "react-markdown";

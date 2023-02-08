@@ -2,7 +2,7 @@ import { NextPage } from "next";
 import Head from "next/head";
 import Link from "next/link";
 import { useState } from "react";
-import { useQuery } from "react-query";
+import { useQuery } from '@tanstack/react-query';
 
 import { searchProblems } from "../services/problems";
 
