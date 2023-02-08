@@ -14,11 +14,18 @@ export interface IPolicyHandler {
   handle(ability: AppAbility, request: RequestWithUser): Promise<boolean>;
 }
 
-export type PolicyHandlerTuple<T extends readonly any[] = readonly any[]> = [
+type AnyFunction = typeof Function['prototype'];
+type TypeOrToken = string | symbol | Type<any> | AnyFunction;
+
+export type PolicyHandlerTuple<
+  T extends readonly TypeOrToken[] = readonly TypeOrToken[],
+> = [
   (
     ability: AppAbility,
     request: RequestWithUser,
-    ...args: { [P in keyof T]: InstanceType<T[P]> }
+    ...args: {
+      [P in keyof T]: T[P] extends Type<any> ? InstanceType<T[P]> : any;
+    }
   ) => Promise<boolean>,
   T,
 ];

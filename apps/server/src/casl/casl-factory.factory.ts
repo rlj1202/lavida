@@ -19,6 +19,9 @@ import { Article } from 'src/articles/entities/article.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
 import { Role } from 'src/roles/entities/role.entity';
 
+import { UnionToIntersection } from 'src/common/UnionToIntersection';
+import { MergeIntersection } from 'src/common/MergeIntersection';
+
 export const Action = {
   /** 'manage' is special keyword used in CASL. */
   Manage: 'manage',
@@ -58,6 +61,49 @@ export type AppAbilities = [Actions, Subjects];
 export type AppAbility = MongoAbility<AppAbilities>;
 
 export type AppRawRule = RawRuleFrom<AppAbilities, object>;
+
+type SelectProperties<T> = T[keyof T];
+
+type JoinPath<
+  A extends string = string,
+  B extends string = string,
+> = `${A}.${B}`;
+
+type GetType<T, P extends string, Fail = never> = P extends JoinPath<
+  infer K,
+  infer R
+>
+  ? K extends keyof T
+    ? GetType<T[K], R>
+    : Fail
+  : P extends keyof T
+  ? T[P]
+  : Fail;
+
+type PathToObject<P extends string | number | symbol, T> = P extends JoinPath<
+  infer Prop,
+  infer R
+>
+  ? { [K in Prop]: PathToObject<R, T> }
+  : { [K in P]: T };
+
+type FlatTypeToObject<T> = {
+  [K in Exclude<keyof T, JoinPath>]: T[K];
+} & UnionToIntersection<
+  SelectProperties<{
+    [K in Extract<keyof T, JoinPath>]: PathToObject<K, T[K]>;
+  }>
+>;
+
+type PathsToFlatType<T, Paths extends string> = {
+  [K in Paths]: GetType<T, K>;
+};
+
+type ExpandFlatType<
+  T extends FlatTypeToObject<FlatType>,
+  Paths extends string = never,
+  FlatType = PathsToFlatType<T, Paths>,
+> = MergeIntersection<T & FlatType>;
 
 @Injectable()
 export class CaslAbilityFactory {
@@ -132,7 +178,15 @@ export class CaslAbilityFactory {
     can<Workbook>('delete', 'Workbook', { authorId: user.id });
 
     can<Article>('read', 'Article');
-    can<Article>('create', 'Article');
+    can<ExpandFlatType<Article, 'board.name'>>('create', 'Article', {
+      'board.name': 'free',
+    });
+    can<ExpandFlatType<Article, 'board.name'>>('create', 'Article', {
+      'board.name': 'question',
+    });
+    can<ExpandFlatType<Article, 'board.name'>>('create', 'Article', {
+      'board.name': 'ad',
+    });
     can<Article>('update', 'Article', ['title', 'content'], {
       authorId: user.id,
     });
