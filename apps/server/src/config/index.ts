@@ -5,6 +5,9 @@ import { judgeConfigTuple } from './judge.config';
 import { dockerConfigTuple } from './docker.config';
 import { mailerConfigTuple } from './mailer.config';
 
+import { UnionToIntersection } from 'src/common/UnionToIntersection';
+import { MergeIntersection } from 'src/common/MergeIntersection';
+
 export type ConfigTuple = readonly [string, () => object];
 
 const configTuples = [
@@ -28,14 +31,6 @@ type ConfigTuplesToRecord<T extends readonly [...ConfigTuple[]]> = {
   [K in keyof T]: ConfigTupleToRecord<T[K]>;
 };
 
-type UnionToIntersection<U> = (U extends any ? (k: U) => void : never) extends (
-  k: infer I,
-) => void
-  ? I
-  : never;
-
-type Merge<T> = { [K in keyof T]: T[K] };
-
-export type AppConfigType = Merge<
+export type AppConfigType = MergeIntersection<
   UnionToIntersection<ConfigTuplesToRecord<typeof configTuples>[number]>
 >;
