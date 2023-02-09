@@ -8,7 +8,9 @@ import { WorkbookProblem } from './entities/workbook-problem.entity';
 
 import {
   CreateWorkbookHandler,
+  CreateWorkbookProblemHandler,
   DeleteWorkbookHandler,
+  DeleteWorkbookProblemHandler,
   UpdateWorkbookHandler,
 } from './workbooks.handler';
 
@@ -23,6 +25,8 @@ import { WorkbooksService } from './workbooks.service';
     CreateWorkbookHandler,
     UpdateWorkbookHandler,
     DeleteWorkbookHandler,
+    CreateWorkbookProblemHandler,
+    DeleteWorkbookProblemHandler,
   ],
   exports: [WorkbooksService],
 })

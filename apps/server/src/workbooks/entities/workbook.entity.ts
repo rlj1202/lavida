@@ -1,20 +1,20 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
-  ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
   UpdateDateColumn,
 } from 'typeorm';
-import { ApiExtraModels, ApiProperty, getSchemaPath } from '@nestjs/swagger';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { WorkbookProblem } from './workbook-problem.entity';
 import { User } from 'src/users/entities/user.entity';
 
 import SubjectClass from 'src/casl/subject-class.decorator';
 
-@ApiExtraModels(WorkbookProblem)
 @Entity()
 @SubjectClass()
 export class Workbook {
@@ -37,14 +37,19 @@ export class Workbook {
   authorId: number;
 
   /** The one who created this workbook. */
+  @ApiProperty()
   @ManyToOne(() => User)
   author: User;
 
   @ApiProperty({
-    type: 'array',
-    items: { $ref: getSchemaPath(WorkbookProblem) },
+    type: WorkbookProblem,
+    isArray: true,
   })
-  @ManyToMany(() => WorkbookProblem)
+  @OneToMany(
+    () => WorkbookProblem,
+    (workbookProblem) => workbookProblem.workbook,
+    { cascade: true },
+  )
   workbookProblems: WorkbookProblem[];
 
   @ApiProperty()
@@ -54,4 +59,8 @@ export class Workbook {
   @ApiProperty()
   @UpdateDateColumn()
   updatedAt: Date;
+
+  @ApiProperty()
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

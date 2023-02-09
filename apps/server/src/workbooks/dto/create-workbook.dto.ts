@@ -1,5 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { Type } from 'class-transformer';
+import { IsArray, IsString } from 'class-validator';
 
 export class CreateWorkbookDto {
   @ApiProperty()
@@ -9,4 +10,9 @@ export class CreateWorkbookDto {
   @ApiProperty()
   @IsString()
   description: string;
+
+  @ApiProperty({ type: 'array', items: { type: 'number' } })
+  @IsArray()
+  @Type(() => Number)
+  problemIds: number[];
 }
