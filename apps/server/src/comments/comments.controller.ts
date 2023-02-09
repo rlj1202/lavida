@@ -7,8 +7,15 @@ import {
   Param,
   Patch,
   Post,
+  Query,
 } from '@nestjs/common';
-import { ApiBody, ApiOkResponse, ApiTags } from '@nestjs/swagger';
+import {
+  ApiBody,
+  ApiExtraModels,
+  ApiOkResponse,
+  ApiTags,
+  getSchemaPath,
+} from '@nestjs/swagger';
 import { EntityNotFoundError } from 'typeorm';
 
 import { GetUser } from 'src/auth/user.decorator';
@@ -26,7 +33,10 @@ import { CommentsService } from './comments.service';
 
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { ListCommentsOptionsDto } from './dto/list-comments-options.dto';
+import { PaginationOptionsDto } from 'src/pagination/pagination-options.dto';
 
+@ApiExtraModels(PaginationOptionsDto)
 @ApiTags('comments')
 @Controller('comments')
 export class CommentsControler {
@@ -53,6 +63,22 @@ export class CommentsControler {
     @Body() updateCommentDto: UpdateCommentDto,
   ) {
     await this.commentsService.update(id, updateCommentDto);
+  }
+
+  @ApiOkResponse({
+    schema: {
+      allOf: [
+        { $ref: getSchemaPath(PaginationOptionsDto) },
+        { type: 'array', items: { $ref: getSchemaPath(Comment) } },
+      ],
+    },
+  })
+  @Get()
+  @UsePolicies([async (ability) => ability.can('read', 'Comment'), []])
+  async findAll(@Query() dto: ListCommentsOptionsDto) {
+    const paginatedResult = await this.commentsService.paginate(dto);
+
+    return paginatedResult;
   }
 
   @ApiOkResponse({ type: Comment })

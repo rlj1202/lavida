@@ -6,4 +6,6 @@ export interface Comment {
   author: User;
   authorId: number;
   articleId: number;
+  createdAt: string;
+  updatedAt: string;
 }

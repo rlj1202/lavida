@@ -48,9 +48,6 @@ export class Comment {
   @TreeParent()
   parent: Comment;
 
-  @Column()
-  parentId?: number;
-
   @TreeChildren()
   children: Comment[];
 

@@ -7,6 +7,8 @@ import { Comment } from './entities/comment.entity';
 
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
+import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { ListCommentsOptionsDto } from './dto/list-comments-options.dto';
 
 @Injectable()
 export class CommentsService {
@@ -14,6 +16,32 @@ export class CommentsService {
     @InjectRepository(Comment)
     private readonly commentsRepository: TreeRepository<Comment>,
   ) {}
+
+  async paginate(
+    dto: ListCommentsOptionsDto,
+  ): Promise<PaginationResponseDto<Comment>> {
+    const [comments, total] = await this.commentsRepository.findAndCount({
+      where: {
+        articleId: dto.articleId,
+      },
+      relations: {
+        author: true,
+      },
+      select: {
+        author: {
+          id: true,
+          username: true,
+        },
+      },
+      skip: dto.offset,
+      take: dto.limit,
+    });
+
+    return new PaginationResponseDto(comments, total, {
+      limit: dto.limit,
+      offset: dto.offset,
+    });
+  }
 
   async findAll(): Promise<Comment[]> {
     const comments = await this.commentsRepository.find();
@@ -39,7 +67,8 @@ export class CommentsService {
     comment.author = author;
     comment.articleId = createCommentDto.articleId;
     comment.content = createCommentDto.content;
-    comment.parentId = createCommentDto.parentId;
+    // TODO:
+    // comment.parentId = createCommentDto.parentId;
 
     await this.commentsRepository.save(comment);
 
