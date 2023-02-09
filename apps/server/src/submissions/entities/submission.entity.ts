@@ -5,12 +5,12 @@ import {
   ManyToOne,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { ApiProperty } from '@nestjs/swagger';
 
 import { Problem } from 'src/problems/entities/problem.entity';
 import { User } from 'src/users/entities/user.entity';
 
 import SubjectClass from 'src/casl/subject-class.decorator';
-import { ApiProperty } from '@nestjs/swagger';
 
 export enum SubmissionStatus {
   SUBMITTED = 'SUBMITTED',
@@ -33,14 +33,14 @@ export class Submission {
   @PrimaryGeneratedColumn()
   id: number;
 
-  @ManyToOne(() => Problem)
+  @ManyToOne(() => Problem, (problem) => problem.submissions)
   problem: Problem;
 
   @ApiProperty()
   @Column()
   problemId: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.submissions)
   user: User;
 
   @ApiProperty()

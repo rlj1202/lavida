@@ -1,5 +1,5 @@
 import { Controller, Get, Param } from '@nestjs/common';
-import { ApiOkResponse, ApiTags, getSchemaPath } from '@nestjs/swagger';
+import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { UserProblemsService } from './user-problems.service';
 
@@ -10,12 +10,7 @@ import { UserProblem } from './user-problem.entity';
 export class UserProblemsController {
   constructor(private readonly userProblemsService: UserProblemsService) {}
 
-  @ApiOkResponse({
-    schema: {
-      type: 'array',
-      items: { $ref: getSchemaPath(UserProblem) },
-    },
-  })
+  @ApiOkResponse({ type: UserProblem, isArray: true })
   @Get(':userId')
   async findAllByUserId(@Param('userId') userId: number) {
     const userProblems = await this.userProblemsService.findByUserId(userId);

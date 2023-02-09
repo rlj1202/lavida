@@ -20,7 +20,7 @@ export class UserProblem {
   @PrimaryColumn()
   problemId: number;
 
-  @ManyToOne(() => User)
+  @ManyToOne(() => User, (user) => user.userProblems, { onDelete: 'CASCADE' })
   user: User;
 
   @ManyToOne(() => Problem)

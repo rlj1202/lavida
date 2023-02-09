@@ -69,7 +69,11 @@ export class CommentsControler {
     schema: {
       allOf: [
         { $ref: getSchemaPath(PaginationOptionsDto) },
-        { type: 'array', items: { $ref: getSchemaPath(Comment) } },
+        {
+          properties: {
+            items: { type: 'array', items: { $ref: getSchemaPath(Comment) } },
+          },
+        },
       ],
     },
   })

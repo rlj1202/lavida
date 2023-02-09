@@ -11,10 +11,12 @@ import {
   UpdateDateColumn,
 } from 'typeorm';
 
+import { ApiProperty } from '@nestjs/swagger';
+
 import { User } from 'src/users/entities/user.entity';
 import { Submission } from 'src/submissions/entities/submission.entity';
+
 import SubjectClass from 'src/casl/subject-class.decorator';
-import { ApiProperty } from '@nestjs/swagger';
 
 @Entity('problem')
 @SubjectClass()

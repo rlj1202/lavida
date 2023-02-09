@@ -12,10 +12,12 @@ import {
 import { ApiProperty } from '@nestjs/swagger';
 
 import { AppRawRule } from 'src/casl/casl-factory.factory';
-import SubjectClass from 'src/casl/subject-class.decorator';
 
 import { Submission } from 'src/submissions/entities/submission.entity';
 import { Role } from 'src/roles/entities/role.entity';
+import { UserProblem } from 'src/userProblems/user-problem.entity';
+
+import SubjectClass from 'src/casl/subject-class.decorator';
 
 @Entity('user')
 @SubjectClass()
@@ -60,6 +62,9 @@ export class User {
 
   @OneToMany(() => Submission, (submission) => submission.user)
   submissions: Submission[];
+
+  @OneToMany(() => UserProblem, (userProblem) => userProblem.user)
+  userProblems: UserProblem[];
 
   @ManyToOne(() => Role)
   role?: Role;
