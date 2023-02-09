@@ -13,7 +13,9 @@ import { Problem } from 'src/problems/entities/problem.entity';
 import { Submission } from 'src/submissions/entities/submission.entity';
 import { User } from 'src/users/entities/user.entity';
 import { Workbook } from 'src/workbooks/entities/workbook.entity';
+import { WorkbookProblem } from 'src/workbooks/entities/workbook-problem.entity';
 import { Contest } from 'src/contests/entities/contest.entity';
+import { ContestProblem } from 'src/contests/entities/contest-problem.entity';
 import { Board } from 'src/boards/entities/board.entity';
 import { Article } from 'src/articles/entities/article.entity';
 import { Comment } from 'src/comments/entities/comment.entity';
@@ -44,7 +46,9 @@ export const Subjects = [
   Submission,
   Problem,
   Workbook,
+  WorkbookProblem,
   Contest,
+  ContestProblem,
   Board,
   Article,
   Comment,
@@ -126,7 +130,9 @@ export class CaslAbilityFactory {
 
     can<Problem>('read', 'Problem');
     can<Workbook>('read', 'Workbook');
+    can<WorkbookProblem>('read', 'WorkbookProblem');
     can<Contest>('read', 'Contest');
+    can<ContestProblem>('read', 'ContestProblem');
 
     return build();
   }
@@ -176,6 +182,12 @@ export class CaslAbilityFactory {
       },
     );
     can<Workbook>('delete', 'Workbook', { authorId: user.id });
+
+    can<ExpandFlatType<WorkbookProblem, 'workbook.authorId'>>(
+      ['create', 'delete'],
+      'WorkbookProblem',
+      { 'workbook.authorId': user.id },
+    );
 
     can<Article>('read', 'Article');
     can<ExpandFlatType<Article, 'board.name'>>('create', 'Article', {
