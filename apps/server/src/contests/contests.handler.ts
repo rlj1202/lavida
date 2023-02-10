@@ -16,6 +16,21 @@ export class CreateContestHandler implements IPolicyHandler {
 }
 
 @Injectable()
+export class UpdateContestHandler implements IPolicyHandler {
+  constructor(private readonly contestsService: ContestsService) {}
+
+  async handle(
+    ability: AppAbility,
+    request: RequestWithUser,
+  ): Promise<boolean> {
+    const id = parseInt(request.params['id'], 10);
+    const contest = await this.contestsService.findById(id);
+
+    return ability.can('update', contest);
+  }
+}
+
+@Injectable()
 export class DeleteContestHandler implements IPolicyHandler {
   constructor(private readonly contestsService: ContestsService) {}
 

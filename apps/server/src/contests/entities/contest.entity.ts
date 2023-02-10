@@ -1,10 +1,14 @@
 import {
   Column,
   CreateDateColumn,
+  DeleteDateColumn,
   Entity,
+  JoinTable,
   ManyToMany,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn,
+  UpdateDateColumn,
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
@@ -39,6 +43,7 @@ export class Contest {
   endAt: Date;
 
   /** The one who created this contest. */
+  @ApiProperty()
   @ManyToOne(() => User)
   author: User;
 
@@ -46,19 +51,35 @@ export class Contest {
   @Column()
   authorId: number;
 
+  @ApiProperty({ type: User, isArray: true })
   @ManyToMany(() => User)
+  @JoinTable()
   admins: User[];
 
+  @ApiProperty({ type: User, isArray: true })
   @ManyToMany(() => User)
+  @JoinTable()
   testers: User[];
 
+  @ApiProperty({ type: User, isArray: true })
   @ManyToMany(() => User)
+  @JoinTable()
   participants: User[];
 
-  @ManyToMany(() => ContestProblem)
+  @ApiProperty({ type: ContestProblem, isArray: true })
+  @OneToMany(() => ContestProblem, (contestProblem) => contestProblem.contest, {
+    cascade: true,
+  })
   contestProblems: ContestProblem[];
 
   @ApiProperty()
   @CreateDateColumn()
   createdAt: Date;
+
+  @ApiProperty()
+  @UpdateDateColumn()
+  updatedAt: Date;
+
+  @DeleteDateColumn()
+  deletedAt: Date;
 }

@@ -4,9 +4,14 @@ import { ApiProperty } from '@nestjs/swagger';
 import { Problem } from 'src/problems/entities/problem.entity';
 import { Contest } from './contest.entity';
 
+import SubjectClass from 'src/casl/subject-class.decorator';
+
 @Entity()
 @Unique(['contestId', 'order'])
+@SubjectClass()
 export class ContestProblem {
+  static readonly modelName = 'ContestProblem';
+
   @ApiProperty()
   @PrimaryColumn()
   contestId: number;
@@ -15,7 +20,9 @@ export class ContestProblem {
   @PrimaryColumn()
   problemId: number;
 
-  @ManyToOne(() => Contest)
+  @ManyToOne(() => Contest, (contest) => contest.contestProblems, {
+    onDelete: 'CASCADE',
+  })
   contest: Contest;
 
   @ManyToOne(() => Problem)
