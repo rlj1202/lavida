@@ -26,6 +26,9 @@ export class WorkbooksService {
   ): Promise<PaginationResponseDto<Workbook>> {
     const [workbooks, total] = await this.workbooksRepository.findAndCount({
       where: {},
+      relations: {
+        author: true,
+      },
       skip: options.offset,
       take: options.limit,
     });
@@ -48,7 +51,10 @@ export class WorkbooksService {
         id,
       },
       relations: {
-        workbookProblems: true,
+        workbookProblems: {
+          problem: true,
+        },
+        author: true,
       },
     });
 

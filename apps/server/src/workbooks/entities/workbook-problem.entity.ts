@@ -25,6 +25,7 @@ export class WorkbookProblem {
   })
   workbook: Workbook;
 
+  @ApiProperty()
   @ManyToOne(() => Problem)
   problem: Problem;
 
