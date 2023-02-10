@@ -15,7 +15,8 @@ export default function Home() {
         </Head>
 
         <div className="wrapper">
-          <div>test</div>
+          <h1>Lavida</h1>
+          <div>공사 중입니다.</div>
         </div>
       </Layout>
 

@@ -6,9 +6,9 @@ const Footer: React.FC = () => {
     <footer className="wrapper">
       <Container>
         <div className="content">
-          Copyright (c) 2022, rlj1202@gmail.com
+          Copyright (c) 2023, ansi.ajou@gmail.com
           <br />
-          Ajou University
+          Ajou University, A.N.S.I.
         </div>
       </Container>
       <style jsx>{`

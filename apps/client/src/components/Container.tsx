@@ -7,7 +7,7 @@ const Container: React.FC<React.PropsWithChildren> = ({ children }) => {
 
       <style jsx>{`
         .container {
-          max-width: 60rem;
+          max-width: 70rem;
           padding-left: 1rem;
           padding-right: 1rem;
           margin-left: auto;
