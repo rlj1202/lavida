@@ -11,7 +11,8 @@ import { Job } from 'bull';
 import { JudgeGateway } from './judge.gateway';
 
 import { JudgeJob } from './judge.job';
-import { JudgeResult, JudgeService } from './judge.service';
+import { JudgeService, SubmissionResult } from './judge.service';
+import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
 
 @Processor('judge')
 export class JudgeProcessor {
@@ -23,13 +24,13 @@ export class JudgeProcessor {
   ) {}
 
   @Process()
-  async judge(job: Job<JudgeJob>): Promise<JudgeResult> {
-    const judgeResult = await this.judgeService.judge(
+  async judge(job: Job<JudgeJob>): Promise<SubmissionResult> {
+    const result = await this.judgeService.judge(
       job.data.submissionId,
       (value: any) => job.progress(value),
     );
 
-    return judgeResult;
+    return result;
   }
 
   @OnQueueActive()
@@ -46,12 +47,16 @@ export class JudgeProcessor {
     this.logger.log(
       `Job for submission id ${data.submissionId} progress: ${progress}`,
     );
-    this.judgeGateway.reportStatus(data.submissionId, progress, 'JUDGING');
+    this.judgeGateway.reportStatus(
+      data.submissionId,
+      progress,
+      SubmissionStatus.JUDGING,
+    );
     return;
   }
 
   @OnQueueCompleted()
-  onCompleted(job: Job<JudgeJob>, result: JudgeResult) {
+  onCompleted(job: Job<JudgeJob>, result: SubmissionResult) {
     const { data } = job;
     this.logger.log(
       `Judging on submission id ${

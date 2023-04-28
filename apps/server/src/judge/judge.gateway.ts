@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-import { JudgeStatus } from './judge.service';
+import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
 
 @WebSocketGateway({ namespace: 'judge', cors: { origin: '*' } })
 export class JudgeGateway
@@ -41,7 +41,7 @@ export class JudgeGateway
   async reportStatus(
     submissionId: number,
     progress: number,
-    status: JudgeStatus,
+    status: SubmissionStatus,
   ) {
     this.server.to(`${submissionId}`).emit('status', {
       submissionId,

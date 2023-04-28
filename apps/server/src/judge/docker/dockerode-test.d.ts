@@ -25,6 +25,6 @@ declare module 'dockerode' {
   }
 
   interface HostConfig {
-    Ulimits?: { Name: string; Soft: number; Hard: number }[];
+    Ulimits?: Ulimit[] | undefined;
   }
 }
