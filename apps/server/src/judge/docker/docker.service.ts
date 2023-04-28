@@ -1,14 +1,24 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { Duplex, PassThrough, Readable, Writable } from 'stream';
+import { IncomingMessage } from 'http';
 import Dockerode = require('dockerode');
 import DockerModem = require('docker-modem');
 import tar = require('tar-stream');
 
 import { readAll } from 'src/utils/read-all.util';
-import { IncomingMessage } from 'http';
 
 @Injectable()
-export class DockerService {
+export class DockerService implements OnModuleInit {
+  private readonly logger = new Logger(DockerService.name);
+
+  constructor(private readonly dockerode: Dockerode) {}
+
+  async onModuleInit() {
+    await this.dockerode.ping();
+
+    this.logger.verbose('Docker ping successful');
+  }
+
   async demux(stream: Duplex): Promise<{
     stdinStream: Writable;
     stdoutStream: Readable;
