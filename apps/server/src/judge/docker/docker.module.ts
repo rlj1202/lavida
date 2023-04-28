@@ -31,10 +31,14 @@ export class DockerModule extends ConfigurableModuleClass {
   }
 
   static registerAsync(options: typeof ASYNC_OPTIONS_TYPE): DynamicModule {
-    const { providers } = super.registerAsync(options);
+    const { providers, imports, controllers, exports } = super.registerAsync(
+      options,
+    );
 
     return {
       module: DockerModule,
+      imports: [...(imports || [])],
+      controllers: [...(controllers || [])],
       providers: [
         ...(providers || []),
         {
@@ -48,7 +52,7 @@ export class DockerModule extends ConfigurableModuleClass {
         },
         DockerService,
       ],
-      exports: [Dockerode, DockerService],
+      exports: [...(exports || []), Dockerode, DockerService],
     };
   }
 }

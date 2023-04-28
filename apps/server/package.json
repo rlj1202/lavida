@@ -23,8 +23,8 @@
     "@casl/ability": "^6.3.3",
     "@nestjs-modules/mailer": "^1.8.1",
     "@nestjs/bull": "^0.6.2",
-    "@nestjs/common": "^9.0.0",
-    "@nestjs/config": "^2.2.0",
+    "@nestjs/common": "^9.4.0",
+    "@nestjs/config": "^2.3.1",
     "@nestjs/core": "^9.4.0",
     "@nestjs/jwt": "^10.0.1",
     "@nestjs/passport": "^9.0.0",
@@ -59,9 +59,9 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
-    "@nestjs/cli": "^9.0.0",
-    "@nestjs/schematics": "^9.0.0",
-    "@nestjs/testing": "^9.0.0",
+    "@nestjs/cli": "^9.4.2",
+    "@nestjs/schematics": "^9.1.0",
+    "@nestjs/testing": "^9.4.0",
     "@types/cookie-parser": "^1.4.3",
     "@types/dockerode": "^3.3.14",
     "@types/express": "^4.17.13",
