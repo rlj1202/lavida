@@ -22,6 +22,7 @@ import {
 
 import { User } from 'src/users/entities/user.entity';
 import { Contest } from './entities/contest.entity';
+import { ContestProblem } from './entities/contest-problem.entity';
 
 import { ContestsService } from './contests.service';
 
@@ -35,7 +36,6 @@ import { CreateContestDto } from './dto/create-contest.dto';
 import { UpdateContestDto } from './dto/update.contest.dto';
 import { ListContestsOptionsDto } from './dto/list-contests-options.dto';
 import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
-import { ContestProblem } from './entities/contest-problem.entity';
 import { AddProblemsDto } from './dto/add-problems.dto';
 
 @ApiTags('contests')
@@ -117,7 +117,10 @@ export class ContestsController {
   }
 
   @Delete(':id/problems/:problemId')
-  @UseAuthPolicies()
+  @UseAuthPolicies([
+    async (ability) => ability.can('delete', 'ContestProblem'),
+    [],
+  ])
   async removeProblem(
     @Param('id') id: number,
     @Param('problemId') problemId: number,
@@ -126,21 +129,21 @@ export class ContestsController {
   }
 
   @Get(':id/admins')
-  @UseAuthPolicies()
+  @UseAuthPolicies([async (ability) => ability.can('read', 'Contest'), []])
   async getAdmins(@Param('id') id: number) {
     // TODO:
     return;
   }
 
   @Post(':id/admins')
-  @UseAuthPolicies()
+  @UseAuthPolicies([async (ability) => ability.can('update', 'Contest'), []])
   async addAdmins(@Param('id') id: number) {
     // TODO:
     return;
   }
 
   @Delete(':id/admins/:userId')
-  @UseAuthPolicies()
+  @UseAuthPolicies([async (ability) => ability.can('update', 'Contest'), []])
   async removeAdmin(@Param('id') id: number, @Param('userId') userId: number) {
     // TODO:
     return;
