@@ -1,5 +1,6 @@
 import { Test } from '@nestjs/testing';
 
+import fs from 'fs';
 import { DockerModule } from '@lavida/docker';
 
 import { CompileError, Judger, TimeLimitExceededError } from './judger.service';
@@ -24,6 +25,12 @@ describe('Judger', () => {
     ).rejects.toThrow(Error);
   });
 
+  const testcaseDir = '../../apps/server/data/testcases/1000';
+
+  it('Testcase directory must exist', async () => {
+    expect(fs.existsSync(testcaseDir)).toBe(true);
+  });
+
   test('Judge must be failed', async () => {
     const sourceCode = `
     #include <stdio.h>
@@ -37,7 +44,6 @@ describe('Judger', () => {
       return 0;
     }
     `;
-    const testcaseDir = './data/testcases/1000';
 
     const result = await judger.judge(
       'C++11',
@@ -66,7 +72,6 @@ describe('Judger', () => {
       return 0;
     }
     `;
-    const testcaseDir = './data/testcases/1000';
 
     const result = await judger.judge(
       'C++11',
@@ -110,7 +115,6 @@ describe('Judger', () => {
       return 0;
     }
     `;
-    const testcaseDir = './data/testcases/1000';
 
     await expect(
       judger.judge(

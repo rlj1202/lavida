@@ -16,7 +16,7 @@ import {
   MemoryLimitExceededError,
   RuntimeError,
   TimeLimitExceededError,
-} from './judger.service';
+} from '@lavida/judger';
 
 export interface SubmissionResult {
   status: SubmissionStatus;

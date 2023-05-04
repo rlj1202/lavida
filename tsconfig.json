@@ -6,6 +6,7 @@
     "paths": {
       "@lavida/common/*": ["packages/common/src/*"],
       "@lavida/docker/*": ["packages/docker/src/*"],
+      "@lavida/judger/*": ["packages/judger/src/*"],
       "@lavida/*": ["packages/*/src"],
       "src/*": ["apps/server/src/*"]
     },
