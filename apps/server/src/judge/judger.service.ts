@@ -5,7 +5,7 @@ import Docker = require('dockerode');
 
 import { executeWithTimeout } from '@lavida/common/utils/execute-with-timeout.util';
 
-import { DockerService } from '@lavida/docker/docker.service';
+import { DockerService } from '@lavida/docker';
 
 export class CompileError extends Error {
   constructor(public exitCode: number, msg?: string) {

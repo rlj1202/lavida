@@ -1,6 +1,6 @@
 import { Test } from '@nestjs/testing';
 
-import { DockerModule } from '@lavida/docker/docker.module';
+import { DockerModule } from '@lavida/docker';
 
 import { CompileError, Judger, TimeLimitExceededError } from './judger.service';
 
