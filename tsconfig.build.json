@@ -1,25 +1,30 @@
 {
-  "extends": "../../tsconfig.json",
-
   "compilerOptions": {
     "module": "commonjs",
-    "declaration": true,
-    "removeComments": true,
-    "emitDecoratorMetadata": true,
-    "experimentalDecorators": true,
-    "allowSyntheticDefaultImports": true,
     "target": "es2017",
+
     "sourceMap": true,
-    "outDir": "./dist",
-    "incremental": true,
+    "declaration": true,
+    "declarationMap": true,
+
     "skipLibCheck": true,
+    "esModuleInterop": true,
+
+    "removeComments": true,
+    "allowSyntheticDefaultImports": true,
+    "incremental": true,
     "strictNullChecks": true,
     "noImplicitAny": true,
     "strictBindCallApply": true,
     "forceConsistentCasingInFileNames": true,
     "noFallthroughCasesInSwitch": true,
-    "types": ["jest"],
+
+    "types": [],
+
+    "jsx": "react",
+
     "noEmit": false,
-    "resolveJsonModule": true
-  }
+    "noEmitOnError": true
+  },
+  "exclude": ["dist", "node_modules"]
 }

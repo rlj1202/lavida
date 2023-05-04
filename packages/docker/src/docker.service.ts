@@ -5,7 +5,7 @@ import Dockerode = require('dockerode');
 import DockerModem = require('docker-modem');
 import tar = require('tar-stream');
 
-import { readAll } from 'src/utils/read-all.util';
+import { readAll } from '@lavida/common/utils/read-all.util';
 
 @Injectable()
 export class DockerService implements OnModuleInit {

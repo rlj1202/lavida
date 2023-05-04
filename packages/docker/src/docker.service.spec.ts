@@ -5,7 +5,7 @@ import Dockerode = require('dockerode');
 import { DockerModule } from './docker.module';
 import { DockerService } from './docker.service';
 
-import { readAll } from 'src/utils/read-all.util';
+import { readAll } from '@lavida/common/utils/read-all.util';
 
 describe('Docker', () => {
   let docker: Dockerode;

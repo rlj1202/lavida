@@ -1,18 +1,14 @@
 {
-  "name": "@lavida/common",
+  "name": "@lavida/docker",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
-  "keywords": [
-    "typescript"
-  ],
-  "main": "dist/index.js",
-  "types": "dist/index.d.ts",
-  "files": [
-    "dist"
-  ],
+  "scripts": {
+    "test": "jest"
+  },
+  "keywords": [],
   "author": "Jisu Sim <rlj1202@gmail.com>",
   "license": "GPL-3.0",
+  "dependencies": {},
   "devDependencies": {
     "typescript": "^4.9.4"
   }

@@ -1,7 +1,14 @@
 {
+  "extends": "./tsconfig.build.json",
+
   "compilerOptions": {
+    "baseUrl": ".",
     "paths": {
-      "@lavida/common/*": ["./packages/common/src/*"]
-    }
+      "@lavida/common/*": ["packages/common/src/*"],
+      "@lavida/docker/*": ["packages/docker/src/*"],
+      "@lavida/*": ["packages/*/src"],
+      "src/*": ["apps/server/src/*"]
+    },
+    "noEmit": true
   }
 }

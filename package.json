@@ -4,15 +4,19 @@
   "description": "A monorepo for lavida online judge",
   "private": true,
   "workspaces": [
-    "apps/client",
-    "apps/server",
-    "packages/common"
+    "apps/*",
+    "packages/*"
   ],
-  "scripts": {},
+  "scripts": {
+    "test": "npm run test --workspaces --if-present"
+  },
   "keywords": [
     "lavida",
     "nextjs",
     "nestjs",
     "online-judge"
-  ]
+  ],
+  "devDependencies": {
+    "typescript": "^4.7.4"
+  }
 }

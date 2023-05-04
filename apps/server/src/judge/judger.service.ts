@@ -3,9 +3,9 @@ import { readdir, readFile } from 'fs/promises';
 import path = require('path');
 import Docker = require('dockerode');
 
-import { executeWithTimeout } from 'src/utils/execute-with-timeout';
+import { executeWithTimeout } from '@lavida/common/utils/execute-with-timeout.util';
 
-import { DockerService } from './docker/docker.service';
+import { DockerService } from '@lavida/docker/docker.service';
 
 export class CompileError extends Error {
   constructor(public exitCode: number, msg?: string) {
