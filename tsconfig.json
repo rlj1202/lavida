@@ -3,6 +3,7 @@
 
   "compilerOptions": {
     "baseUrl": ".",
+    "rootDir": ".",
     "paths": {
       "@lavida/common/*": ["packages/common/src/*"],
       "@lavida/docker/*": ["packages/docker/src/*"],
