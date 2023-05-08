@@ -1,11 +1,11 @@
 import { Module } from '@nestjs/common';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CaslModule } from 'src/casl/casl.module';
+import { CaslModule } from '@lavida/server/casl/casl.module';
 
 import { BoardsController } from './boards.controller';
 import { BoardsService } from './boards.service';
-import { Board } from './entities/board.entity';
+import { Board } from '@lavida/core/entities/board.entity';
 
 @Module({
   imports: [TypeOrmModule.forFeature([Board]), CaslModule],

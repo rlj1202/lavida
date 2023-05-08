@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryColumn, Unique } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Problem } from 'src/problems/entities/problem.entity';
-import { Workbook } from './workbook.entity';
+import { Problem } from '@lavida/core/entities/problem.entity';
+import { Workbook } from '@lavida/core/entities/workbook.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity()
 @Unique(['workbookId', 'order'])

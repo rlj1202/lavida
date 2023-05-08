@@ -7,16 +7,16 @@ import * as bcrypt from 'bcrypt';
 import * as uuid from 'uuid';
 import ms = require('ms');
 
-import { User } from 'src/users/entities/user.entity';
-import { RefreshToken } from './entities/refresh-token.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { RefreshToken } from '@lavida/core/entities/refresh-token.entity';
 
-import { UsersService } from 'src/users/users.service';
+import { UsersService } from '@lavida/server/users/users.service';
 
 import { RegisterDto } from './dto/register.dto';
 
 import { JwtPayload } from './jwt-payload.interface';
 
-import { AppConfigType } from 'src/config';
+import { AppConfigType } from '@lavida/server/config';
 
 export class InvalidUserCredentialsError extends Error {
   constructor() {

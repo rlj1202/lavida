@@ -2,16 +2,16 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 import { ListProblemsOptionsDTO } from './dto/list-problems-options.dto';
 import { SearchProblemsDTO } from './dto/search-problems.dto';
 
 import {
   Submission,
   SubmissionStatus,
-} from 'src/submissions/entities/submission.entity';
-import { Problem } from './entities/problem.entity';
-import { UserProblemsService } from 'src/userProblems/user-problems.service';
+} from '@lavida/core/entities/submission.entity';
+import { Problem } from '@lavida/core/entities/problem.entity';
+import { UserProblemsService } from '@lavida/server/userProblems/user-problems.service';
 
 @Injectable()
 export class ProblemsService {

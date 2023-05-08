@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CaslModule } from 'src/casl/casl.module';
+import { CaslModule } from '@lavida/server/casl/casl.module';
 
-import { Article } from './entities/article.entity';
-import { Board } from 'src/boards/entities/board.entity';
+import { Article } from '@lavida/core/entities/article.entity';
+import { Board } from '@lavida/core/entities/board.entity';
 
 import { ArticlesController } from './articles.controller';
 import {

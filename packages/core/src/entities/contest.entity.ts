@@ -12,10 +12,10 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { ContestProblem } from './contest-problem.entity';
-import { User } from 'src/users/entities/user.entity';
+import { ContestProblem } from '@lavida/core/entities/contest-problem.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity()
 @SubjectClass()

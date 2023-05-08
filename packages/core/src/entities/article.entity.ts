@@ -10,15 +10,16 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { WorkbookProblem } from './workbook-problem.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Comment } from '@lavida/core/entities/comment.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Board } from '@lavida/core/entities/board.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity()
 @SubjectClass()
-export class Workbook {
-  static readonly modelName = 'Workbook';
+export class Article {
+  static readonly modelName = 'Article';
 
   @ApiProperty()
   @PrimaryGeneratedColumn()
@@ -30,27 +31,24 @@ export class Workbook {
 
   @ApiProperty()
   @Column({ type: 'text' })
-  description: string;
+  content: string;
+
+  @ManyToOne(() => Board)
+  board: Board;
+
+  @ApiProperty()
+  @Column()
+  boardId: number;
+
+  @ManyToOne(() => User)
+  author: User;
 
   @ApiProperty()
   @Column()
   authorId: number;
 
-  /** The one who created this workbook. */
-  @ApiProperty()
-  @ManyToOne(() => User)
-  author: User;
-
-  @ApiProperty({
-    type: WorkbookProblem,
-    isArray: true,
-  })
-  @OneToMany(
-    () => WorkbookProblem,
-    (workbookProblem) => workbookProblem.workbook,
-    { cascade: true },
-  )
-  workbookProblems: WorkbookProblem[];
+  @OneToMany(() => Comment, (comment) => comment.article)
+  comments: Comment[];
 
   @ApiProperty()
   @CreateDateColumn()

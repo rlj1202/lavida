@@ -6,13 +6,13 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import { Problem } from './entities/problem.entity';
+import { Problem } from '@lavida/core/entities/problem.entity';
 
 import { ProblemsService } from './problems.service';
 
 import { ListProblemsOptionsDTO } from './dto/list-problems-options.dto';
 import { SearchProblemsDTO } from './dto/search-problems.dto';
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 
 @ApiTags('problems')
 @ApiExtraModels(PaginationResponseDto)

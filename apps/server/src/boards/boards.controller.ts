@@ -18,14 +18,14 @@ import {
 } from '@nestjs/swagger';
 import { EntityNotFoundError, QueryFailedError } from 'typeorm';
 
-import { Board } from './entities/board.entity';
+import { Board } from '@lavida/core/entities/board.entity';
 
 import { BoardsService } from './boards.service';
 
 import {
   UseAuthPolicies,
   UsePolicies,
-} from 'src/decorators/use-policies.decorator';
+} from '@lavida/server/decorators/use-policies.decorator';
 
 import { CreateBoardDto } from './dto/create-board.dto';
 import { UpdateBoardDto } from './dto/update-board.dto';

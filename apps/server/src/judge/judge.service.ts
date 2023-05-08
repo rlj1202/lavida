@@ -3,13 +3,13 @@ import { ConfigService } from '@nestjs/config';
 import { existsSync } from 'fs';
 import path = require('path');
 
-import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
+import { SubmissionStatus } from '@lavida/core/entities/submission.entity';
 
-import { SubmissionsService } from 'src/submissions/submissions.service';
-import { ProblemsService } from 'src/problems/problems.service';
-import { UserProblemsService } from 'src/userProblems/user-problems.service';
-import { UsersService } from 'src/users/users.service';
-import { AppConfigType } from 'src/config';
+import { SubmissionsService } from '@lavida/server/submissions/submissions.service';
+import { ProblemsService } from '@lavida/server/problems/problems.service';
+import { UserProblemsService } from '@lavida/server/userProblems/user-problems.service';
+import { UsersService } from '@lavida/server/users/users.service';
+import { AppConfigType } from '@lavida/server/config';
 import {
   CompileError,
   Judger,

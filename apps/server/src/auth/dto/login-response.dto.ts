@@ -1,6 +1,6 @@
 import { ApiProperty } from '@nestjs/swagger';
 
-import { User } from 'src/users/entities/user.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
 export class LoginResponseDto {
   @ApiProperty()

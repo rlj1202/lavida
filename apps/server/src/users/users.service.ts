@@ -3,16 +3,16 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import * as bcrypt from 'bcrypt';
 
-import { User } from './entities/user.entity';
+import { User } from '@lavida/core/entities/user.entity';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 import {
   Submission,
   SubmissionStatus,
-} from 'src/submissions/entities/submission.entity';
-import { Problem } from 'src/problems/entities/problem.entity';
-import { UserProblemsService } from 'src/userProblems/user-problems.service';
+} from '@lavida/core/entities/submission.entity';
+import { Problem } from '@lavida/core/entities/problem.entity';
+import { UserProblemsService } from '@lavida/server/userProblems/user-problems.service';
 
 // TODO:
 const saltRounds = 10;

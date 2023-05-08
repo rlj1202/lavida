@@ -9,9 +9,9 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Article } from 'src/articles/entities/article.entity';
+import { Article } from '@lavida/core/entities/article.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity()
 @SubjectClass()

@@ -3,13 +3,13 @@ import { Injectable } from '@nestjs/common';
 import { plainToInstance } from 'class-transformer';
 import { validateOrReject } from 'class-validator';
 
-import { RequestWithUser } from 'src/auth/request-with-user.interface';
-import { AppAbility } from 'src/casl/casl-factory.factory';
-import { IPolicyHandler } from 'src/casl/policies.guard';
+import { RequestWithUser } from '@lavida/server/auth/request-with-user.interface';
+import { AppAbility } from '@lavida/server/casl/casl-factory.factory';
+import { IPolicyHandler } from '@lavida/server/casl/policies.guard';
 
 import { ArticlesService } from './articles.service';
 
-import { Article } from './entities/article.entity';
+import { Article } from '@lavida/core/entities/article.entity';
 
 import { CreateArticleDto } from './dto/create-article.dto';
 

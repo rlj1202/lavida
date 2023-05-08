@@ -11,13 +11,13 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { AppRawRule } from 'src/casl/casl-factory.factory';
+import { AppRawRule } from '@lavida/server/casl/casl-factory.factory';
 
-import { Submission } from 'src/submissions/entities/submission.entity';
-import { Role } from 'src/roles/entities/role.entity';
-import { UserProblem } from 'src/userProblems/user-problem.entity';
+import { Submission } from '@lavida/core/entities/submission.entity';
+import { Role } from '@lavida/core/entities/role.entity';
+import { UserProblem } from '@lavida/core/entities/user-problem.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity('user')
 @SubjectClass()

@@ -2,7 +2,7 @@ import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { IsNull, TreeRepository } from 'typeorm';
 
-import { Role } from './entities/role.entity';
+import { Role } from '@lavida/core/entities/role.entity';
 
 import { CreatePermissionDto } from './dto/create-permission.dto';
 

@@ -5,10 +5,10 @@ import {
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { OptionalJwtGuard } from 'src/auth/guards/optional-jwt.guard';
-import { CheckPolicies } from 'src/casl/check-policies.decorator';
-import { PoliciesGuard } from 'src/casl/policies.guard';
+import { JwtGuard } from '@lavida/server/auth/guards/jwt.guard';
+import { OptionalJwtGuard } from '@lavida/server/auth/guards/optional-jwt.guard';
+import { CheckPolicies } from '@lavida/server/casl/check-policies.decorator';
+import { PoliciesGuard } from '@lavida/server/casl/policies.guard';
 
 /**
  * Check policies for user and auth is required. (Not allowed for guest)

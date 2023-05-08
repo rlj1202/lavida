@@ -1,4 +1,4 @@
-import StaticImplements from 'src/utils/static-implements.decorator';
+import StaticImplements from '@lavida/core/decorators/static-implements.decorator';
 
 /** A decorator that forces class to implement modelName static property. */
 export default function SubjectClass() {

@@ -1,8 +1,8 @@
 import { ApiProperty } from '@nestjs/swagger';
 import { Column, Entity, ManyToOne, PrimaryColumn } from 'typeorm';
 
-import { Problem } from 'src/problems/entities/problem.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Problem } from '@lavida/core/entities/problem.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
 @Entity()
 export class UserProblem {

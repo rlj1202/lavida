@@ -1,7 +1,7 @@
 import { Column, Entity, JoinColumn, OneToOne, PrimaryColumn } from 'typeorm';
 import { Exclude } from 'class-transformer';
 
-import { User } from 'src/users/entities/user.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
 @Entity()
 export class RefreshToken {

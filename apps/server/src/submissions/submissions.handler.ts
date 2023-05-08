@@ -1,7 +1,7 @@
 import { Injectable } from '@nestjs/common';
-import { RequestWithUser } from 'src/auth/request-with-user.interface';
-import { AppAbility } from 'src/casl/casl-factory.factory';
-import { IPolicyHandler } from 'src/casl/policies.guard';
+import { RequestWithUser } from '@lavida/server/auth/request-with-user.interface';
+import { AppAbility } from '@lavida/server/casl/casl-factory.factory';
+import { IPolicyHandler } from '@lavida/server/casl/policies.guard';
 
 @Injectable()
 export class CreateSubmissionHandler implements IPolicyHandler {

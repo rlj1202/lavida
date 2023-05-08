@@ -2,7 +2,7 @@ import { ApiPropertyOptional } from '@nestjs/swagger';
 import { Type } from 'class-transformer';
 import { IsInt, IsOptional, IsString } from 'class-validator';
 
-import { PaginationOptionsDto } from 'src/pagination/pagination-options.dto';
+import { PaginationOptionsDto } from '@lavida/server/pagination/pagination-options.dto';
 
 export class ListSubmissionsOptionsDTO extends PaginationOptionsDto {
   constructor() {

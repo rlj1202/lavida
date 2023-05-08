@@ -11,7 +11,7 @@ import {
 } from '@nestjs/websockets';
 import { Server, Socket } from 'socket.io';
 
-import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
+import { SubmissionStatus } from '@lavida/core/entities/submission.entity';
 
 @WebSocketGateway({ namespace: 'judge', cors: { origin: '*' } })
 export class JudgeGateway

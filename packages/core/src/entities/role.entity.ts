@@ -8,8 +8,8 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { AppRawRule } from 'src/casl/casl-factory.factory';
-import SubjectClass from 'src/casl/subject-class.decorator';
+import { AppRawRule } from '@lavida/server/casl/casl-factory.factory';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity()
 @Tree('closure-table')

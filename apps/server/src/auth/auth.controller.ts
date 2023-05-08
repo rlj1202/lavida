@@ -16,9 +16,9 @@ import {
   ApiTags,
 } from '@nestjs/swagger';
 
-import { GetUser } from 'src/auth/user.decorator';
+import { GetUser } from '@lavida/server/auth/user.decorator';
 
-import { User } from 'src/users/entities/user.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
 import { MailerService } from '@nestjs-modules/mailer';
 import { AuthService } from './auth.service';

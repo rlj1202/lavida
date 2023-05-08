@@ -12,10 +12,10 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { User } from 'src/users/entities/user.entity';
-import { Article } from 'src/articles/entities/article.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Article } from '@lavida/core/entities/article.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity()
 @Tree('closure-table')

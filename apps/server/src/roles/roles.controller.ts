@@ -17,15 +17,15 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { CheckPolicies } from 'src/casl/check-policies.decorator';
-import { PoliciesGuard } from 'src/casl/policies.guard';
+import { JwtGuard } from '@lavida/server/auth/guards/jwt.guard';
+import { CheckPolicies } from '@lavida/server/casl/check-policies.decorator';
+import { PoliciesGuard } from '@lavida/server/casl/policies.guard';
 
 import { RolesService } from './roles.service';
 
 import { CreateRoleHandler, ReadRoleHandler } from './roles.handler';
 
-import { Role } from './entities/role.entity';
+import { Role } from '@lavida/core/entities/role.entity';
 
 import { CreateRoleDto } from './dto/create-role.dto';
 import { CreatePermissionDto } from './dto/create-permission.dto';

@@ -17,10 +17,10 @@ import {
 } from '@nestjs/swagger';
 import { EntityNotFoundError } from 'typeorm';
 
-import { GetUser } from 'src/auth/user.decorator';
+import { GetUser } from '@lavida/server/auth/user.decorator';
 
-import { User } from 'src/users/entities/user.entity';
-import { Article } from './entities/article.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Article } from '@lavida/core/entities/article.entity';
 
 import { ArticlesService } from './articles.service';
 
@@ -33,11 +33,11 @@ import {
 import {
   UseAuthPolicies,
   UsePolicies,
-} from 'src/decorators/use-policies.decorator';
+} from '@lavida/server/decorators/use-policies.decorator';
 
 import { CreateArticleDto } from './dto/create-article.dto';
 import { UpdateArticleDto } from './dto/update-article.dto';
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 import { ListArticlesOptionsDto } from './dto/list-articles-options.dto';
 
 @ApiTags('articles')

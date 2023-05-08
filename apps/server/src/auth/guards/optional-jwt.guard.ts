@@ -1,7 +1,7 @@
 import { ExecutionContext, Injectable } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 
-import { User } from 'src/users/entities/user.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
 import { STRATEGY_NAME } from '../strategies/jwt.strategy';
 

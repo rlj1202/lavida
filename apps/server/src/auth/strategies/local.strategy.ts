@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { PassportStrategy } from '@nestjs/passport';
 import { IStrategyOptions, Strategy, VerifyFunction } from 'passport-local';
 
-import { User } from 'src/users/entities/user.entity';
+import { User } from '@lavida/core/entities/user.entity';
 import { AuthService, InvalidUserCredentialsError } from '../auth.service';
 
 import { IVerifyCallback } from '../verify-callback.interface';

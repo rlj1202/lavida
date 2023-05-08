@@ -1,10 +1,10 @@
 import { Column, Entity, ManyToOne, PrimaryColumn, Unique } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Problem } from 'src/problems/entities/problem.entity';
-import { Contest } from './contest.entity';
+import { Problem } from '@lavida/core/entities/problem.entity';
+import { Contest } from '@lavida/core/entities/contest.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity()
 @Unique(['contestId', 'order'])

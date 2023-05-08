@@ -6,9 +6,12 @@ import {
 } from '@nestjs/common';
 import { ModuleRef, Reflector } from '@nestjs/core';
 
-import { RequestWithUser } from 'src/auth/request-with-user.interface';
+import { RequestWithUser } from '@lavida/server/auth/request-with-user.interface';
 
-import { AppAbility, CaslAbilityFactory } from 'src/casl/casl-factory.factory';
+import {
+  AppAbility,
+  CaslAbilityFactory,
+} from '@lavida/server/casl/casl-factory.factory';
 
 export interface IPolicyHandler {
   handle(ability: AppAbility, request: RequestWithUser): Promise<boolean>;

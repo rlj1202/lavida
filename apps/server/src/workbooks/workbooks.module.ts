@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
-import { CaslModule } from 'src/casl/casl.module';
+import { CaslModule } from '@lavida/server/casl/casl.module';
 
-import { Workbook } from './entities/workbook.entity';
-import { WorkbookProblem } from './entities/workbook-problem.entity';
+import { Workbook } from '@lavida/core/entities/workbook.entity';
+import { WorkbookProblem } from '@lavida/core/entities/workbook-problem.entity';
 
 import {
   CreateWorkbookHandler,

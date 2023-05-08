@@ -2,9 +2,9 @@ import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 
 import { CommentsControler } from './comments.controller';
-import { CaslModule } from 'src/casl/casl.module';
+import { CaslModule } from '@lavida/server/casl/casl.module';
 import { CommentsService } from './comments.service';
-import { Comment } from './entities/comment.entity';
+import { Comment } from '@lavida/core/entities/comment.entity';
 import { DeleteCommentHandler, UpdateCommentHandler } from './comments.handler';
 
 @Module({

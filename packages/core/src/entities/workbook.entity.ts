@@ -10,16 +10,15 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Comment } from 'src/comments/entities/comment.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Board } from 'src/boards/entities/board.entity';
+import { WorkbookProblem } from '@lavida/core/entities/workbook-problem.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 @Entity()
 @SubjectClass()
-export class Article {
-  static readonly modelName = 'Article';
+export class Workbook {
+  static readonly modelName = 'Workbook';
 
   @ApiProperty()
   @PrimaryGeneratedColumn()
@@ -31,24 +30,27 @@ export class Article {
 
   @ApiProperty()
   @Column({ type: 'text' })
-  content: string;
-
-  @ManyToOne(() => Board)
-  board: Board;
-
-  @ApiProperty()
-  @Column()
-  boardId: number;
-
-  @ManyToOne(() => User)
-  author: User;
+  description: string;
 
   @ApiProperty()
   @Column()
   authorId: number;
 
-  @OneToMany(() => Comment, (comment) => comment.article)
-  comments: Comment[];
+  /** The one who created this workbook. */
+  @ApiProperty()
+  @ManyToOne(() => User)
+  author: User;
+
+  @ApiProperty({
+    type: WorkbookProblem,
+    isArray: true,
+  })
+  @OneToMany(
+    () => WorkbookProblem,
+    (workbookProblem) => workbookProblem.workbook,
+    { cascade: true },
+  )
+  workbookProblems: WorkbookProblem[];
 
   @ApiProperty()
   @CreateDateColumn()

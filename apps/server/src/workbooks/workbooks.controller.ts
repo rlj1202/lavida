@@ -22,13 +22,13 @@ import {
 import {
   UseAuthPolicies,
   UsePolicies,
-} from 'src/decorators/use-policies.decorator';
+} from '@lavida/server/decorators/use-policies.decorator';
 
-import { GetUser } from 'src/auth/user.decorator';
+import { GetUser } from '@lavida/server/auth/user.decorator';
 
-import { User } from 'src/users/entities/user.entity';
-import { Workbook } from './entities/workbook.entity';
-import { WorkbookProblem } from './entities/workbook-problem.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Workbook } from '@lavida/core/entities/workbook.entity';
+import { WorkbookProblem } from '@lavida/core/entities/workbook-problem.entity';
 
 import { WorkbooksService } from './workbooks.service';
 
@@ -43,7 +43,7 @@ import {
 import { CreateWorkbookDto } from './dto/create-workbook.dto';
 import { UpdateWorkbookDto } from './dto/update-workbook.dto';
 import { ListWorkbooksOptionsDto } from './dto/list-workbooks-options.dto';
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 import { AddProblemsDto } from './dto/add-problems.dto';
 
 @ApiExtraModels(PaginationResponseDto, WorkbookProblem)

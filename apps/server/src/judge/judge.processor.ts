@@ -12,7 +12,7 @@ import { JudgeGateway } from './judge.gateway';
 
 import { JudgeJob } from './judge.job';
 import { JudgeService, SubmissionResult } from './judge.service';
-import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
+import { SubmissionStatus } from '@lavida/core/entities/submission.entity';
 
 @Processor('judge')
 export class JudgeProcessor {

@@ -1,10 +1,10 @@
 import { Module } from '@nestjs/common';
 
 import { ConfigModule, ConfigService } from '@nestjs/config';
-import { ProblemsModule } from 'src/problems/problems.module';
-import { UserProblemsModule } from 'src/userProblems/user-problems.module';
-import { UsersModule } from 'src/users/users.module';
-import { SubmissionsModule } from 'src/submissions/submissions.module';
+import { ProblemsModule } from '@lavida/server/problems/problems.module';
+import { UserProblemsModule } from '@lavida/server/userProblems/user-problems.module';
+import { UsersModule } from '@lavida/server/users/users.module';
+import { SubmissionsModule } from '@lavida/server/submissions/submissions.module';
 import { JudgerModule } from '@lavida/judger';
 
 import { JudgeService } from './judge.service';

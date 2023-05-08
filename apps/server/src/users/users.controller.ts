@@ -4,7 +4,7 @@ import { plainToClass } from 'class-transformer';
 import { ApiOkResponse, ApiTags } from '@nestjs/swagger';
 
 import { UsersService } from './users.service';
-import { UserProblemsService } from 'src/userProblems/user-problems.service';
+import { UserProblemsService } from '@lavida/server/userProblems/user-problems.service';
 
 import { UserInfoDto } from './dto/user-info.dto';
 

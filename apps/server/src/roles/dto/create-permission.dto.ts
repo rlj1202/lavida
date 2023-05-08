@@ -8,7 +8,11 @@ import {
   IsString,
 } from 'class-validator';
 
-import { Action, Actions, Subjects } from 'src/casl/casl-factory.factory';
+import {
+  Action,
+  Actions,
+  Subjects,
+} from '@lavida/server/casl/casl-factory.factory';
 
 export class CreatePermissionDto {
   @ApiProperty({ enum: Object.values(Action) })

@@ -11,7 +11,7 @@ import {
   VerifyCallback,
 } from 'passport-jwt';
 
-import { User } from 'src/users/entities/user.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
 import { JwtPayload } from '../jwt-payload.interface';
 

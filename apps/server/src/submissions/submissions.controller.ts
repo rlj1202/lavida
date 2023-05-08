@@ -12,16 +12,16 @@ import { SubmissionsService } from './submissions.service';
 
 import { SubmitDto } from './dto/submit.dto';
 import { ListSubmissionsOptionsDTO } from './dto/list-submissions-options.dto';
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 
-import { JwtGuard } from 'src/auth/guards/jwt.guard';
-import { PoliciesGuard } from 'src/casl/policies.guard';
-import { CheckPolicies } from 'src/casl/check-policies.decorator';
+import { JwtGuard } from '@lavida/server/auth/guards/jwt.guard';
+import { PoliciesGuard } from '@lavida/server/casl/policies.guard';
+import { CheckPolicies } from '@lavida/server/casl/check-policies.decorator';
 
-import { GetUser } from 'src/auth/user.decorator';
+import { GetUser } from '@lavida/server/auth/user.decorator';
 
-import { User } from 'src/users/entities/user.entity';
-import { Submission } from './entities/submission.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Submission } from '@lavida/core/entities/submission.entity';
 
 import { CreateSubmissionHandler } from './submissions.handler';
 

@@ -4,14 +4,14 @@ import { DeepPartial, Repository } from 'typeorm';
 import { InjectQueue } from '@nestjs/bull';
 import { Queue } from 'bull';
 
-import { ProblemsService } from 'src/problems/problems.service';
-import { UsersService } from 'src/users/users.service';
+import { ProblemsService } from '@lavida/server/problems/problems.service';
+import { UsersService } from '@lavida/server/users/users.service';
 
-import { Submission } from './entities/submission.entity';
+import { Submission } from '@lavida/core/entities/submission.entity';
 
-import { JudgeJob } from 'src/judge/judge.job';
+import { JudgeJob } from '@lavida/server/judge/judge.job';
 
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 import { ListSubmissionsOptionsDTO } from './dto/list-submissions-options.dto';
 import { SubmitDto } from './dto/submit.dto';
 

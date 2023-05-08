@@ -7,10 +7,10 @@ import {
 } from 'typeorm';
 import { ApiProperty } from '@nestjs/swagger';
 
-import { Problem } from 'src/problems/entities/problem.entity';
-import { User } from 'src/users/entities/user.entity';
+import { Problem } from '@lavida/core/entities/problem.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
-import SubjectClass from 'src/casl/subject-class.decorator';
+import SubjectClass from '@lavida/core/decorators/subject-class.decorator';
 
 export enum SubmissionStatus {
   SUBMITTED = 'SUBMITTED',

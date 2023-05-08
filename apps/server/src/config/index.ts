@@ -5,8 +5,8 @@ import { judgeConfigTuple } from './judge.config';
 import { dockerConfigTuple } from './docker.config';
 import { mailerConfigTuple } from './mailer.config';
 
-import { UnionToIntersection } from 'src/common/UnionToIntersection';
-import { MergeIntersection } from 'src/common/MergeIntersection';
+import { UnionToIntersection } from '@lavida/server/common/UnionToIntersection';
+import { MergeIntersection } from '@lavida/server/common/MergeIntersection';
 
 export type ConfigTuple = readonly [string, () => object];
 

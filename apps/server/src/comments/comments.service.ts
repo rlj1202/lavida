@@ -2,12 +2,12 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { TreeRepository } from 'typeorm';
 
-import { User } from 'src/users/entities/user.entity';
-import { Comment } from './entities/comment.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Comment } from '@lavida/core/entities/comment.entity';
 
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 import { ListCommentsOptionsDto } from './dto/list-comments-options.dto';
 
 @Injectable()

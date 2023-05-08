@@ -9,20 +9,20 @@ import {
 } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
-import { Problem } from 'src/problems/entities/problem.entity';
-import { Submission } from 'src/submissions/entities/submission.entity';
-import { User } from 'src/users/entities/user.entity';
-import { Workbook } from 'src/workbooks/entities/workbook.entity';
-import { WorkbookProblem } from 'src/workbooks/entities/workbook-problem.entity';
-import { Contest } from 'src/contests/entities/contest.entity';
-import { ContestProblem } from 'src/contests/entities/contest-problem.entity';
-import { Board } from 'src/boards/entities/board.entity';
-import { Article } from 'src/articles/entities/article.entity';
-import { Comment } from 'src/comments/entities/comment.entity';
-import { Role } from 'src/roles/entities/role.entity';
+import { Problem } from '@lavida/core/entities/problem.entity';
+import { Submission } from '@lavida/core/entities/submission.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Workbook } from '@lavida/core/entities/workbook.entity';
+import { WorkbookProblem } from '@lavida/core/entities/workbook-problem.entity';
+import { Contest } from '@lavida/core/entities/contest.entity';
+import { ContestProblem } from '@lavida/core/entities/contest-problem.entity';
+import { Board } from '@lavida/core/entities/board.entity';
+import { Article } from '@lavida/core/entities/article.entity';
+import { Comment } from '@lavida/core/entities/comment.entity';
+import { Role } from '@lavida/core/entities/role.entity';
 
-import { UnionToIntersection } from 'src/common/UnionToIntersection';
-import { MergeIntersection } from 'src/common/MergeIntersection';
+import { UnionToIntersection } from '@lavida/server/common/UnionToIntersection';
+import { MergeIntersection } from '@lavida/server/common/MergeIntersection';
 
 export const Action = {
   /** 'manage' is special keyword used in CASL. */

@@ -4,7 +4,7 @@ import { Request } from 'express';
 import { Strategy } from 'passport-custom';
 import { EntityNotFoundError } from 'typeorm';
 
-import { User } from 'src/users/entities/user.entity';
+import { User } from '@lavida/core/entities/user.entity';
 
 import { AuthService } from '../auth.service';
 

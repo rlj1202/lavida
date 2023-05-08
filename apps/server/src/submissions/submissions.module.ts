@@ -1,12 +1,12 @@
 import { BullModule } from '@nestjs/bull';
 import { Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { CaslModule } from 'src/casl/casl.module';
+import { CaslModule } from '@lavida/server/casl/casl.module';
 
-import { ProblemsModule } from 'src/problems/problems.module';
-import { UsersModule } from 'src/users/users.module';
+import { ProblemsModule } from '@lavida/server/problems/problems.module';
+import { UsersModule } from '@lavida/server/users/users.module';
 
-import { Submission } from './entities/submission.entity';
+import { Submission } from '@lavida/core/entities/submission.entity';
 import { SubmissionsController } from './submissions.controller';
 import { CreateSubmissionHandler } from './submissions.handler';
 import { SubmissionsService } from './submissions.service';

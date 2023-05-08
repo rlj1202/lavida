@@ -1,11 +1,11 @@
 import { subject } from '@casl/ability';
 import { Injectable } from '@nestjs/common';
 
-import { RequestWithUser } from 'src/auth/request-with-user.interface';
+import { RequestWithUser } from '@lavida/server/auth/request-with-user.interface';
 
-import { AppAbility } from 'src/casl/casl-factory.factory';
-import { IPolicyHandler } from 'src/casl/policies.guard';
-import { WorkbookProblem } from './entities/workbook-problem.entity';
+import { AppAbility } from '@lavida/server/casl/casl-factory.factory';
+import { IPolicyHandler } from '@lavida/server/casl/policies.guard';
+import { WorkbookProblem } from '@lavida/core/entities/workbook-problem.entity';
 
 import { WorkbooksService } from './workbooks.service';
 

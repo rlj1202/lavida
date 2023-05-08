@@ -18,15 +18,15 @@ import {
 } from '@nestjs/swagger';
 import { EntityNotFoundError } from 'typeorm';
 
-import { GetUser } from 'src/auth/user.decorator';
+import { GetUser } from '@lavida/server/auth/user.decorator';
 
 import {
   UseAuthPolicies,
   UsePolicies,
-} from 'src/decorators/use-policies.decorator';
+} from '@lavida/server/decorators/use-policies.decorator';
 
-import { User } from 'src/users/entities/user.entity';
-import { Comment } from './entities/comment.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Comment } from '@lavida/core/entities/comment.entity';
 
 import { DeleteCommentHandler, UpdateCommentHandler } from './comments.handler';
 import { CommentsService } from './comments.service';
@@ -34,7 +34,7 @@ import { CommentsService } from './comments.service';
 import { CreateCommentDto } from './dto/create-comment.dto';
 import { UpdateCommentDto } from './dto/update-comment.dto';
 import { ListCommentsOptionsDto } from './dto/list-comments-options.dto';
-import { PaginationOptionsDto } from 'src/pagination/pagination-options.dto';
+import { PaginationOptionsDto } from '@lavida/server/pagination/pagination-options.dto';
 
 @ApiExtraModels(PaginationOptionsDto)
 @ApiTags('comments')

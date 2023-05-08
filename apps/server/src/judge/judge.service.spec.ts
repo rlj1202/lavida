@@ -4,7 +4,7 @@ import { ConfigModule } from '@nestjs/config';
 import { JudgeModule } from './judge.module';
 
 import { JudgeService } from './judge.service';
-import { SubmissionStatus } from 'src/submissions/entities/submission.entity';
+import { SubmissionStatus } from '@lavida/core/entities/submission.entity';
 
 describe.skip('JudgeService', () => {
   let judgeService: JudgeService;

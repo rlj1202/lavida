@@ -14,15 +14,15 @@ import {
   getSchemaPath,
 } from '@nestjs/swagger';
 
-import { GetUser } from 'src/auth/user.decorator';
+import { GetUser } from '@lavida/server/auth/user.decorator';
 import {
   UseAuthPolicies,
   UsePolicies,
-} from 'src/decorators/use-policies.decorator';
+} from '@lavida/server/decorators/use-policies.decorator';
 
-import { User } from 'src/users/entities/user.entity';
-import { Contest } from './entities/contest.entity';
-import { ContestProblem } from './entities/contest-problem.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Contest } from '@lavida/core/entities/contest.entity';
+import { ContestProblem } from '@lavida/core/entities/contest-problem.entity';
 
 import { ContestsService } from './contests.service';
 
@@ -35,7 +35,7 @@ import {
 import { CreateContestDto } from './dto/create-contest.dto';
 import { UpdateContestDto } from './dto/update.contest.dto';
 import { ListContestsOptionsDto } from './dto/list-contests-options.dto';
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 import { AddProblemsDto } from './dto/add-problems.dto';
 
 @ApiTags('contests')

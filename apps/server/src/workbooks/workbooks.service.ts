@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, Repository } from 'typeorm';
 
-import { User } from 'src/users/entities/user.entity';
-import { Workbook } from './entities/workbook.entity';
-import { WorkbookProblem } from './entities/workbook-problem.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Workbook } from '@lavida/core/entities/workbook.entity';
+import { WorkbookProblem } from '@lavida/core/entities/workbook-problem.entity';
 
 import { CreateWorkbookDto } from './dto/create-workbook.dto';
 import { UpdateWorkbookDto } from './dto/update-workbook.dto';
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 import { ListWorkbooksOptionsDto } from './dto/list-workbooks-options.dto';
 
 @Injectable()

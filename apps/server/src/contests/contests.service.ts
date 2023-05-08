@@ -2,13 +2,13 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { User } from 'src/users/entities/user.entity';
-import { Contest } from './entities/contest.entity';
-import { ContestProblem } from './entities/contest-problem.entity';
+import { User } from '@lavida/core/entities/user.entity';
+import { Contest } from '@lavida/core/entities/contest.entity';
+import { ContestProblem } from '@lavida/core/entities/contest-problem.entity';
 
 import { CreateContestDto } from './dto/create-contest.dto';
 import { UpdateContestDto } from './dto/update.contest.dto';
-import { PaginationResponseDto } from 'src/pagination/pagination-response.dto';
+import { PaginationResponseDto } from '@lavida/server/pagination/pagination-response.dto';
 import { ListContestsOptionsDto } from './dto/list-contests-options.dto';
 
 @Injectable()

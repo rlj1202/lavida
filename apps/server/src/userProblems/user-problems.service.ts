@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 
-import { UserProblem } from './user-problem.entity';
+import { UserProblem } from '@lavida/core/entities/user-problem.entity';
 
 @Injectable()
 export class UserProblemsService {

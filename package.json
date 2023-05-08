@@ -8,6 +8,12 @@
     "packages/*"
   ],
   "scripts": {
+    "build:judgeserver": "npm run build --workspace apps/judgeserver",
+    "build:server": "npm run build --workspace apps/server",
+    "start:judgeserver": "npm run start --workspace apps/judgeserver",
+    "start:server": "npm run start --workspace apps/server",
+    "start:dev:judgeserver": "npm run start:dev --workspace apps/judgeserver",
+    "start:dev:server": "npm run start:dev --workspace apps/server",
     "format": "prettier --write \"{apps,packages}/**/*.ts\"",
     "lint": "eslint \"{apps,packages}/**/*.ts\" --fix",
     "test": "npm run test --workspaces --if-present"
