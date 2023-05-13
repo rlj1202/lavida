@@ -14,6 +14,8 @@
     "start:server": "npm run start --workspace apps/server",
     "start:dev:judgeserver": "npm run start:dev --workspace apps/judgeserver",
     "start:dev:server": "npm run start:dev --workspace apps/server",
+    "start:prod:judgeserver": "npm run start:prod --workspace apps/judgeserver",
+    "start:prod:server": "npm run start:prod --workspace apps/server",
     "format": "prettier --write \"{apps,packages}/**/*.ts\"",
     "lint": "eslint \"{apps,packages}/**/*.ts\" --fix",
     "test": "npm run test --workspaces --if-present"

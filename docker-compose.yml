@@ -1,0 +1,45 @@
+version: '1'
+
+services:
+  server:
+    container_name: server
+    image: lavida-server
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_CONTEXT=server
+    environment:
+      - PORT=3001
+      - DATABASE_HOST=host.docker.internal
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=lavida
+      - DATABASE_USERNAME=root
+    expose:
+      - 3306
+    ports:
+      - '3001:3001'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+  judgeserver:
+    container_name: judgeserver
+    image: lavida-judgeserver
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_CONTEXT=judgeserver
+    env_file:
+      - apps/judgeserver/.env
+    environment:
+      - PORT=3002
+      - DATABASE_HOST=host.docker.internal
+      - DATABASE_PORT=3306
+      - DATABASE_NAME=lavida
+      - DATABASE_USERNAME=root
+    expose:
+      - 3306
+    ports:
+      - '3002:3002'
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
