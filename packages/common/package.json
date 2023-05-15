@@ -2,7 +2,10 @@
   "name": "@lavida/common",
   "version": "1.0.0",
   "description": "",
-  "scripts": {},
+  "scripts": {
+    "build": "tsc -p tsconfig.build.json",
+    "test": "jest"
+  },
   "keywords": [
     "typescript"
   ],

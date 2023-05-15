@@ -2,7 +2,10 @@
   "extends": "../../tsconfig.json",
 
   "compilerOptions": {
-    "outDir": "./dist"
+    "outDir": "./dist",
+    "types": ["node"],
+    "noEmit": false,
+    "composite": true
   },
 
   "include": ["./src/**/*.ts"]

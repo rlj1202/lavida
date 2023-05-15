@@ -21,5 +21,6 @@
     "types": ["jest"],
     "noEmit": false,
     "resolveJsonModule": true
-  }
+  },
+  "exclude": ["dist"]
 }
