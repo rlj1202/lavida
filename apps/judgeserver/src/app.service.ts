@@ -1,19 +1,107 @@
-import { Injectable, Logger, OnModuleInit } from '@nestjs/common';
-import { Repository } from 'typeorm';
-
-import { Problem } from '@lavida/core/entities/problem.entity';
+import { Injectable } from '@nestjs/common';
+import { ConfigService } from '@nestjs/config';
 import { InjectRepository } from '@nestjs/typeorm';
+import { Repository } from 'typeorm';
+import path from 'path';
+
+import {
+  Submission,
+  SubmissionStatus,
+} from '@lavida/core/entities/submission.entity';
+import {
+  CompileError,
+  Judger,
+  MemoryLimitExceededError,
+  RuntimeError,
+  TimeLimitExceededError,
+} from '@lavida/judger';
+import { ValidateSubmissionRequestDto } from '@lavida/core/dtos/validate-submission-request.dto';
+import { ValidateSubmissionResponseDto } from '@lavida/core/dtos/validate-submission-response.dto';
+import { JudgeRequestDto } from '@lavida/core/dtos/judge-request.dto';
+import { JudgeResponseDto } from '@lavida/core/dtos/judge-response.dto';
 
 @Injectable()
-export class AppService implements OnModuleInit {
+export class AppService {
   constructor(
-    @InjectRepository(Problem)
-    private readonly problemsRepository: Repository<Problem>,
+    private readonly judger: Judger,
+    private readonly configService: ConfigService,
+    @InjectRepository(Submission)
+    private readonly submissionsRepository: Repository<Submission>,
   ) {}
 
-  async onModuleInit() {
-    const problems = await this.problemsRepository.find({});
+  async judge(
+    dto: JudgeRequestDto,
+    reportProgress: (value: any) => Promise<void>,
+  ): Promise<JudgeResponseDto> {
+    const testcaseDir = this.configService.get<string>('TESTCASE_DIR');
 
-    Logger.log(`Number of problems: ${problems.length}`);
+    const result = await this.judger.judge(
+      dto.language,
+      dto.code,
+      path.join(testcaseDir, `${dto.problemId}`),
+      dto.timeLimit,
+      dto.memoryLimit,
+      reportProgress,
+    );
+
+    return result;
+  }
+
+  async validateSubmission(
+    dto: ValidateSubmissionRequestDto,
+    reportProgress: (value: any) => Promise<void>,
+  ): Promise<ValidateSubmissionResponseDto> {
+    let finalStatus: SubmissionStatus = SubmissionStatus.SERVER_ERROR;
+    let time = 0;
+    let memory = 0;
+
+    try {
+      await this.submissionsRepository.update(dto.submissionId, {
+        status: SubmissionStatus.JUDGING,
+      });
+
+      const result = await this.judge(dto, reportProgress);
+
+      finalStatus = result.accepted
+        ? SubmissionStatus.ACCEPTED
+        : SubmissionStatus.WRONG_ANSWER;
+
+      time = result.time;
+      memory = result.memory;
+    } catch (e) {
+      if (e instanceof CompileError) {
+        finalStatus = SubmissionStatus.COMPILE_ERROR;
+      } else if (e instanceof RuntimeError) {
+        finalStatus = SubmissionStatus.RUNTIME_ERROR;
+      } else if (e instanceof TimeLimitExceededError) {
+        finalStatus = SubmissionStatus.TIME_LIMIT_EXCEEDED;
+      } else if (e instanceof MemoryLimitExceededError) {
+        finalStatus = SubmissionStatus.MEMORY_LIMIT_EXCEEDED;
+      } else {
+        finalStatus = SubmissionStatus.SERVER_ERROR;
+      }
+    } finally {
+      await this.submissionsRepository.update(dto.submissionId, {
+        status: finalStatus,
+        time: time,
+        memory: memory,
+      });
+
+      // TODO:
+      // await this.userProblemService.save(
+      //   submission.userId,
+      //   submission.problemId,
+      //   finalStatus === SubmissionStatus.ACCEPTED,
+      // );
+
+      // await this.usersService.updateStats(submission.userId);
+      // await this.problemsService.updateStats(submission.problemId);
+
+      return {
+        status: finalStatus,
+        time: 0,
+        memory: 0,
+      };
+    }
   }
 }

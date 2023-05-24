@@ -3,10 +3,12 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import Joi from 'joi';
 
-import { Problem } from '@lavida/core/entities/problem.entity';
-
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
+
+import { JudgerModule } from '@lavida/judger';
+
+import { Problem } from '@lavida/core/entities/problem.entity';
 import { User } from '@lavida/core/entities/user.entity';
 import { Submission } from '@lavida/core/entities/submission.entity';
 import { UserProblem } from '@lavida/core/entities/user-problem.entity';
@@ -48,7 +50,14 @@ const validationSchema = Joi.object({
       },
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Problem]),
+    TypeOrmModule.forFeature([Problem, Submission]),
+    JudgerModule.registerAsync({
+      imports: [],
+      useFactory: async () => {
+        return {};
+      },
+      inject: [],
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
