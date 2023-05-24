@@ -7,6 +7,9 @@ import { executeWithTimeout } from '@lavida/common/utils/execute-with-timeout.ut
 
 import { DockerService } from '@lavida/docker';
 
+import { LanguageProfile } from '@lavida/core/language-profile/language-profile.interface';
+import { languageProfiles } from '@lavida/core/language-profile/language-profiles';
+
 export class CompileError extends Error {
   constructor(public exitCode: number, msg?: string) {
     super(msg);
@@ -44,34 +47,6 @@ export interface JudgeResult {
   /** In bytes */
   memory: number;
 }
-
-interface LanguageProfile {
-  /** Docker image name */
-  image: string;
-  /** Extension of source code file */
-  extension: string;
-  /** Command line for compilation */
-  compile?: string;
-  /** Command line for execution */
-  execution: string;
-}
-
-const languageProfiles: Record<string, LanguageProfile> = {
-  'C++11': {
-    image: 'lavida-gcc',
-    extension: '.cpp',
-    compile:
-      // -lm: linker option for m library for math.h
-      // -O2: Optimization option
-      'g++ --std=c++11 -O2 -Wall -lm -static -DONLINE_JUDGE -DLAVIDA -o main main.cpp',
-    execution: './main',
-  },
-  Python3: {
-    image: 'lavida-python3',
-    extension: '.py',
-    execution: 'python3 main.py',
-  },
-};
 
 @Injectable()
 export class Judger {
@@ -122,7 +97,7 @@ export class Judger {
       await executeWithTimeout(
         this.dockerService.putFile(
           container,
-          `main${curLangProfile.extension}`,
+          curLangProfile.filename,
           sourcecode,
           '/',
         ),
