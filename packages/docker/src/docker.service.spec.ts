@@ -26,11 +26,11 @@ describe('Docker', () => {
     dockerService = moduleRef.get<DockerService>(DockerService);
   });
 
-  test('Ping', async () => {
+  it('should ping', async () => {
     await docker.ping();
   });
 
-  test('Images', async () => {
+  it('should get the images', async () => {
     await docker.getImage('lavida-gcc').inspect();
     await docker.getImage('lavida-python3').inspect();
   });
@@ -52,14 +52,14 @@ describe('Docker', () => {
       await container.remove();
     });
 
-    test('Start', async () => {
+    it('should start', async () => {
       await container.start();
       const info = await container.inspect();
 
       expect(info.State.Running).toBeTruthy();
     });
 
-    test('Cwd', async () => {
+    it('should get the cwd', async () => {
       await container
         .exec({
           AttachStdout: true,
@@ -75,7 +75,7 @@ describe('Docker', () => {
         });
     });
 
-    test('Execute', async () => {
+    it('should execute a command', async () => {
       const result = await dockerService.execute(container, {
         cmd: ['echo', 'test'],
       });
@@ -84,7 +84,7 @@ describe('Docker', () => {
       expect(result.stderrOutput.trim()).toEqual('');
     });
 
-    test('Execute with input', async () => {
+    it('should execute with the input', async () => {
       const result = await dockerService.execute(container, {
         cmd: ['cat'],
         input: 'test',
@@ -94,7 +94,7 @@ describe('Docker', () => {
       expect(result.stderrOutput.trim()).toEqual('');
     });
 
-    test('Execute with time limit', async () => {
+    it('should execute with a time limit', async () => {
       const result = await dockerService.execute(container, {
         cmd: ['cat'],
         timeLimit: 10,
@@ -103,11 +103,11 @@ describe('Docker', () => {
       expect(result.exitCode).toBe(124);
     });
 
-    test('Copy file', async () => {
+    it('should copy a file', async () => {
       const filename = 'filename';
       const filecontent = 'content';
 
-      dockerService.putFile(container, filename, filecontent, './');
+      await dockerService.putFile(container, filename, filecontent, './');
 
       await container
         .exec({
@@ -121,6 +121,14 @@ describe('Docker', () => {
 
           expect(output).toEqual(filecontent);
         });
+    });
+
+    it('should get a file', async () => {
+      const filepath = '/filename';
+
+      const buffer = await dockerService.getFile(container, filepath);
+
+      expect(buffer.toString()).toBe('content');
     });
   });
 });

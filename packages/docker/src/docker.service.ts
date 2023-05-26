@@ -67,6 +67,40 @@ export class DockerService implements OnModuleInit {
     ).destroy();
   }
 
+  async getFile(
+    container: Dockerode.Container,
+    filepath: string,
+  ): Promise<Buffer> {
+    const fileTar = await container.getArchive({ path: filepath });
+
+    const extract = tar.extract();
+
+    const bufferPromise = new Promise<Buffer>((resolve, _reject) => {
+      let result: Buffer;
+
+      extract.on('entry', (_header, stream, next) => {
+        readAll(stream)
+          .then((buffer) => {
+            result = buffer;
+
+            next();
+          })
+          .catch((e) => {
+            console.log(e);
+          });
+      });
+      extract.on('finish', () => {
+        resolve(result);
+      });
+    });
+
+    fileTar.pipe(extract);
+
+    const buffer = await bufferPromise;
+
+    return buffer;
+  }
+
   async execute(
     container: Dockerode.Container,
     options: { cmd: string[]; input?: string; timeLimit?: number },
