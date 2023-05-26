@@ -4,6 +4,7 @@ export const languageProfiles: Record<string, LanguageProfile> = {
   'C++11': {
     image: 'lavida-gcc',
     filename: 'main.cpp',
+    executable: 'main',
     compile:
       // -lm: linker option for m library for math.h
       // -O2: Optimization option
@@ -18,6 +19,7 @@ export const languageProfiles: Record<string, LanguageProfile> = {
   Java8: {
     image: 'lavida-java8',
     filename: 'Main.java',
+    executable: 'Main.class',
     compile:
       'javac -J-Xms1024m -J-Xmx1920m -J-Xss512m -encoding UTF-8 Main.java',
     execution: 'java -Xms1024m -Xmx1920m -Xss512m -Dfile.encoding=UTF-8 Main',
