@@ -10,43 +10,11 @@ import { DockerService } from '@lavida/docker';
 import { LanguageProfile } from '@lavida/core/language-profile/language-profile.interface';
 import { languageProfiles } from '@lavida/core/language-profile/language-profiles';
 
-export class CompileError extends Error {
-  constructor(public exitCode: number, msg?: string) {
-    super(msg);
-    this.name = 'CompileError';
-  }
-}
+import { JudgeResult } from './interfaces/judge-result.interface';
 
-export class RuntimeError extends Error {
-  constructor(public exitCode: number, msg?: string) {
-    super(msg);
-    this.name = 'RuntimeError';
-  }
-}
-
-export class TimeLimitExceededError extends Error {
-  constructor(msg?: string) {
-    super(msg);
-    this.name = 'TimeLimitExceededError';
-  }
-}
-
-export class MemoryLimitExceededError extends Error {
-  constructor(msg?: string) {
-    super(msg);
-    this.name = 'MemoryLimitExceededError';
-  }
-}
-
-export interface JudgeResult {
-  accepted: boolean;
-
-  /** In milli seconds */
-  time: number;
-
-  /** In bytes */
-  memory: number;
-}
+import { CompileError } from './errors/compile.error';
+import { RuntimeError } from './errors/runtime.error';
+import { TimeLimitExceededError } from './errors/time-limit-exceeded.error';
 
 @Injectable()
 export class Judger {
