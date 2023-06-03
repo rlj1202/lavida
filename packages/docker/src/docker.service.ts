@@ -4,6 +4,7 @@ import { IncomingMessage } from 'http';
 import Dockerode = require('dockerode');
 import DockerModem = require('docker-modem');
 import tar = require('tar-stream');
+import concat from 'concat-stream';
 
 import { readAll } from '@lavida/common/utils/read-all.util';
 
@@ -52,7 +53,7 @@ export class DockerService implements OnModuleInit {
   async putFile(
     container: Dockerode.Container,
     filename: string,
-    content: string,
+    content: string | Buffer,
     dir: string,
   ) {
     const pack = tar.pack();
@@ -75,19 +76,20 @@ export class DockerService implements OnModuleInit {
 
     const extract = tar.extract();
 
-    const bufferPromise = new Promise<Buffer>((resolve, _reject) => {
+    const bufferPromise = new Promise<Buffer>((resolve, reject) => {
       let result: Buffer;
 
       extract.on('entry', (_header, stream, next) => {
-        readAll(stream)
-          .then((buffer) => {
+        stream.on('error', (e) => {
+          reject(e);
+        });
+        stream.pipe(
+          concat((buffer) => {
             result = buffer;
 
             next();
-          })
-          .catch((e) => {
-            console.log(e);
-          });
+          }),
+        );
       });
       extract.on('finish', () => {
         resolve(result);
@@ -110,15 +112,13 @@ export class DockerService implements OnModuleInit {
       AttachStdout: true,
     };
 
+    let cmd = [...options.cmd];
+
     if (options.timeLimit) {
-      execCreateOptions.Cmd = [
-        'timeout',
-        `${options.timeLimit / 1000}`,
-        ...options.cmd,
-      ];
-    } else {
-      execCreateOptions.Cmd = options.cmd;
+      cmd = ['timeout', `${options.timeLimit / 1000}`, ...cmd];
     }
+
+    execCreateOptions.Cmd = cmd;
 
     if (options.input) {
       execCreateOptions.AttachStdin = true;

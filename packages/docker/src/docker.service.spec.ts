@@ -103,6 +103,27 @@ describe('Docker', () => {
       expect(result.exitCode).toBe(124);
     });
 
+    it('should execute with a memory limit', async () => {
+      const megabytes = 10;
+      const bytes = megabytes * 1024 * 1024;
+
+      await container.update({
+        Memory: bytes,
+        MemorySwap: bytes,
+      });
+
+      const result = await dockerService.execute(container, {
+        cmd: ['dd', 'bs=250M', 'if=/dev/zero', 'of=/dev/null'],
+      });
+
+      expect(result.exitCode).toBe(137);
+
+      await container.update({
+        Memory: 0,
+        MemorySwap: 0,
+      });
+    });
+
     it('should copy a file', async () => {
       const filename = 'filename';
       const filecontent = 'content';
