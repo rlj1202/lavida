@@ -1,0 +1,19 @@
+{
+  "name": "@lavida/experiment-judgeworker-validator",
+  "scripts": {
+    "start": "nest start",
+    "start:dev": "nest start --watch"
+  },
+  "dependencies": {
+    "@lavida/core": "^0.1.0",
+    "@nestjs/common": "^9.0.0",
+    "@nestjs/config": "^2.3.1",
+    "@nestjs/core": "^9.0.0",
+    "@nestjs/microservices": "^9.4.0",
+    "@nestjs/typeorm": "^9.0.1",
+    "dockerode": "^3.3.5",
+    "joi": "^17.9.2",
+    "kafkajs": "^2.2.4",
+    "typeorm": "^0.3.15"
+  }
+}
