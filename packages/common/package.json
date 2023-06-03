@@ -17,6 +17,10 @@
   "author": "Jisu Sim <rlj1202@gmail.com>",
   "license": "GPL-3.0",
   "devDependencies": {
+    "@types/concat-stream": "^2.0.0",
     "typescript": "^4.9.4"
+  },
+  "dependencies": {
+    "concat-stream": "^2.0.0"
   }
 }

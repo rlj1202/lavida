@@ -1,14 +1,14 @@
-import { Stream } from 'stream';
+import { Readable } from 'node:stream';
 
-export async function readAll(stream: Stream): Promise<Buffer> {
+import concat from 'concat-stream';
+
+export async function readAll(stream: Readable): Promise<Buffer> {
   return new Promise<Buffer>((resolve, reject) => {
-    const chunks: Buffer[] = [];
-
-    stream.on('data', (chunk) => chunks.push(Buffer.from(chunk)));
-    stream.on('error', (error) => reject(error));
-    stream.on('close', () => resolve(Buffer.concat(chunks)));
-    stream.on('finish', () => {
-      resolve(Buffer.concat(chunks));
-    });
+    stream.on('error', reject);
+    stream.pipe(
+      concat(function (data) {
+        resolve(data);
+      }),
+    );
   });
 }
