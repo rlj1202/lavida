@@ -1,7 +1,12 @@
-import { Module } from '@nestjs/common';
+import { Inject, Logger, Module, OnModuleInit } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import {
+  ClientKafka,
+  ClientProxyFactory,
+  Transport,
+} from '@nestjs/microservices';
+import { Partitioners } from 'kafkajs';
 
 import { BasicCommand } from './commands/basic.command';
 import { JudgeCommand } from './commands/judge.command';
@@ -14,7 +19,6 @@ import { UserProblem } from '@lavida/core/entities/user-problem.entity';
 import { Role } from '@lavida/core/entities/role.entity';
 
 import { KAFKA_CLIENT_TOKEN } from './app.constants';
-import { Partitioners } from 'kafkajs';
 
 @Module({
   imports: [
@@ -70,4 +74,15 @@ import { Partitioners } from 'kafkajs';
     },
   ],
 })
-export class AppModule {}
+export class AppModule implements OnModuleInit {
+  constructor(
+    @Inject(KAFKA_CLIENT_TOKEN)
+    private readonly client: ClientKafka,
+  ) {}
+
+  async onModuleInit() {
+    await this.client.connect();
+
+    Logger.verbose('Kafka client connected');
+  }
+}
