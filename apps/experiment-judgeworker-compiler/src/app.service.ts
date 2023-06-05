@@ -8,6 +8,8 @@ import { languageProfiles } from '@lavida/core/language-profile/language-profile
 import { executeWithTimeout } from '@lavida/common/utils/execute-with-timeout.util';
 import { LanguageProfile } from '@lavida/core/language-profile/language-profile.interface';
 
+import { CompileError } from '@lavida/judger/errors';
+
 @Injectable()
 export class AppService {
   constructor(
@@ -51,9 +53,7 @@ export class AppService {
         });
 
         if (result.exitCode && result.exitCode !== 0) {
-          throw new Error(
-            `Compile error: exitCode = ${result.exitCode}, stdOutput = ${result.stdoutOutput}`,
-          );
+          throw new CompileError(result.exitCode, result.stderrOutput);
         }
       }
 
