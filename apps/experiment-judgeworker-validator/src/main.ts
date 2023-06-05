@@ -25,6 +25,7 @@ async function bootstrap() {
       consumer: {
         groupId: 'judgeworker-validtor',
         rebalanceTimeout: 100,
+        maxBytes: 1024 * 1024 * 5,
       },
       producer: {
         createPartitioner: Partitioners.DefaultPartitioner,
