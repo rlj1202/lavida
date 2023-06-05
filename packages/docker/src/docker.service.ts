@@ -110,6 +110,7 @@ export class DockerService implements OnModuleInit {
     const execCreateOptions: Dockerode.ExecCreateOptions = {
       AttachStdin: true,
       AttachStdout: true,
+      AttachStderr: true,
     };
 
     let cmd = [...options.cmd];
