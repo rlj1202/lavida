@@ -43,16 +43,75 @@ services:
       - '3002:3002'
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:rw
+  experiment-judgeworker-initiator:
+    container_name: experiment-judgeworker-initiator
+    image: lavida-experiment-judgeworker-initiator
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_CONTEXT=experiment-judgeworker-initiator
+    env_file:
+      - apps/experiment-judgeworker-initiator/.env
+    environment:
+      - DATABASE_HOST=host.docker.internal
+      - KAFKA_CLIENT_BROKERS=host.docker.internal:9095
+  experiment-judgeworker-compiler:
+    container_name: experiment-judgeworker-compiler
+    image: lavida-experiment-judgeworker-compiler
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_CONTEXT=experiment-judgeworker-compiler
+    env_file:
+      - apps/experiment-judgeworker-compiler/.env
+    environment:
+      - DATABASE_HOST=host.docker.internal
+      - KAFKA_CLIENT_BROKERS=host.docker.internal:9095
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+  experiment-judgeworker-validator:
+    container_name: experiment-judgeworker-validator
+    image: lavida-experiment-judgeworker-validator
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_CONTEXT=experiment-judgeworker-validator
+    env_file:
+      - apps/experiment-judgeworker-validator/.env
+    environment:
+      - DATABASE_HOST=host.docker.internal
+      - KAFKA_CLIENT_BROKERS=host.docker.internal:9095
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:rw
+  experiment-judgeworker-updater:
+    container_name: experiment-judgeworker-updater
+    image: lavida-experiment-judgeworker-updater
+    build:
+      context: .
+      dockerfile: Dockerfile
+      args:
+        - BUILD_CONTEXT=experiment-judgeworker-updater
+    env_file:
+      - apps/experiment-judgeworker-updater/.env
+    environment:
+      - DATABASE_HOST=host.docker.internal
+      - KAFKA_CLIENT_BROKERS=host.docker.internal:9095
   kafka:
     image: docker.io/bitnami/kafka:3.4
     ports:
-      - '9092:9092'
+      - '9094:9094'
+      - '9095:9095'
     volumes:
       - 'kafka_data:/bitnami'
     environment:
       - ALLOW_PLAINTEXT_LISTENER=yes
       - KAFKA_KRAFT_CLUSTER_ID=bTqVQB8uTaaDjHjmEJnnCA
-      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://localhost:9092
+      - KAFKA_CFG_LISTENERS=PLAINTEXT://:9092,CONTROLLER://:9093,EXTERNAL://:9094,EXTERNAL_DOCKER://:9095
+      - KAFKA_CFG_ADVERTISED_LISTENERS=PLAINTEXT://kafka:9092,EXTERNAL://localhost:9094,EXTERNAL_DOCKER://host.docker.internal:9095
+      - KAFKA_CFG_LISTENER_SECURITY_PROTOCOL_MAP=CONTROLLER:PLAINTEXT,EXTERNAL:PLAINTEXT,PLAINTEXT:PLAINTEXT,EXTERNAL_DOCKER:PLAINTEXT
       - KAFKA_CFG_MAX_REQUEST_SIZE=5242880
       - KAFKA_CFG_MESSAGE_MAX_BYTES=5242880
       - KAFKA_CFG_FETCH_MAX_BYTES=5242880
