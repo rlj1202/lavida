@@ -2,7 +2,9 @@
   "name": "@lavida/experiment-judgeworker-initiator",
   "scripts": {
     "start": "nest start",
-    "start:dev": "nest start --watch"
+    "start:dev": "nest start --watch",
+    "start:prod": "node dist/apps/experiment-judgeworker-initiator/src/main",
+    "build": "nest build"
   },
   "dependencies": {
     "@lavida/core": "^0.1.0",

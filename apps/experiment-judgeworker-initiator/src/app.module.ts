@@ -1,7 +1,11 @@
-import { Module } from '@nestjs/common';
+import { Logger, Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { ClientProxyFactory, Transport } from '@nestjs/microservices';
+import {
+  ClientProxyFactory,
+  KafkaOptions,
+  Transport,
+} from '@nestjs/microservices';
 import Joi from 'joi';
 import { Partitioners } from 'kafkajs';
 
@@ -14,7 +18,7 @@ import { Role } from '@lavida/core/entities/role.entity';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
-import { KAFKA_CLIENT_TOKEN } from './app.constant';
+import { KAFKA_CLIENT_OPTIONS_TOKEN, KAFKA_CLIENT_TOKEN } from './app.constant';
 
 const validationSchema = Joi.object({
   DATABASE_HOST: Joi.string().default('localhost'),
@@ -58,16 +62,24 @@ const validationSchema = Joi.object({
   providers: [
     AppService,
     {
-      provide: KAFKA_CLIENT_TOKEN,
+      provide: KAFKA_CLIENT_OPTIONS_TOKEN,
       useFactory: async (configService: ConfigService) => {
+        const clientId = configService.get<string>(
+          'KAFKA_CLIENT_ID',
+          'judgeworker-initiator',
+        );
         const brokers = configService
           .get<string>('KAFKA_CLIENT_BROKERS')
           .split(',');
 
-        return ClientProxyFactory.create({
+        Logger.verbose(`Client id: ${clientId}`);
+        Logger.verbose(`Brokers: ${brokers.join(', ')}`);
+
+        const options: KafkaOptions = {
           transport: Transport.KAFKA,
           options: {
             client: {
+              clientId: clientId,
               brokers: [...brokers],
             },
             consumer: {
@@ -78,9 +90,18 @@ const validationSchema = Joi.object({
               createPartitioner: Partitioners.DefaultPartitioner,
             },
           },
-        });
+        };
+
+        return options;
       },
       inject: [ConfigService],
+    },
+    {
+      provide: KAFKA_CLIENT_TOKEN,
+      useFactory: async (options: KafkaOptions) => {
+        return ClientProxyFactory.create(options);
+      },
+      inject: [KAFKA_CLIENT_OPTIONS_TOKEN],
     },
   ],
 })
