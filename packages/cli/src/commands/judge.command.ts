@@ -70,8 +70,6 @@ export class JudgeCommand extends CommandRunner implements OnModuleInit {
 
       console.log(result);
     }
-
-    await this.clientProxy.close();
   }
 
   @Option({

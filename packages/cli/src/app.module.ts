@@ -1,4 +1,10 @@
-import { Inject, Logger, Module, OnModuleInit } from '@nestjs/common';
+import {
+  Inject,
+  Logger,
+  Module,
+  OnModuleDestroy,
+  OnModuleInit,
+} from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import {
@@ -18,6 +24,10 @@ import { Submission } from '@lavida/core/entities/submission.entity';
 import { UserProblem } from '@lavida/core/entities/user-problem.entity';
 import { Role } from '@lavida/core/entities/role.entity';
 
+import { Solution } from './commands/experiments/entities/solution.entity';
+import { Sourcecode } from './commands/experiments/entities/sourcecode.entity';
+import { Problem as OldProblem } from './commands/experiments/entities/Problem.entity';
+
 import { KAFKA_CLIENT_TOKEN } from './app.constants';
 
 @Module({
@@ -33,19 +43,37 @@ import { KAFKA_CLIENT_TOKEN } from './app.constants';
           database: configService.get<string>('DATABASE_NAME'),
           username: configService.get<string>('DATABASE_USERNAME'),
           password: configService.get<string>('DATABASE_PASSWORD'),
-          entities: [Problem, User, Submission, UserProblem, Role],
-          autoLoadEntities: false,
+          autoLoadEntities: true,
           synchronize: false,
         };
       },
       inject: [ConfigService],
     }),
-    TypeOrmModule.forFeature([Problem]),
+    TypeOrmModule.forRootAsync({
+      name: 'lavida-old',
+      imports: [ConfigModule],
+      useFactory: async (configService: ConfigService) => {
+        return {
+          name: 'lavida-old',
+          type: 'mysql',
+          host: configService.get<string>('DATABASE_HOST'),
+          port: configService.get<number>('DATABASE_PORT'),
+          database: 'lavida-old',
+          username: configService.get<string>('DATABASE_USERNAME'),
+          password: configService.get<string>('DATABASE_PASSWORD'),
+          autoLoadEntities: true,
+          synchronize: false,
+        };
+      },
+      inject: [ConfigService],
+    }),
+    TypeOrmModule.forFeature([Problem, User, Submission, UserProblem, Role]),
+    TypeOrmModule.forFeature([Solution, Sourcecode, OldProblem], 'lavida-old'),
   ],
   providers: [
     BasicCommand,
     JudgeCommand,
-    ExperimentCommand,
+    ...ExperimentCommand.registerWithSubCommands(),
     {
       provide: KAFKA_CLIENT_TOKEN,
       useFactory: (configService: ConfigService) => {
@@ -74,7 +102,7 @@ import { KAFKA_CLIENT_TOKEN } from './app.constants';
     },
   ],
 })
-export class AppModule implements OnModuleInit {
+export class AppModule implements OnModuleInit, OnModuleDestroy {
   constructor(
     @Inject(KAFKA_CLIENT_TOKEN)
     private readonly client: ClientKafka,
@@ -84,5 +112,11 @@ export class AppModule implements OnModuleInit {
     await this.client.connect();
 
     Logger.verbose('Kafka client connected');
+  }
+
+  async onModuleDestroy() {
+    await this.client.close();
+
+    Logger.verbose('Kafka client closed');
   }
 }
