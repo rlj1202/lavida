@@ -1,20 +1,25 @@
-import { Controller, Logger } from '@nestjs/common';
-import { MessagePattern, Payload } from '@nestjs/microservices';
+import { Controller, Inject, Logger } from '@nestjs/common';
+import { ClientKafka, MessagePattern, Payload } from '@nestjs/microservices';
 
 import { ValidateSubmissionRequestDto } from '@lavida/core/dtos/validate-submission-request.dto';
 import { JudgeRequestDto } from '@lavida/core/dtos/judge-request.dto';
 
 import { AppService } from './app.service';
 
+import { KAFKA_CLIENT_TOKEN } from './app.constant';
+
 @Controller()
 export class AppController {
-  constructor(private readonly appService: AppService) {}
+  constructor(
+    private readonly appService: AppService,
+    @Inject(KAFKA_CLIENT_TOKEN)
+    private readonly client: ClientKafka,
+  ) {}
 
   @MessagePattern('judge')
   async judge(@Payload() dto: JudgeRequestDto) {
-    // TODO:
     const reportProgress = async (value: any) => {
-      Logger.verbose(`Judge progress: ${value}`);
+      this.client.emit('judge.progress', value);
     };
 
     const result = await this.appService.judge(dto, reportProgress);
@@ -26,9 +31,8 @@ export class AppController {
 
   @MessagePattern('validate-submission')
   async validateSubmission(@Payload() dto: ValidateSubmissionRequestDto) {
-    // TODO:
     const reportProgress = async (value: any) => {
-      Logger.verbose(`Validating submission progress: ${value}`);
+      this.client.emit('validate-submission.progress', value);
     };
 
     const result = await this.appService.validateSubmission(

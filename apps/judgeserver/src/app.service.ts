@@ -8,6 +8,7 @@ import {
   Submission,
   SubmissionStatus,
 } from '@lavida/core/entities/submission.entity';
+
 import {
   CompileError,
   Judger,
@@ -15,6 +16,8 @@ import {
   RuntimeError,
   TimeLimitExceededError,
 } from '@lavida/judger';
+import { StatsService } from '@lavida/core/stats';
+
 import { ValidateSubmissionRequestDto } from '@lavida/core/dtos/validate-submission-request.dto';
 import { ValidateSubmissionResponseDto } from '@lavida/core/dtos/validate-submission-response.dto';
 import { JudgeRequestDto } from '@lavida/core/dtos/judge-request.dto';
@@ -25,6 +28,7 @@ export class AppService {
   constructor(
     private readonly judger: Judger,
     private readonly configService: ConfigService,
+    private readonly statsService: StatsService,
     @InjectRepository(Submission)
     private readonly submissionsRepository: Repository<Submission>,
   ) {}
@@ -35,16 +39,39 @@ export class AppService {
   ): Promise<JudgeResponseDto> {
     const testcaseDir = this.configService.get<string>('TESTCASE_DIR');
 
-    const result = await this.judger.judge(
-      dto.language,
-      dto.code,
-      path.join(testcaseDir, `${dto.problemId}`),
-      dto.timeLimit,
-      dto.memoryLimit,
-      reportProgress,
-    );
+    try {
+      const result = await this.judger.judge(
+        dto.language,
+        dto.code,
+        path.join(testcaseDir, `${dto.problemId}`),
+        dto.timeLimit,
+        dto.memoryLimit,
+        reportProgress,
+      );
 
-    return result;
+      return result;
+    } catch (e) {
+      // TODO:
+      if (e instanceof CompileError) {
+        // finalStatus = SubmissionStatus.COMPILE_ERROR;
+      } else if (e instanceof RuntimeError) {
+        // finalStatus = SubmissionStatus.RUNTIME_ERROR;
+      } else if (e instanceof TimeLimitExceededError) {
+        // finalStatus = SubmissionStatus.TIME_LIMIT_EXCEEDED;
+      } else if (e instanceof MemoryLimitExceededError) {
+        // finalStatus = SubmissionStatus.MEMORY_LIMIT_EXCEEDED;
+      } else if (e instanceof Error) {
+        // finalStatus = SubmissionStatus.SERVER_ERROR;
+      } else {
+        // finalStatus = SubmissionStatus.SERVER_ERROR;
+      }
+
+      return {
+        accepted: false,
+        time: 0,
+        memory: 0,
+      };
+    }
   }
 
   async validateSubmission(
@@ -81,21 +108,12 @@ export class AppService {
         finalStatus = SubmissionStatus.SERVER_ERROR;
       }
     } finally {
-      await this.submissionsRepository.update(dto.submissionId, {
-        status: finalStatus,
-        time: time,
-        memory: memory,
-      });
-
-      // TODO:
-      // await this.userProblemService.save(
-      //   submission.userId,
-      //   submission.problemId,
-      //   finalStatus === SubmissionStatus.ACCEPTED,
-      // );
-
-      // await this.usersService.updateStats(submission.userId);
-      // await this.problemsService.updateStats(submission.problemId);
+      await this.statsService.updateSubmissionStatus(
+        dto.submissionId,
+        finalStatus,
+        time,
+        memory,
+      );
 
       return {
         status: finalStatus,

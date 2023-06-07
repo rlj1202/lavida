@@ -1,36 +1,17 @@
 import { Logger, ValidationPipe } from '@nestjs/common';
-import { ConfigService } from '@nestjs/config';
 import { NestFactory } from '@nestjs/core';
-import { MicroserviceOptions, Transport } from '@nestjs/microservices';
-import { Partitioners } from 'kafkajs';
+import { KafkaOptions, MicroserviceOptions } from '@nestjs/microservices';
 
 import { AppModule } from './app.module';
+
+import { KAFKA_CLIENT_OPTIONS_TOKEN } from './app.constant';
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
-  const configService: ConfigService = app.get(ConfigService);
+  const clientOptions: KafkaOptions = app.get(KAFKA_CLIENT_OPTIONS_TOKEN);
 
-  const brokers = configService.get<string>('KAFKA_CLIENT_BROKERS').split(',');
-
-  Logger.verbose(`Brokers: ${brokers.join(', ')}`);
-
-  app.connectMicroservice<MicroserviceOptions>({
-    transport: Transport.KAFKA,
-    options: {
-      client: {
-        clientId: 'judgeserver',
-        brokers: [...brokers],
-      },
-      consumer: {
-        groupId: 'judgeserver',
-        rebalanceTimeout: 100,
-      },
-      producer: {
-        createPartitioner: Partitioners.DefaultPartitioner,
-      },
-    },
-  });
+  app.connectMicroservice<MicroserviceOptions>(clientOptions);
 
   app.useGlobalPipes(new ValidationPipe({ transform: true }));
 
