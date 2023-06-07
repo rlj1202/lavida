@@ -21,7 +21,7 @@ export class AppController {
 
   @EventPattern('validate')
   async validate(
-    @Payload() dto: ValidateSubmissionRequestDto & { executable: string },
+    @Payload() dto: ValidateSubmissionRequestDto & { executable?: string },
   ) {
     Logger.verbose(`Validate ${dto.submissionId}`);
 

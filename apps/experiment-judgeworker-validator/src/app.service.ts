@@ -53,7 +53,7 @@ export class AppService {
   }
 
   async validate(
-    dto: ValidateSubmissionRequestDto & { executable: string },
+    dto: ValidateSubmissionRequestDto & { executable?: string },
   ): Promise<JudgeResult> {
     const curLangProfile: LanguageProfile | undefined =
       languageProfiles[dto.language];
@@ -77,26 +77,23 @@ export class AppService {
     try {
       await container.start();
 
-      const buffer = Buffer.from(dto.executable, 'base64');
+      if (dto.executable) {
+        const buffer = Buffer.from(dto.executable, 'base64');
 
-      console.log(`Byte length: ${buffer.byteLength}`);
+        console.log(`Byte length: ${buffer.byteLength}`);
 
-      // Upload executable file and make it executable
-      await this.dockerService.putFile(
-        container,
-        curLangProfile.executable,
-        buffer,
-        './',
-      );
+        // Upload executable file and make it executable
+        await this.dockerService.putFile(
+          container,
+          curLangProfile.executable,
+          buffer,
+          './',
+        );
 
-      await this.dockerService.execute(container, {
-        cmd: ['chmod', '+x', curLangProfile.executable],
-      });
-
-      // TODO: memory limit
-      // container.update({
-      //   Memory: 0,
-      // });
+        await this.dockerService.execute(container, {
+          cmd: ['chmod', '+x', curLangProfile.executable],
+        });
+      }
 
       //
       const files = await readdir(testcasedir);
