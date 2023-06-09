@@ -1,14 +1,14 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from "axios";
-import { ClientRequest } from "http";
-import Router from "next/router";
-import HttpStatus from "http-status";
+import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import { ClientRequest } from 'http';
+import Router from 'next/router';
+import HttpStatus from 'http-status';
 
-import store from "../store/index";
-import { refresh } from "./auth";
-import { clearAuthInfo } from "../store/auth/authSlice";
+import store from '../store/index';
+import { refresh } from './auth';
+import { clearAuthInfo } from '../store/auth/authSlice';
 
-const serverURL = "http://localhost:3100";
-const suffixURL = "";
+const serverURL = 'http://localhost:3100';
+const suffixURL = '';
 const axiosClient = axios.create({ baseURL: `${serverURL}${suffixURL}` });
 
 const withAccessToken = (config: AxiosRequestConfig) => {
@@ -45,7 +45,7 @@ axiosClient.interceptors.response.use(
         try {
           await refresh();
 
-          console.log("The access token has been refreshed.");
+          console.log('The access token has been refreshed.');
 
           if (originalConfig) {
             return axiosClient(originalConfig);
@@ -58,12 +58,12 @@ axiosClient.interceptors.response.use(
           // This can lead to infinite loop of requests.
           store.dispatch(clearAuthInfo());
 
-          Router.push("/auth/login");
+          Router.push('/auth/login');
 
           return Promise.reject(`Failed to refresh token: ${err}`);
         }
       } else if (status === HttpStatus.NOT_FOUND) {
-        Router.push("/");
+        Router.push('/');
       }
     }
 

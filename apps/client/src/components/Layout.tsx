@@ -1,9 +1,9 @@
-import Head from "next/head";
-import React from "react";
-import Config from "../config";
-import Container from "./Container";
-import Footer from "./Footer";
-import Topbar from "./Topbar";
+import Head from 'next/head';
+import React from 'react';
+import Config from '../config';
+import Container from './Container';
+import Footer from './Footer';
+import Topbar from './Topbar';
 
 const Layout: React.FC<React.PropsWithChildren> = ({ children }) => {
   return (

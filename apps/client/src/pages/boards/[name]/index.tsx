@@ -1,30 +1,30 @@
-import { NextPage } from "next";
-import { useRouter } from "next/router";
-import Head from "next/head";
-import Link from "next/link";
-import { useQuery } from "@tanstack/react-query";
+import { NextPage } from 'next';
+import { useRouter } from 'next/router';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useQuery } from '@tanstack/react-query';
 
-import Layout from "../../../components/Layout";
-import Table from "../../../components/Table";
-import TableHead from "../../../components/TableHead";
-import TableBody from "../../../components/TableBody";
-import TableRow from "../../../components/TableRow";
-import TableCell from "../../../components/TableCell";
+import Layout from '../../../components/Layout';
+import Table from '../../../components/Table';
+import TableHead from '../../../components/TableHead';
+import TableBody from '../../../components/TableBody';
+import TableRow from '../../../components/TableRow';
+import TableCell from '../../../components/TableCell';
 
-import { getBoardByName } from "../../../services/boards";
-import { getArticles } from "../../../services/articles";
+import { getBoardByName } from '../../../services/boards';
+import { getArticles } from '../../../services/articles';
 
 const BoardPage: NextPage = () => {
   const router = useRouter();
 
   const { name } = router.query as { name: string };
 
-  const boardQuery = useQuery(["board", name], () => getBoardByName(name), {
+  const boardQuery = useQuery(['board', name], () => getBoardByName(name), {
     enabled: !!name,
   });
 
   const articlesQuery = useQuery(
-    ["articles", boardQuery.data?.name],
+    ['articles', boardQuery.data?.name],
     () =>
       getArticles({
         boardName: boardQuery.data?.name,
@@ -34,7 +34,7 @@ const BoardPage: NextPage = () => {
     },
   );
 
-  if (boardQuery.status !== "success" || articlesQuery.status !== "success") {
+  if (boardQuery.status !== 'success' || articlesQuery.status !== 'success') {
     return <></>;
   }
 
@@ -45,9 +45,9 @@ const BoardPage: NextPage = () => {
     router.push(`/boards/${board.name}/write`);
   };
 
-  const dateTimeFormat = new Intl.DateTimeFormat("ko", {
-    dateStyle: "long",
-    timeStyle: "medium",
+  const dateTimeFormat = new Intl.DateTimeFormat('ko', {
+    dateStyle: 'long',
+    timeStyle: 'medium',
   });
 
   return (

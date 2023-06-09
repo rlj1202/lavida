@@ -1,5 +1,5 @@
-import { User } from "./user";
-import { WorkbookProblem } from "./workbookProblem";
+import { User } from './user';
+import { WorkbookProblem } from './workbookProblem';
 
 export interface Workbook {
   id: number;

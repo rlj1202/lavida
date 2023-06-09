@@ -1,11 +1,11 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 
-import axiosClient from "./axiosClient";
+import axiosClient from './axiosClient';
 
-import { Article } from "../schemas/article";
+import { Article } from '../schemas/article';
 
-import { PaginationResponse } from "../schemas/pagination-response";
-import { PaginationOptions } from "../schemas/pagination-options";
+import { PaginationResponse } from '../schemas/pagination-response';
+import { PaginationOptions } from '../schemas/pagination-options';
 
 export interface ListArticlesParams extends PaginationOptions {
   boardName?: string;
@@ -28,7 +28,7 @@ export const getArticles = async (
   const response = await axiosClient.get<
     PaginationResponse<Article>,
     AxiosResponse<PaginationResponse<Article>>
-  >("/articles", { params: options });
+  >('/articles', { params: options });
 
   return response.data;
 };
@@ -46,7 +46,7 @@ export const createArticle = async (
     Article,
     AxiosResponse<Article>,
     CreateArticleParams
-  >("/articles", createArticleParams);
+  >('/articles', createArticleParams);
 
   return response.data;
 };

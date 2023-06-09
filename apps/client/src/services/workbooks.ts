@@ -1,10 +1,10 @@
-import { PaginationResponse } from "../schemas/pagination-response";
-import { Workbook } from "../schemas/workbook";
-import axiosClient from "./axiosClient";
+import { PaginationResponse } from '../schemas/pagination-response';
+import { Workbook } from '../schemas/workbook';
+import axiosClient from './axiosClient';
 
 export const getWorkbooks = async (): Promise<PaginationResponse<Workbook>> => {
   const response = await axiosClient.get<PaginationResponse<Workbook>>(
-    "/workbooks",
+    '/workbooks',
   );
 
   return response.data;

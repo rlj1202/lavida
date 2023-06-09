@@ -1,4 +1,6 @@
 {
-  "extends": "next/core-web-vitals",
-  "rules": {}
+  "extends": ["../../.eslintrc.js", "next/core-web-vitals"],
+  "rules": {
+    "@typescript-eslint/no-empty-function": "off"
+  }
 }

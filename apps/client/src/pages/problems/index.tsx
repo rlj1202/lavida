@@ -2,32 +2,32 @@ import {
   GetServerSideProps,
   InferGetServerSidePropsType,
   NextPage,
-} from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useState } from "react";
+} from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import Joi from "joi";
+import Joi from 'joi';
 
-import { PaginationResponse } from "../../schemas/pagination-response";
-import { Problem } from "../../schemas/problem";
-import { UserProblem } from "../../schemas/user-problem";
+import { PaginationResponse } from '../../schemas/pagination-response';
+import { Problem } from '../../schemas/problem';
+import { UserProblem } from '../../schemas/user-problem';
 
-import { getProblems } from "../../services/problems";
-import { getUserProblems } from "../../services/user-problems";
+import { getProblems } from '../../services/problems';
+import { getUserProblems } from '../../services/user-problems';
 
-import { useAppSelector } from "../../store/hooks";
+import { useAppSelector } from '../../store/hooks';
 
-import Layout from "../../components/Layout";
-import ProblemTag from "../../components/ProblemTag";
-import Table from "../../components/Table";
-import TableHead from "../../components/TableHead";
-import TableRow from "../../components/TableRow";
-import TableCell from "../../components/TableCell";
-import TableBody from "../../components/TableBody";
+import Layout from '../../components/Layout';
+import ProblemTag from '../../components/ProblemTag';
+import Table from '../../components/Table';
+import TableHead from '../../components/TableHead';
+import TableRow from '../../components/TableRow';
+import TableCell from '../../components/TableCell';
+import TableBody from '../../components/TableBody';
 
-import Config from "../../config";
+import Config from '../../config';
 
 export const getServerSideProps: GetServerSideProps = async (context) => {
   return {
@@ -60,20 +60,20 @@ const Problems: NextPage<
   const userId = useAppSelector((store) => store.auth.user?.id);
 
   const problemsQuery = useQuery<PaginationResponse<Problem>>(
-    ["problems", value.page],
+    ['problems', value.page],
     () => getProblems({ offset, limit }),
     {
       refetchOnWindowFocus: false,
       onSuccess: (data) => {
         setPages(Math.ceil(data.total / data.limit));
       },
-    }
+    },
   );
   const problems = problemsQuery.data;
 
   const userProblemsQuery = useQuery<UserProblem[]>(
-    ["user-problems", userId],
-    () => (userId ? getUserProblems(userId) : [])
+    ['user-problems', userId],
+    () => (userId ? getUserProblems(userId) : []),
   );
 
   return (
@@ -100,7 +100,7 @@ const Problems: NextPage<
             <TableBody>
               {problems?.items.map((problem) => {
                 const userProblem = userProblemsQuery.data?.find(
-                  (userProblem) => userProblem.problemId === problem.id
+                  (userProblem) => userProblem.problemId === problem.id,
                 );
 
                 return (
@@ -139,7 +139,7 @@ const Problems: NextPage<
               .slice(1)
               .map((i) => {
                 const isActivePage = value.page === i;
-                const activeClass = isActivePage ? "active" : "";
+                const activeClass = isActivePage ? 'active' : '';
 
                 return (
                   <div key={i} className={`page-button ${activeClass}`}>

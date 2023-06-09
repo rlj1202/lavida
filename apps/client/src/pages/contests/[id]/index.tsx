@@ -1,27 +1,27 @@
-import { useQuery } from "@tanstack/react-query";
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { useQuery } from '@tanstack/react-query';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-import Layout from "../../../components/Layout";
-import Table from "../../../components/Table";
-import TableBody from "../../../components/TableBody";
-import TableCell from "../../../components/TableCell";
-import TableHead from "../../../components/TableHead";
-import TableRow from "../../../components/TableRow";
-import { getContest } from "../../../services/contests";
+import Layout from '../../../components/Layout';
+import Table from '../../../components/Table';
+import TableBody from '../../../components/TableBody';
+import TableCell from '../../../components/TableCell';
+import TableHead from '../../../components/TableHead';
+import TableRow from '../../../components/TableRow';
+import { getContest } from '../../../services/contests';
 
 const ContestPage: NextPage = () => {
   const router = useRouter();
 
   const { id } = router.query as { id: string };
 
-  const query = useQuery(["contest", id], async () => getContest(id), {
+  const query = useQuery(['contest', id], async () => getContest(id), {
     enabled: !!id,
   });
 
-  if (query.status !== "success") {
+  if (query.status !== 'success') {
     return <></>;
   }
 

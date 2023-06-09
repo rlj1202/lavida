@@ -1,27 +1,27 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useState } from "react";
+import { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
-import { searchProblems } from "../services/problems";
+import { searchProblems } from '../services/problems';
 
-import Layout from "../components/Layout";
-import Table from "../components/Table";
-import TableBody from "../components/TableBody";
-import TableCell from "../components/TableCell";
-import TableHead from "../components/TableHead";
-import TableRow from "../components/TableRow";
+import Layout from '../components/Layout';
+import Table from '../components/Table';
+import TableBody from '../components/TableBody';
+import TableCell from '../components/TableCell';
+import TableHead from '../components/TableHead';
+import TableRow from '../components/TableRow';
 
-import Config from "../config";
+import Config from '../config';
 
 const Search: NextPage = () => {
-  const [queryString, setQueryString] = useState("");
+  const [queryString, setQueryString] = useState('');
 
   const query = useQuery(
-    ["search", queryString],
+    ['search', queryString],
     () => searchProblems({ query: queryString }),
-    {}
+    {},
   );
 
   return (

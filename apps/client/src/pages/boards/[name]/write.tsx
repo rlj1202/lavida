@@ -1,20 +1,20 @@
-import { useMutation, useQuery } from "@tanstack/react-query";
-import { NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { FormEvent, useRef } from "react";
+import { useMutation, useQuery } from '@tanstack/react-query';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { FormEvent, useRef } from 'react';
 
-import Layout from "../../../components/Layout";
+import Layout from '../../../components/Layout';
 
-import { createArticle, CreateArticleParams } from "../../../services/articles";
-import { getBoardByName } from "../../../services/boards";
+import { createArticle, CreateArticleParams } from '../../../services/articles';
+import { getBoardByName } from '../../../services/boards';
 
 const WritePage: NextPage = () => {
   const router = useRouter();
 
   const { name } = router.query as { name: string };
 
-  const query = useQuery(["board", name], () => getBoardByName(name), {
+  const query = useQuery(['board', name], () => getBoardByName(name), {
     enabled: !!name,
   });
 
@@ -25,7 +25,7 @@ const WritePage: NextPage = () => {
   const articleTitleRef = useRef<HTMLInputElement>(null);
   const articleContentRef = useRef<HTMLTextAreaElement>(null);
 
-  if (query.status !== "success") {
+  if (query.status !== 'success') {
     return <></>;
   }
 

@@ -1,28 +1,28 @@
-import { useQuery } from "@tanstack/react-query";
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
+import { useQuery } from '@tanstack/react-query';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
 
-import Layout from "../../../components/Layout";
-import Table from "../../../components/Table";
-import TableBody from "../../../components/TableBody";
-import TableCell from "../../../components/TableCell";
-import TableHead from "../../../components/TableHead";
-import TableRow from "../../../components/TableRow";
+import Layout from '../../../components/Layout';
+import Table from '../../../components/Table';
+import TableBody from '../../../components/TableBody';
+import TableCell from '../../../components/TableCell';
+import TableHead from '../../../components/TableHead';
+import TableRow from '../../../components/TableRow';
 
-import { getWorkbook } from "../../../services/workbooks";
+import { getWorkbook } from '../../../services/workbooks';
 
 const WorkbookPage: NextPage = () => {
   const router = useRouter();
 
   const { id } = router.query as { id: string };
 
-  const query = useQuery(["workbook", id], async () => getWorkbook(id), {
+  const query = useQuery(['workbook', id], async () => getWorkbook(id), {
     enabled: !!id,
   });
 
-  if (query.status !== "success") {
+  if (query.status !== 'success') {
     return <></>;
   }
 
@@ -39,7 +39,7 @@ const WorkbookPage: NextPage = () => {
           <h1>{workbook.title}</h1>
           <p>{workbook.description}</p>
           <p>
-            만든이:{" "}
+            만든이:{' '}
             <Link href={`/users/${workbook.author.username}`}>
               {workbook.author.username}
             </Link>

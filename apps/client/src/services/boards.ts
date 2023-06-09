@@ -1,8 +1,8 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 
-import { Board } from "../schemas/board";
+import { Board } from '../schemas/board';
 
-import axiosClient from "./axiosClient";
+import axiosClient from './axiosClient';
 
 export interface CreateBoardParams {
   name: string;
@@ -17,7 +17,7 @@ export interface UpdateBoardParams {
 }
 
 export const getBoards = async (): Promise<Board[]> => {
-  const response = await axiosClient.get<Board[]>("/boards");
+  const response = await axiosClient.get<Board[]>('/boards');
 
   return response.data;
 };
@@ -43,7 +43,7 @@ export const createBoard = async (
     Board,
     AxiosResponse<Board>,
     CreateBoardParams
-  >("/boards", createBoardDto);
+  >('/boards', createBoardDto);
 
   return response.data;
 };

@@ -1,11 +1,11 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 
-import axiosClient from "./axiosClient";
+import axiosClient from './axiosClient';
 
-import { User } from "../schemas/user";
+import { User } from '../schemas/user';
 
-import store from "../store/index";
-import { clearAuthInfo, setAuthInfo } from "../store/auth/authSlice";
+import store from '../store/index';
+import { clearAuthInfo, setAuthInfo } from '../store/auth/authSlice';
 
 export interface LoginParams {
   username: string;
@@ -40,7 +40,7 @@ export interface RefreshResponseDTO {
 }
 
 export const authenticate = async (): Promise<User> => {
-  const response = await axiosClient.get<User, AxiosResponse<User>>("/auth");
+  const response = await axiosClient.get<User, AxiosResponse<User>>('/auth');
 
   return response.data;
 };
@@ -52,7 +52,7 @@ export const login = async (
     LoginResponseDTO,
     AxiosResponse<LoginResponseDTO>,
     LoginParams
-  >("/auth/login", loginDTO);
+  >('/auth/login', loginDTO);
 
   store.dispatch(
     setAuthInfo({
@@ -66,7 +66,7 @@ export const login = async (
 };
 
 export const logout = async () => {
-  const response = await axiosClient.post("/auth/logout");
+  const response = await axiosClient.post('/auth/logout');
 
   store.dispatch(clearAuthInfo());
 
@@ -80,7 +80,7 @@ export const register = async (
     RegisterResponseDTO,
     AxiosResponse<RegisterResponseDTO>,
     RegisterParams
-  >("/auth/register", registerParams);
+  >('/auth/register', registerParams);
 
   store.dispatch(
     setAuthInfo({
@@ -97,14 +97,14 @@ export const refresh = async (): Promise<RefreshResponseDTO> => {
   const refreshToken = store.getState().auth.refreshToken;
 
   if (!refreshToken) {
-    throw new Error("no refresh token");
+    throw new Error('no refresh token');
   }
 
   const response = await axiosClient.post<
     RefreshResponseDTO,
     AxiosResponse<RefreshResponseDTO>,
     RefreshParams
-  >("/auth/refresh", {
+  >('/auth/refresh', {
     refreshToken,
   });
 

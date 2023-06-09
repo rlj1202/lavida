@@ -1,5 +1,5 @@
 const isServerSide = () => {
-  return typeof window === "undefined";
+  return typeof window === 'undefined';
 };
 
 export default isServerSide;

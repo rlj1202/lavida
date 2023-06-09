@@ -1,27 +1,27 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import { useQuery } from "@tanstack/react-query";
+import { NextPage } from 'next';
+import Head from 'next/head';
+import { useQuery } from '@tanstack/react-query';
 
-import Layout from "../../components/Layout";
-import Table from "../../components/Table";
-import TableBody from "../../components/TableBody";
-import TableCell from "../../components/TableCell";
-import TableHead from "../../components/TableHead";
-import TableRow from "../../components/TableRow";
+import Layout from '../../components/Layout';
+import Table from '../../components/Table';
+import TableBody from '../../components/TableBody';
+import TableCell from '../../components/TableCell';
+import TableHead from '../../components/TableHead';
+import TableRow from '../../components/TableRow';
 
-import { authenticate } from "../../services/auth";
+import { authenticate } from '../../services/auth';
 
-import { useAppSelector } from "../../store/hooks";
+import { useAppSelector } from '../../store/hooks';
 
 const SettingPage: NextPage = () => {
-  const query = useQuery(["authenticate"], () => authenticate(), {
+  const query = useQuery(['authenticate'], () => authenticate(), {
     initialData: useAppSelector((state) => state.auth.user),
   });
 
   const user = query.data;
 
   if (!user) {
-    throw new Error("no user");
+    throw new Error('no user');
   }
 
   return (

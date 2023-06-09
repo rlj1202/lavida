@@ -1,6 +1,6 @@
-import { AxiosResponse } from "axios";
-import { User } from "../schemas/user";
-import axiosClient from "./axiosClient";
+import { AxiosResponse } from 'axios';
+import { User } from '../schemas/user';
+import axiosClient from './axiosClient';
 
 interface UserInfoDTO {
   username: string;

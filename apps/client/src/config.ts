@@ -1,6 +1,6 @@
 const Config = {
-  title: "Lavida",
-  description: "",
+  title: 'Lavida',
+  description: '',
 };
 
 export default Config;

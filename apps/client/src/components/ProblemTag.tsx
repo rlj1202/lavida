@@ -1,10 +1,10 @@
-import { FC } from "react";
+import { FC } from 'react';
 
-const ProblemTag: FC<{ type: "success" | "wrong-answer" }> = ({ type }) => {
+const ProblemTag: FC<{ type: 'success' | 'wrong-answer' }> = ({ type }) => {
   return (
     <span className={`wrapper ${type}`}>
-      {type === "success" && "성공"}
-      {type === "wrong-answer" && "실패"}
+      {type === 'success' && '성공'}
+      {type === 'wrong-answer' && '실패'}
 
       <style jsx>{`
         .wrapper {

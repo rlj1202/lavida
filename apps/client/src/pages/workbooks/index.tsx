@@ -1,21 +1,21 @@
-import { useQuery } from "@tanstack/react-query";
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
+import { useQuery } from '@tanstack/react-query';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
 
-import Layout from "../../components/Layout";
-import Table from "../../components/Table";
-import TableBody from "../../components/TableBody";
-import TableCell from "../../components/TableCell";
-import TableHead from "../../components/TableHead";
-import TableRow from "../../components/TableRow";
+import Layout from '../../components/Layout';
+import Table from '../../components/Table';
+import TableBody from '../../components/TableBody';
+import TableCell from '../../components/TableCell';
+import TableHead from '../../components/TableHead';
+import TableRow from '../../components/TableRow';
 
-import { getWorkbooks } from "../../services/workbooks";
+import { getWorkbooks } from '../../services/workbooks';
 
 const WorkbooksPage: NextPage = () => {
-  const query = useQuery(["workbooks"], () => getWorkbooks());
+  const query = useQuery(['workbooks'], () => getWorkbooks());
 
-  if (query.status !== "success") {
+  if (query.status !== 'success') {
     return <></>;
   }
 

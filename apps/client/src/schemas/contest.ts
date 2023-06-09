@@ -1,5 +1,5 @@
-import { ContestProblem } from "./contestProblem";
-import { User } from "./user";
+import { ContestProblem } from './contestProblem';
+import { User } from './user';
 
 export interface Contest {
   id: number;

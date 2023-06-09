@@ -2,16 +2,16 @@ import {
   GetServerSideProps,
   InferGetServerSidePropsType,
   NextPage,
-} from "next";
-import Head from "next/head";
-import { ParsedUrlQuery } from "querystring";
+} from 'next';
+import Head from 'next/head';
+import { ParsedUrlQuery } from 'querystring';
 import { useQuery } from '@tanstack/react-query';
 
-import Layout from "../../../components/Layout";
-import { getUser } from "../../../services/users";
+import Layout from '../../../components/Layout';
+import { getUser } from '../../../services/users';
 
-import Config from "../../../config";
-import Link from "next/link";
+import Config from '../../../config';
+import Link from 'next/link';
 
 interface Params extends ParsedUrlQuery {
   username: string;
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps<Props, Params> = async (
-  context
+  context,
 ) => {
   const username = context.params?.username;
 
@@ -42,7 +42,7 @@ export const getServerSideProps: GetServerSideProps<Props, Params> = async (
 const UserPage: NextPage<
   InferGetServerSidePropsType<typeof getServerSideProps>
 > = ({ username }) => {
-  const query = useQuery(["user", username], () => getUser(username));
+  const query = useQuery(['user', username], () => getUser(username));
 
   return (
     <>

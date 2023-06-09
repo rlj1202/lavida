@@ -1,8 +1,8 @@
-import { NextPage } from "next";
-import Head from "next/head";
+import { NextPage } from 'next';
+import Head from 'next/head';
 
-import Layout from "../components/Layout";
-import Config from "../config";
+import Layout from '../components/Layout';
+import Config from '../config';
 
 const Faq: NextPage = () => {
   return (

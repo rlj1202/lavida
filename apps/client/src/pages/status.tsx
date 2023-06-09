@@ -1,34 +1,34 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { useEffect, useRef, useState } from "react";
+import { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { useEffect, useRef, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { io } from "socket.io-client";
-import Joi from "joi";
+import { io } from 'socket.io-client';
+import Joi from 'joi';
 
-import Layout from "../components/Layout";
-import { PaginationResponse } from "../schemas/pagination-response";
-import { Submission } from "../schemas/submission";
-import { getSubmissions } from "../services/submissions";
+import Layout from '../components/Layout';
+import { PaginationResponse } from '../schemas/pagination-response';
+import { Submission } from '../schemas/submission';
+import { getSubmissions } from '../services/submissions';
 
-import Table from "../components/Table";
-import TableHead from "../components/TableHead";
-import TableBody from "../components/TableBody";
-import TableRow from "../components/TableRow";
-import TableCell from "../components/TableCell";
+import Table from '../components/Table';
+import TableHead from '../components/TableHead';
+import TableBody from '../components/TableBody';
+import TableRow from '../components/TableRow';
+import TableCell from '../components/TableCell';
 
-import Config from "../config";
+import Config from '../config';
 
 type JudgeStatus =
-  | "SUBMITTED"
-  | "JUDGING"
-  | "ACCEPTED"
-  | "WRONG_ANSWER"
-  | "COMPILE_ERROR"
-  | "RUNTIME_ERROR"
-  | "TIME_LIMIT_EXCEEDED"
-  | "MEMORY_LIMIT_EXCEEDED";
+  | 'SUBMITTED'
+  | 'JUDGING'
+  | 'ACCEPTED'
+  | 'WRONG_ANSWER'
+  | 'COMPILE_ERROR'
+  | 'RUNTIME_ERROR'
+  | 'TIME_LIMIT_EXCEEDED'
+  | 'MEMORY_LIMIT_EXCEEDED';
 
 const querySchema = Joi.object<{
   username?: string;
@@ -37,8 +37,8 @@ const querySchema = Joi.object<{
   offset?: number;
   limit?: number;
 }>({
-  username: Joi.string().optional().allow(""),
-  problemId: Joi.number().optional().allow(""),
+  username: Joi.string().optional().allow(''),
+  problemId: Joi.number().optional().allow(''),
   top: Joi.number().optional(),
   offset: Joi.number().default(0),
   limit: Joi.number().default(20),
@@ -55,7 +55,7 @@ const Status: NextPage = () => {
   const [pages, setPages] = useState(0);
 
   const queryKey = [
-    "submissions",
+    'submissions',
     value.username,
     value.problemId,
     value.offset,
@@ -75,7 +75,7 @@ const Status: NextPage = () => {
       onSuccess: (data) => {
         setPages(Math.ceil(data.total / data.limit));
       },
-    }
+    },
   );
 
   const [statuses, setStatuses] = useState<
@@ -84,20 +84,20 @@ const Status: NextPage = () => {
 
   useEffect(() => {
     // TODO: server url
-    const serverUrl = "http://localhost:3100";
+    const serverUrl = 'http://localhost:3100';
     // On 'judge' namespace
     const socket = io(`${serverUrl}/judge`);
 
-    socket.on("connect", () => {
+    socket.on('connect', () => {
       query.data?.items
         .map((item) => item.id)
         .forEach((submissionId) => {
-          socket.emit("getJudgeStatus", { submissionId });
+          socket.emit('getJudgeStatus', { submissionId });
         });
     });
 
     socket.on(
-      "status",
+      'status',
       (response: {
         submissionId: number;
         progress: number;
@@ -107,9 +107,9 @@ const Status: NextPage = () => {
           new Map(old).set(response.submissionId, {
             status: response.status,
             progress: response.progress,
-          })
+          }),
         );
-      }
+      },
     );
 
     return () => {
@@ -119,9 +119,9 @@ const Status: NextPage = () => {
     };
   });
 
-  const dateTimeFormat = new Intl.DateTimeFormat("ko", {
-    dateStyle: "long",
-    timeStyle: "medium",
+  const dateTimeFormat = new Intl.DateTimeFormat('ko', {
+    dateStyle: 'long',
+    timeStyle: 'medium',
   });
 
   const usernameRef = useRef<HTMLInputElement>(null);
@@ -179,26 +179,26 @@ const Status: NextPage = () => {
 
                 let statusIndicator = `${status}`;
 
-                if (status === "JUDGING") {
+                if (status === 'JUDGING') {
                   statusIndicator = `${status} ${progress.toFixed(2)}%`;
                 }
 
-                let statusClassName = "";
+                let statusClassName = '';
                 switch (status) {
-                  case "ACCEPTED":
-                    statusClassName = "status-ac";
+                  case 'ACCEPTED':
+                    statusClassName = 'status-ac';
                     break;
-                  case "WRONG_ANSWER":
-                    statusClassName = "status-wa";
+                  case 'WRONG_ANSWER':
+                    statusClassName = 'status-wa';
                     break;
-                  case "TIME_LIMIT_EXCEEDED":
-                    statusClassName = "status-tle";
+                  case 'TIME_LIMIT_EXCEEDED':
+                    statusClassName = 'status-tle';
                     break;
-                  case "MEMORY_LIMIT_EXCEEDED":
-                    statusClassName = "status-mem";
+                  case 'MEMORY_LIMIT_EXCEEDED':
+                    statusClassName = 'status-mem';
                     break;
-                  case "SERVER_ERROR":
-                    statusClassName = "status-er";
+                  case 'SERVER_ERROR':
+                    statusClassName = 'status-er';
                     break;
                 }
 

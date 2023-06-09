@@ -1,21 +1,21 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import { useQuery } from "@tanstack/react-query";
+import { NextPage } from 'next';
+import Head from 'next/head';
+import { useQuery } from '@tanstack/react-query';
 
-import { getBoards } from "../../services/boards";
+import { getBoards } from '../../services/boards';
 
-import Layout from "../../components/Layout";
-import Config from "../../config";
-import { Board } from "../../schemas/board";
-import Table from "../../components/Table";
-import TableBody from "../../components/TableBody";
-import TableRow from "../../components/TableRow";
-import TableCell from "../../components/TableCell";
-import TableHead from "../../components/TableHead";
-import Link from "next/link";
+import Layout from '../../components/Layout';
+import Config from '../../config';
+import { Board } from '../../schemas/board';
+import Table from '../../components/Table';
+import TableBody from '../../components/TableBody';
+import TableRow from '../../components/TableRow';
+import TableCell from '../../components/TableCell';
+import TableHead from '../../components/TableHead';
+import Link from 'next/link';
 
 const Boards: NextPage = () => {
-  const queryKey = ["boards"];
+  const queryKey = ['boards'];
   const query = useQuery(queryKey, () => getBoards(), {});
 
   const boards = query.isSuccess ? query.data : [];

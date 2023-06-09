@@ -2,16 +2,16 @@ import {
   GetServerSideProps,
   InferGetServerSidePropsType,
   NextPage,
-} from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
-import { FormEvent } from "react";
+} from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { ParsedUrlQuery } from 'querystring';
+import { FormEvent } from 'react';
 import { useQuery } from '@tanstack/react-query';
 
-import Layout from "../../components/Layout";
-import { getProblem } from "../../services/problems";
-import { submit } from "../../services/submissions";
+import Layout from '../../components/Layout';
+import { getProblem } from '../../services/problems';
+import { submit } from '../../services/submissions';
 
 interface Params extends ParsedUrlQuery {
   problemId: string;
@@ -22,7 +22,7 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps<Props, Params> = async (
-  context
+  context,
 ) => {
   const { problemId: problemIdStr } = context.params || {};
 
@@ -44,7 +44,7 @@ const Submit: NextPage<
 > = ({ problemId }) => {
   const router = useRouter();
 
-  const queryKey = ["problem", problemId];
+  const queryKey = ['problem', problemId];
   const query = useQuery(queryKey, () => getProblem(problemId), {
     refetchOnWindowFocus: false,
   });
@@ -56,7 +56,7 @@ const Submit: NextPage<
         language: HTMLSelectElement;
         code: HTMLTextAreaElement;
       }
-    >
+    >,
   ) => {
     event.preventDefault();
 
@@ -66,7 +66,7 @@ const Submit: NextPage<
     await submit({ problemId, language, code });
 
     router.push({
-      pathname: "/status",
+      pathname: '/status',
       query: {},
     });
   };

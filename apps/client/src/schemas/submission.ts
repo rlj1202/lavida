@@ -1,16 +1,16 @@
-import { Problem } from "./problem";
-import { User } from "./user";
+import { Problem } from './problem';
+import { User } from './user';
 
 export type SubmissionStatus =
-  | "SUBMITTED"
-  | "JUDGING"
-  | "ACCEPTED"
-  | "WRONG_ANSWER"
-  | "COMPILE_ERROR"
-  | "RUNTIME_ERROR"
-  | "TIME_LIMIT_EXCEEDED"
-  | "MEMORY_LIMIT_EXCEEDED"
-  | "SERVER_ERROR";
+  | 'SUBMITTED'
+  | 'JUDGING'
+  | 'ACCEPTED'
+  | 'WRONG_ANSWER'
+  | 'COMPILE_ERROR'
+  | 'RUNTIME_ERROR'
+  | 'TIME_LIMIT_EXCEEDED'
+  | 'MEMORY_LIMIT_EXCEEDED'
+  | 'SERVER_ERROR';
 
 export interface Submission {
   id: number;

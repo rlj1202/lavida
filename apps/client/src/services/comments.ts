@@ -1,11 +1,11 @@
-import { AxiosResponse } from "axios";
+import { AxiosResponse } from 'axios';
 
-import axiosClient from "./axiosClient";
+import axiosClient from './axiosClient';
 
-import { Comment } from "../schemas/comment";
+import { Comment } from '../schemas/comment';
 
-import { PaginationOptions } from "../schemas/pagination-options";
-import { PaginationResponse } from "../schemas/pagination-response";
+import { PaginationOptions } from '../schemas/pagination-options';
+import { PaginationResponse } from '../schemas/pagination-response';
 
 export interface ListCommentsParams extends PaginationOptions {
   articleId: number | string;
@@ -30,7 +30,7 @@ export const getComments = async (options: ListCommentsParams) => {
   const response = await axiosClient.get<
     PaginationResponse<Comment>,
     AxiosResponse<PaginationResponse<Comment>>
-  >("/comments", { params: options });
+  >('/comments', { params: options });
 
   return response.data;
 };
@@ -42,7 +42,7 @@ export const createComment = async (
     Comment,
     AxiosResponse<Comment>,
     CreateCommentParams
-  >("/comments", options);
+  >('/comments', options);
 
   return response.data;
 };

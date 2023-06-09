@@ -2,30 +2,30 @@ import {
   GetServerSideProps,
   InferGetServerSidePropsType,
   NextPage,
-} from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { ParsedUrlQuery } from "querystring";
-import { Fragment } from "react";
+} from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { ParsedUrlQuery } from 'querystring';
+import { Fragment } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import convert from "convert-units";
+import convert from 'convert-units';
 
-import ReactMarkdown from "react-markdown";
-import remarkGfm from "remark-gfm";
-import remarkMath from "remark-math";
-import rehypeRaw from "rehype-raw";
-import rehypeKatex from "rehype-katex";
+import ReactMarkdown from 'react-markdown';
+import remarkGfm from 'remark-gfm';
+import remarkMath from 'remark-math';
+import rehypeRaw from 'rehype-raw';
+import rehypeKatex from 'rehype-katex';
 
-import Layout from "../../../components/Layout";
-import { Problem } from "../../../schemas/problem";
-import { getProblem } from "../../../services/problems";
+import Layout from '../../../components/Layout';
+import { Problem } from '../../../schemas/problem';
+import { getProblem } from '../../../services/problems';
 
-import { UserProblem } from "../../../schemas/user-problem";
-import { useAppSelector } from "../../../store/hooks";
-import { getUserProblems } from "../../../services/user-problems";
-import ProblemTag from "../../../components/ProblemTag";
+import { UserProblem } from '../../../schemas/user-problem';
+import { useAppSelector } from '../../../store/hooks';
+import { getUserProblems } from '../../../services/user-problems';
+import ProblemTag from '../../../components/ProblemTag';
 
-import Config from "../../../config";
+import Config from '../../../config';
 
 interface Params extends ParsedUrlQuery {
   id: string;
@@ -36,7 +36,7 @@ interface Props {
 }
 
 export const getServerSideProps: GetServerSideProps<Props, Params> = async (
-  context
+  context,
 ) => {
   const id = context.params?.id;
 
@@ -60,14 +60,14 @@ const Problem: NextPage<
 
   const userId = useAppSelector((store) => store.auth.user?.id);
 
-  const problemQuery = useQuery<Problem>(["problem", problemId], () =>
-    getProblem(problemId)
+  const problemQuery = useQuery<Problem>(['problem', problemId], () =>
+    getProblem(problemId),
   );
   const problem = problemQuery.data;
 
   const userProblemsQuery = useQuery<UserProblem[]>(
-    ["user-problems", userId],
-    () => (userId ? getUserProblems(userId) : [])
+    ['user-problems', userId],
+    () => (userId ? getUserProblems(userId) : []),
   );
 
   function unitToString(data: { val: number; unit: string }) {
@@ -90,10 +90,10 @@ const Problem: NextPage<
         <div className="wrapper">
           <h1>{problem?.title}</h1>
           {userProblemsQuery.data?.find(
-            (item) => item.problemId === problem?.id
+            (item) => item.problemId === problem?.id,
           )?.solved === true && <ProblemTag type="success" />}
           {userProblemsQuery.data?.find(
-            (item) => item.problemId === problem?.id
+            (item) => item.problemId === problem?.id,
           )?.solved === false && <ProblemTag type="wrong-answer" />}
 
           <table className="info">
@@ -110,12 +110,12 @@ const Problem: NextPage<
               <tr>
                 <td>
                   {unitToString(
-                    convert(problem?.timeLimit).from("ms").toBest()
+                    convert(problem?.timeLimit).from('ms').toBest(),
                   )}
                 </td>
                 <td>
                   {unitToString(
-                    convert(problem?.memoryLimit).from("b").toBest()
+                    convert(problem?.memoryLimit).from('b').toBest(),
                   )}
                 </td>
                 <td>{problem?.acceptCount}</td>
@@ -137,21 +137,21 @@ const Problem: NextPage<
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[rehypeKatex, rehypeRaw]}
           >
-            {problem?.description || ""}
+            {problem?.description || ''}
           </ReactMarkdown>
           <h2>입력</h2>
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[rehypeKatex, rehypeRaw]}
           >
-            {problem?.inputDesc || ""}
+            {problem?.inputDesc || ''}
           </ReactMarkdown>
           <h2>출력</h2>
           <ReactMarkdown
             remarkPlugins={[remarkGfm, remarkMath]}
             rehypePlugins={[rehypeKatex, rehypeRaw]}
           >
-            {problem?.outputDesc || ""}
+            {problem?.outputDesc || ''}
           </ReactMarkdown>
           {problem?.samples &&
             problem.samples.map((sample, i) => {

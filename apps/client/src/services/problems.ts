@@ -1,12 +1,12 @@
-import { AxiosResponse } from "axios";
-import axiosClient from "./axiosClient";
+import { AxiosResponse } from 'axios';
+import axiosClient from './axiosClient';
 
-import { Problem } from "../schemas/problem";
-import { PaginationResponse } from "../schemas/pagination-response";
-import { PaginationOptions } from "../schemas/pagination-options";
+import { Problem } from '../schemas/problem';
+import { PaginationResponse } from '../schemas/pagination-response';
+import { PaginationOptions } from '../schemas/pagination-options';
 
 export const getProblems = async (
-  options: PaginationOptions
+  options: PaginationOptions,
 ): Promise<PaginationResponse<Problem>> => {
   const response = await axiosClient.get<
     PaginationResponse<Problem>,
@@ -22,12 +22,12 @@ export const getProblem = async (id: number): Promise<Problem> => {
 };
 
 export const searchProblems = async (
-  options: PaginationOptions & { query: string }
+  options: PaginationOptions & { query: string },
 ): Promise<PaginationResponse<Problem>> => {
   const response = await axiosClient.get<
     PaginationResponse<Problem>,
     AxiosResponse<PaginationResponse<Problem>>
-  >("/problems/search", { params: options });
+  >('/problems/search', { params: options });
 
   return response.data;
 };

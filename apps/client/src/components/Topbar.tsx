@@ -1,11 +1,11 @@
-import Link from "next/link";
-import { useRouter } from "next/router";
-import React from "react";
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import React from 'react';
 
-import Container from "./Container";
+import Container from './Container';
 
-import { logout } from "../services/auth";
-import { useAppSelector } from "../store/hooks";
+import { logout } from '../services/auth';
+import { useAppSelector } from '../store/hooks';
 
 const PageLink: React.FC<{ pathname: string; label: string }> = ({
   pathname,
@@ -18,7 +18,7 @@ const PageLink: React.FC<{ pathname: string; label: string }> = ({
   return (
     <div className="wrapper">
       <Link href={pathname}>
-        <span className={`${selected ? "selected" : ""}`}>{label}</span>
+        <span className={`${selected ? 'selected' : ''}`}>{label}</span>
       </Link>
 
       <style jsx>{`
@@ -46,7 +46,7 @@ const Topbar: React.FC = () => {
       <Container>
         <div className="items">
           <div className="logo">
-            <Link href="/">{"{ Lavida }"}</Link>
+            <Link href="/">{'{ Lavida }'}</Link>
           </div>
           <PageLink pathname="/faq" label="FAQ" />
           <PageLink pathname="/boards" label="Forum" />
@@ -65,7 +65,7 @@ const Topbar: React.FC = () => {
                 </button>
                 <button
                   className="button"
-                  onClick={() => router.push("/setting")}
+                  onClick={() => router.push('/setting')}
                 >
                   설정
                 </button>
@@ -82,7 +82,7 @@ const Topbar: React.FC = () => {
                   className="button"
                   onClick={() =>
                     router.push({
-                      pathname: "/auth/login",
+                      pathname: '/auth/login',
                       query: { from: router.pathname },
                     })
                   }
@@ -93,7 +93,7 @@ const Topbar: React.FC = () => {
                   className="button"
                   onClick={() =>
                     router.push({
-                      pathname: "/auth/register",
+                      pathname: '/auth/register',
                       query: { from: router.pathname },
                     })
                   }
@@ -108,7 +108,7 @@ const Topbar: React.FC = () => {
 
       <style jsx>{`
         .wrapper {
-          font-family: "NanumSquare", sans-serif;
+          font-family: 'NanumSquare', sans-serif;
           border-bottom: 1px solid #dddddd;
         }
         .items {

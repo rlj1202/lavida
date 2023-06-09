@@ -1,10 +1,10 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { FormEvent } from "react";
+import { NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { FormEvent } from 'react';
 
-import Layout from "../../components/Layout";
-import { login } from "../../services/auth";
+import Layout from '../../components/Layout';
+import { login } from '../../services/auth';
 
 const Login: NextPage = () => {
   const router = useRouter();
@@ -15,7 +15,7 @@ const Login: NextPage = () => {
         username: HTMLInputElement;
         password: HTMLInputElement;
       }
-    >
+    >,
   ) => {
     event.preventDefault();
 
@@ -24,10 +24,10 @@ const Login: NextPage = () => {
 
     await login({ username, password });
 
-    if (router.query.from && typeof router.query.from === "string") {
+    if (router.query.from && typeof router.query.from === 'string') {
       router.push(router.query.from);
     } else {
-      router.push("/");
+      router.push('/');
     }
   };
 
@@ -35,7 +35,7 @@ const Login: NextPage = () => {
     <>
       <Layout>
         <Head>
-          <title>{"로그인"}</title>
+          <title>{'로그인'}</title>
         </Head>
 
         <div className="wrapper">

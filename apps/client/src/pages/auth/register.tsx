@@ -1,10 +1,10 @@
-import { NextPage } from "next";
-import Head from "next/head";
-import { useRouter } from "next/router";
-import { FormEvent } from "react";
+import { NextPage } from 'next';
+import Head from 'next/head';
+import { useRouter } from 'next/router';
+import { FormEvent } from 'react';
 
-import Layout from "../../components/Layout";
-import { register } from "../../services/auth";
+import Layout from '../../components/Layout';
+import { register } from '../../services/auth';
 
 const Register: NextPage = () => {
   const router = useRouter();
@@ -17,7 +17,7 @@ const Register: NextPage = () => {
         password: HTMLInputElement;
         passwordCheck: HTMLInputElement;
       }
-    >
+    >,
   ) => {
     event.preventDefault();
 
@@ -27,16 +27,16 @@ const Register: NextPage = () => {
     const passwordCheck = event.currentTarget.passwordCheck.value;
 
     if (password !== passwordCheck) {
-      alert("Password and password confirmation field does not match");
+      alert('Password and password confirmation field does not match');
       return;
     }
 
     await register({ username, email, password });
 
-    if (router.query.from && typeof router.query.from === "string") {
+    if (router.query.from && typeof router.query.from === 'string') {
       router.push(router.query.from);
     } else {
-      router.push("/");
+      router.push('/');
     }
   };
 
@@ -44,7 +44,7 @@ const Register: NextPage = () => {
     <>
       <Layout>
         <Head>
-          <title>{"회원가입"}</title>
+          <title>{'회원가입'}</title>
         </Head>
 
         <div className="wrapper">

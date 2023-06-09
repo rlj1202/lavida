@@ -1,30 +1,30 @@
-import { useQuery } from "@tanstack/react-query";
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
+import { useQuery } from '@tanstack/react-query';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
 
-import Layout from "../../components/Layout";
-import Table from "../../components/Table";
-import TableBody from "../../components/TableBody";
-import TableCell from "../../components/TableCell";
-import TableHead from "../../components/TableHead";
-import TableRow from "../../components/TableRow";
-import Config from "../../config";
+import Layout from '../../components/Layout';
+import Table from '../../components/Table';
+import TableBody from '../../components/TableBody';
+import TableCell from '../../components/TableCell';
+import TableHead from '../../components/TableHead';
+import TableRow from '../../components/TableRow';
+import Config from '../../config';
 
-import { getContests } from "../../services/contests";
+import { getContests } from '../../services/contests';
 
 const Contests: NextPage = () => {
-  const query = useQuery(["contests"], async () => getContests());
+  const query = useQuery(['contests'], async () => getContests());
 
-  if (query.status !== "success") {
+  if (query.status !== 'success') {
     return <></>;
   }
 
   const contests = query.data;
 
-  const dateTimeFormat = new Intl.DateTimeFormat("ko", {
-    dateStyle: "long",
-    timeStyle: "medium",
+  const dateTimeFormat = new Intl.DateTimeFormat('ko', {
+    dateStyle: 'long',
+    timeStyle: 'medium',
   });
 
   return (

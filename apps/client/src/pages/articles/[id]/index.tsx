@@ -1,18 +1,18 @@
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { NextPage } from "next";
-import Head from "next/head";
-import Link from "next/link";
-import { useRouter } from "next/router";
-import { FormEvent, useRef } from "react";
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
+import { NextPage } from 'next';
+import Head from 'next/head';
+import Link from 'next/link';
+import { useRouter } from 'next/router';
+import { FormEvent, useRef } from 'react';
 
-import Layout from "../../../components/Layout";
+import Layout from '../../../components/Layout';
 
-import { getArticle } from "../../../services/articles";
+import { getArticle } from '../../../services/articles';
 import {
   createComment,
   CreateCommentParams,
   getComments,
-} from "../../../services/comments";
+} from '../../../services/comments';
 
 const ArticlePage: NextPage = () => {
   const router = useRouter();
@@ -21,12 +21,12 @@ const ArticlePage: NextPage = () => {
 
   const queryClient = useQueryClient();
 
-  const articleQuery = useQuery(["article", id], () => getArticle(id), {
+  const articleQuery = useQuery(['article', id], () => getArticle(id), {
     enabled: !!id,
   });
 
   const commentsQuery = useQuery(
-    ["article", id, "comments"],
+    ['article', id, 'comments'],
     () => getComments({ articleId: id }),
     { enabled: !!id },
   );
@@ -37,14 +37,14 @@ const ArticlePage: NextPage = () => {
     },
     {
       onSuccess(data, variables, context) {
-        queryClient.invalidateQueries(["article", id, "comments"]);
+        queryClient.invalidateQueries(['article', id, 'comments']);
       },
     },
   );
 
   const commentContentRef = useRef<HTMLTextAreaElement>(null);
 
-  if (articleQuery.status !== "success" || commentsQuery.status !== "success") {
+  if (articleQuery.status !== 'success' || commentsQuery.status !== 'success') {
     return <></>;
   }
 

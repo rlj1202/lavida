@@ -1,5 +1,5 @@
-import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { User } from "../../schemas/user";
+import { createSlice, PayloadAction } from '@reduxjs/toolkit';
+import { User } from '../../schemas/user';
 
 interface AuthState {
   user: User | null;
@@ -14,7 +14,7 @@ const initialState: AuthState = {
 };
 
 export const authSlice = createSlice({
-  name: "auth",
+  name: 'auth',
   initialState,
   reducers: {
     setUser(state, action: PayloadAction<User>) {
@@ -32,7 +32,7 @@ export const authSlice = createSlice({
         user?: User | null;
         accessToken?: string | null;
         refreshToken?: string | null;
-      }>
+      }>,
     ) {
       if (action.payload.user !== undefined) {
         state.user = action.payload.user;

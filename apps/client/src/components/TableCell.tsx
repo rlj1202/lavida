@@ -1,4 +1,4 @@
-import { PropsWithChildren } from "react";
+import { PropsWithChildren } from 'react';
 
 const TableCell: React.FC<PropsWithChildren> = ({ children }) => {
   return (
