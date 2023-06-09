@@ -1,4 +1,8 @@
-import axios, { AxiosRequestConfig, AxiosResponse } from 'axios';
+import axios, {
+  AxiosRequestConfig,
+  AxiosResponse,
+  InternalAxiosRequestConfig,
+} from 'axios';
 import { ClientRequest } from 'http';
 import Router from 'next/router';
 import HttpStatus from 'http-status';
@@ -11,16 +15,11 @@ const serverURL = 'http://localhost:3100';
 const suffixURL = '';
 const axiosClient = axios.create({ baseURL: `${serverURL}${suffixURL}` });
 
-const withAccessToken = (config: AxiosRequestConfig) => {
-  if (!config.headers) return config;
-
+const withAccessToken = (config: InternalAxiosRequestConfig) => {
   const { accessToken } = store.getState().auth;
 
   if (accessToken) {
-    config.headers = {
-      ...config.headers,
-      Authorization: `Bearer ${accessToken}`,
-    };
+    config.headers.Authorization = `Bearer ${accessToken}`;
   }
 
   return config;
